@@ -54,6 +54,9 @@
  *         angular distribution is changed to be original (broader) one.
  * 2002-05 Angular distribution is modified by T. Mizuno (Hiroshima Univ). 
  * 2003-08 Energy spectrum/angular distribution is modified by T. Mizuno.
+ * 2003-12 Modified by T. Mizuno
+ *           Cutoff rigidity dependence based on Kur'yan et al. (1979)
+ *           is implemented.
  **************************************************************************
  */
 
@@ -85,6 +88,13 @@ namespace {
   // The constant defined below ("ENERGY_INTEGRAL_upward") is the straight 
   // upward (theta=pi) flux integrated between lowE_* and highE_*.
   // It must be computed in units of [c/s/m^2/sr] and given here.
+  // The value is at Palestine, Texas and the cutoff rigidity dependence
+  // based on Kur'yan et al. is taken into account in flux() method.
+  // Therefore, if you want to modify the spectral shape, 
+  // you also need to modify the value of ENERGY_INTEGRAL_upward.
+  // If you want to modify the cutoff rigidity dependence, all you have to do
+  // is to modify the return value of flux() method.
+
   //
   // Integrated flux of continuum is 1.457e4 [c/s/m^2/sr].
   // We also added 511keV line of intensity = 470[c/s/m^/sr],
@@ -366,8 +376,24 @@ G4double CrGammaSecondaryUpward::flux() const
   // Hence the total integrated flux becomes
   // 1.628*2pi*ENERGY_INTEGRAL_upward.
 
+  // Cutoff rigidity dependence:
+  // The atmospheric gamma flux is expected to depend on the cutoff rigidity.
+  // The higher the cutoff rigidity is, the lower the primary cosmic-ray flux
+  // is, and the lower the atmospheric gamma-ray flux is.
+  // The dependence is discussed by several authors, 
+  // e.g., Kur'yan et al. (1979) and Dean et al. (1989).
+  // Kur'yan et al. (1979) measurement the upward gamma-ray flux
+  // above 80 MeV and found the rigidity dependence as R^-1.13.
+  // This relation holds for the measurement above 30 MeV by SAS-2 and
+  // the balloon observation with the similar apparatus 
+  // (Thompson and Simpson 1981).
+  // We adopt this relation since most of trigger comes from gamma
+  // above 30 MeV.
+
+  G4double Rc_palestine = 4.46; // Cutoff rigidity at Palestine, Texas [GV]
   // Integrated over the lower (earth-side) hemisphere and divided by 2pi.
-  return  1.628 * ENERGY_INTEGRAL_upward;  // [c/s/m^2/sr]
+  return  1.628 * ENERGY_INTEGRAL_upward * 
+    pow(m_cutOffRigidity/Rc_palestine, -1.13);  // [c/s/m^2/sr]
 }
 
 // Gives back solid angle from which particle comes
