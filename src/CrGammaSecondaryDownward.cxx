@@ -53,6 +53,10 @@
  *         angular distribution is changed to be original (broader) one.
  * 2002-05 Angular distribution is modified by T. Mizuno (Hiroshima Univ). 
  * 2003-08 Energy spectrum/angular distribution of gamma upward is modified by T. Mizuno.
+ * 2003-12 Modified by T. Mizuno
+ *           Cutoff rigidity dependence based on Kur'yan et al. (1979)
+ *           is implemented.
+ *           User can set lower and Upper energy to generate gammas.
  **************************************************************************
  */
 
@@ -81,18 +85,14 @@ namespace {
   const G4double highE_break  = 1.0; // 1 GeV
  
   // The constant defined below ("ENERGY_INTEGRAL_downward") is the straight 
-  // downward (theta=0) flux integrated between lowE_* and highE_*.
-  // It must be computed in units of [c/s/m^2/sr] and given here.
-  //
-  // Integrated flux of continuum over energy is 2.10e3 [c/s/m^2/sr].
-  // We also added 511keV line of intensity = 78.33 [c/s/m^/sr],
-  // hence the total integral becomes 2.178e3 [c/s/m^2/sr]
-
-  //const G4double ENERGY_INTEGRAL_downward = 2.178e3; // [c/s/m^2/sr]
-
-  // we generate gamma above 1 MeV
-  const G4double ENERGY_INTEGRAL_downward = 414.2; // [c/s/m^2/sr]
-
+  // downward (theta=0) flux integrated between 
+  // m_gammaLowEnergy and m_gammaHighEnergy.
+  // It will be computed in units of [c/s/m^2/sr] in flux() method
+  // from parameters given below 
+  // (i.e., A*_downward, a*_downward, Cutoff and A_511keV).
+  // The value is at Palestine, Texas and the cutoff rigidity dependence
+  // based on Kur'yan et al. is taken into account in flux() method.
+  G4double ENERGY_INTEGRAL_downward;
 
   //============================================================
   /*
@@ -105,8 +105,8 @@ namespace {
    * 250.0*(E/MeV)^-1.70 + 1.14e5*(E/MeV)^-2.5*exp(-(E/120MeV)^-1.5)
    *  [c/s/m^2/sr/MeV] (1-1000MeV)
    * 2.15e4*(E/MeV)^-2.20 [c/s/m^2/sr/MeV](1-100GeV)
-   * 511 keV (70.5 [c/s/m^2/sr]).
-   * Also note that below 10 MeV and above 1 GeV, downward and 
+   * 511 keV (78.33 [c/s/m^2/sr]).
+   * Also note that below 1 MeV and above 1 GeV, downward and 
    * upward components have the same spectral shape.
    */
   
@@ -121,10 +121,29 @@ namespace {
   const G4double a3_downward = 2.50; 
   const G4double a4_downward = 2.20; 
   const G4double Cutoff = 120; // in unit of MeV
-  // 511keV line intensity
-  const G4double A_511keV = 78.3;  // [c/s/m^2/sr]
+  // 511keV line intensity, 1/6 of that of upward 
+  // measured by Imhof et al.
+  const G4double A_511keV = 78.33;  // [c/s/m^2/sr]
   
   const G4double MeVtoGeV = 1e-3;
+
+  // function that returns the higher value
+  inline G4double max(G4double x, G4double y){
+    if (x>y){
+      return x;
+    } else {
+      return y;
+    }
+  }
+
+  // function that returns the lower value
+  inline G4double min(G4double x, G4double y){
+    if (x<y){
+      return x;
+    } else {
+      return y;
+    }
+  }
 
   // spectral model of low energy component
   inline G4double downwardCRSpec1(G4double E /* GeV */){
@@ -243,61 +262,6 @@ namespace {
 	       1./(-a4_downward+1)) * MeVtoGeV;
   }
 
-
-  // The random number generator for the secondary (downward) component
-  G4double downwardCRenergy
-  (HepRandomEngine* engine, G4double cor, G4double solarPotential){
-    G4double rand_min_1 = 
-      downwardCRenvelope1_integral(lowE_downward, cor, solarPotential);
-    G4double rand_max_1 = 
-      downwardCRenvelope1_integral(lowE_break, cor, solarPotential);
-    G4double rand_min_2 =
-      downwardCRenvelope2_integral(lowE_break, cor, solarPotential);
-    G4double rand_max_2 =
-      downwardCRenvelope2_integral(highE_break, cor, solarPotential);
-    G4double rand_min_3 =
-      downwardCRenvelope3_integral(lowE_break, cor, solarPotential);
-    G4double rand_max_3 =
-      downwardCRenvelope3_integral(highE_break, cor, solarPotential);
-    G4double rand_min_4 =
-      downwardCRenvelope4_integral(highE_break, cor, solarPotential);
-    G4double rand_max_4 =
-      downwardCRenvelope4_integral(highE_downward, cor, solarPotential);
-
-    G4double envelope1_area = rand_max_1 - rand_min_1;
-    G4double envelope2_area = rand_max_2 - rand_min_2;
-    G4double envelope3_area = rand_max_3 - rand_min_3;
-    G4double envelope4_area = rand_max_4 - rand_min_4;
-
-    /*****
-    G4double envelope_area = envelope1_area + envelope2_area 
-                               + envelope3_area +envelope4_area;
-    *****/
-
-    G4double Ernd,r; 
-    G4double E; // E means energy in GeV
-    //----------------------------------------
-    // following lines are when you generate gammas from 1 MeV to 100 GeV
-    G4double envelope_area = envelope2_area + envelope3_area +envelope4_area;
-    while(1){
-      Ernd = engine->flat();
-      if (Ernd <= (envelope2_area)/envelope_area){
-	// envelope in higher energy
-	r = engine->flat() * (rand_max_2 - rand_min_2) + rand_min_2;
-	E = downwardCRenvelope2_integral_inv(r, cor, solarPotential);
-      } else if (Ernd <= (envelope2_area+envelope3_area)/envelope_area){
-	// envelope in highest energy
-	r = engine->flat() * (rand_max_3 - rand_min_3) + rand_min_3;
-	E = downwardCRenvelope3_integral_inv(r, cor, solarPotential);
-      } else {
-	r = engine->flat() * (rand_max_4 - rand_min_4) + rand_min_4;
-	E = downwardCRenvelope4_integral_inv(r, cor, solarPotential);
-      }
-      break;
-    }
-    //----------------------------------------
-    return E;
-  }
   //============================================================
 
 } // End of noname-namespace: private function definitions.
@@ -317,7 +281,6 @@ CrGammaSecondaryDownward::~CrGammaSecondaryDownward()
 {
   ;
 }
-
 
 // Gives back particle direction in (cos(theta), phi)
 std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy, 
@@ -376,7 +339,73 @@ std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy,
 // Gives back particle energy
 G4double CrGammaSecondaryDownward::energySrc(HepRandomEngine* engine) const
 {
-  return downwardCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
+
+  G4double rand_min_1 = 
+    downwardCRenvelope1_integral(min(lowE_break, max(m_gammaLowEnergy, lowE_downward)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_1 = 
+    downwardCRenvelope1_integral(max(lowE_downward, min(m_gammaHighEnergy, lowE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_2 =
+    downwardCRenvelope2_integral(min(highE_break, max(m_gammaLowEnergy, lowE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_2 =
+    downwardCRenvelope2_integral(max(lowE_break, min(m_gammaHighEnergy, highE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_3 =
+    downwardCRenvelope3_integral(min(highE_break, max(m_gammaLowEnergy, lowE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_3 =
+    downwardCRenvelope3_integral(max(lowE_break, min(m_gammaHighEnergy, highE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_4 =
+    downwardCRenvelope4_integral(min(highE_downward, max(m_gammaLowEnergy, highE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_4 =
+    downwardCRenvelope4_integral(max(highE_break, min(m_gammaHighEnergy, highE_downward)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+
+  G4double envelope1_area = rand_max_1 - rand_min_1;
+  G4double envelope2_area = rand_max_2 - rand_min_2;
+  G4double envelope3_area = rand_max_3 - rand_min_3;
+  G4double envelope4_area = rand_max_4 - rand_min_4;
+  G4double envelope_511keV;
+  if (m_gammaHighEnergy>=511.0e-6 && m_gammaLowEnergy<=511.0e-6){
+    envelope_511keV = A_511keV;
+  } else {
+    envelope_511keV = 0.0;
+  }
+
+  G4double envelope_area = envelope1_area + envelope2_area 
+    + envelope3_area + envelope4_area + envelope_511keV;
+  
+  G4double Ernd,r; 
+  G4double E; // E means energy in GeV
+
+  while(1){
+    Ernd = engine->flat();
+    if (Ernd <= (envelope1_area)/envelope_area){
+      // envelope in higher energy
+      r = engine->flat() * (rand_max_1 - rand_min_1) + rand_min_1;
+      E = downwardCRenvelope1_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    } else if (Ernd <= (envelope1_area+envelope2_area)/envelope_area){
+      // envelope in higher energy
+      r = engine->flat() * (rand_max_2 - rand_min_2) + rand_min_2;
+      E = downwardCRenvelope2_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    } else if (Ernd <= (envelope1_area+envelope2_area+envelope3_area)/envelope_area){
+      // envelope in highest energy
+      r = engine->flat() * (rand_max_3 - rand_min_3) + rand_min_3;
+      E = downwardCRenvelope3_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    } else if (Ernd <= (envelope1_area+envelope2_area+envelope3_area+envelope4_area)/envelope_area){
+      r = engine->flat() * (rand_max_4 - rand_min_4) + rand_min_4;
+      E = downwardCRenvelope4_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    } else {
+      E = 511.0e-6;
+    }
+    break;
+  }
+
+  return E;
 }
 
 
@@ -387,8 +416,58 @@ G4double CrGammaSecondaryDownward::energySrc(HepRandomEngine* engine) const
 // "primary", "reentrant" and "splash".
 G4double CrGammaSecondaryDownward::flux() const
 {
+  G4double rand_min_1 = 
+    downwardCRenvelope1_integral(min(lowE_break, max(m_gammaLowEnergy, lowE_downward)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_1 = 
+    downwardCRenvelope1_integral(max(lowE_downward, min(m_gammaHighEnergy, lowE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_2 =
+    downwardCRenvelope2_integral(min(highE_break, max(m_gammaLowEnergy, lowE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_2 =
+    downwardCRenvelope2_integral(max(lowE_break, min(m_gammaHighEnergy, highE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_3 =
+    downwardCRenvelope3_integral(min(highE_break, max(m_gammaLowEnergy, lowE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_3 =
+    downwardCRenvelope3_integral(max(lowE_break, min(m_gammaHighEnergy, highE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_4 =
+    downwardCRenvelope4_integral(min(highE_downward, max(m_gammaLowEnergy, highE_break)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_4 =
+    downwardCRenvelope4_integral(max(highE_break, min(m_gammaHighEnergy, highE_downward)), 
+				 m_cutOffRigidity, m_solarWindPotential);
+
+  G4double envelope1_area = rand_max_1 - rand_min_1;
+  G4double envelope2_area = rand_max_2 - rand_min_2;
+  G4double envelope3_area = rand_max_3 - rand_min_3;
+  G4double envelope4_area = rand_max_4 - rand_min_4;
+  G4double envelope_511keV;
+  if (m_gammaHighEnergy>=511.0e-6 && m_gammaLowEnergy<=511.0e-6){
+    envelope_511keV = A_511keV;
+  } else {
+    envelope_511keV = 0.0;
+  }
+  G4double envelope_area = envelope1_area + envelope2_area 
+    + envelope3_area + envelope4_area + envelope_511keV;
+  ENERGY_INTEGRAL_downward = envelope_area;
+
+  /***
+  cout << "m_gammaLowEnergy: " << m_gammaLowEnergy << endl;
+  cout << "m_gammaHighEnergy: " << m_gammaHighEnergy << endl;
+  cout << "envelope1_area: " << envelope1_area << endl;
+  cout << "envelope2_area: " << envelope2_area << endl;
+  cout << "envelope3_area: " << envelope3_area << endl;
+  cout << "envelope4_area: " << envelope4_area << endl;
+  cout << "envelope_511keV: " << envelope_511keV << endl;
+  cout << "envelope_area: " << ENERGY_INTEGRAL_downward << endl;
+  ***/
+
   // "ENERGY_INTEGRAL_downward" is the energy integrated flux 
-  // (between lowE_downward and highE_downward) at theta=0 
+  // (between gammaLowEnergy and gammaHighEnergy) at theta=0 
   // (vertically downward).
 
   // Integral over solid angle from theta=0 to pi/3[rad] 
@@ -398,8 +477,25 @@ G4double CrGammaSecondaryDownward::flux() const
   // Hence the total integrated flux becomes
   // 2.281*2pi*ENERGY_INTEGRAL_downward.
 
+  // Cutoff rigidity dependence:
+  // The atmospheric gamma flux is expected to depend on the cutoff rigidity.
+  // The higher the cutoff rigidity is, the lower the primary cosmic-ray flux
+  // is, and the lower the atmospheric gamma-ray flux is.
+  // The dependence is discussed by several authors,
+  // e.g., Kur'yan et al. (1979) and Dean et al. (1989).
+  // Kur'yan et al. (1979) measurement the upward gamma-ray flux
+  // above 80 MeV and found the rigidity dependence as R^-1.13.
+  // This relation holds for the measurement above 30 MeV by SAS-2 and
+  // the balloon observation with the similar apparatus
+  // (Thompson and Simpson 1981).
+  // We adopt this relation since most of trigger comes from gamma
+  // above 30 MeV.
+  // We assume the same rigidity dependence for downward atmospheric gamma.
+
+  G4double Rc_palestine = 4.46; // Cutoff rigidity at Palestine, Texas [GV]
   // Integrated over the upper (sky-side) hemisphere and divided by 2pi.
-  return  2.281 * ENERGY_INTEGRAL_downward;  // [c/s/m^2/sr]
+  return  2.281 * ENERGY_INTEGRAL_downward *
+    pow(m_cutOffRigidity/Rc_palestine, -1.13);  // [c/s/m^2/sr]
 }
 
 // Gives back solid angle from which particle comes

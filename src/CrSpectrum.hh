@@ -64,6 +64,13 @@ public:
   virtual const char* particleName() const=0;
   virtual std::string title() const=0;
 
+  // set lower and upper energy to generate gammas
+  virtual void setGammaLowEnergy(double ene);
+  virtual void setGammaHighEnergy(double ene);
+  // Gives back lower and upper energy to generate gammas
+  inline virtual double gammaLowEnergy() const { return m_gammaLowEnergy;}
+  inline virtual double gammaHighEnergy() const { return m_gammaHighEnergy;}
+
   /// this one asks the GPS for position
   int askGPS();
 
@@ -79,6 +86,10 @@ protected:
   double m_geomagneticLongitude; // [deg]
   double m_cutOffRigidity; // [GV]
   double m_solarWindPotential; // [MV]
+
+  // lower and upper energy to generate gammas
+  double m_gammaLowEnergy; // [GeV]
+  double m_gammaHighEnergy; // [GeV]
 
   double m_earthRadius; // earth radius in km
 private:

@@ -59,11 +59,12 @@ namespace {
   const G4double highE_break = 1.0e-3; // 1 MeV
  
   // The constant defined below ("ENERGY_INTEGRAL_primary") is the straight 
-  // downward (theta=0) flux integrated between lowE_* and highE_*.
-  // It must be computed in units of [c/s/m^2/sr] and given here.
-  //const G4double ENERGY_INTEGRAL_primary = 9.15e3; // [c/s/m^2/sr]
-  // we generate gamma above 1 MeV
-  const G4double ENERGY_INTEGRAL_primary = 34.78; // [c/s/m^2/sr]
+  // downward (theta=0) flux integrated between 
+  // m_gammaLowEnergy and m_gammaHighEnergy.
+  // It will be computed in units of [c/s/m^2/sr] in flux() method
+  // from parameters given below 
+  // (i.e., A*_primary and a*_primary).
+  G4double ENERGY_INTEGRAL_primary;
 
 
   //============================================================
@@ -86,6 +87,24 @@ namespace {
   const G4double a3_primary = 2.15; 
 
   const G4double MeVtoGeV = 1e-3;
+
+  // function that returns the higher value
+  inline G4double max(G4double x, G4double y){
+    if (x>y){
+      return x;
+    } else {
+      return y;
+    }
+  }
+
+  // function that returns the lower value
+  inline G4double min(G4double x, G4double y){
+    if (x<y){
+      return x;
+    } else {
+      return y;
+    }
+  }
 
   // The model function of CR primary gamma
   inline G4double primaryCRspec
@@ -169,66 +188,6 @@ namespace {
 	       , 1./(-a3_primary+1)) * MeVtoGeV;
   }
 
-  // The random number generator for the primary component
-  G4double primaryCRenergy(HepRandomEngine* engine, 
-			   G4double cor, G4double solarPotential){
-    G4double rand_min_1 = 
-      primaryCRenvelope1_integral(lowE_primary, cor, solarPotential);
-    G4double rand_max_1 = 
-      primaryCRenvelope1_integral(lowE_break, cor, solarPotential);
-    G4double rand_min_2 =
-      primaryCRenvelope2_integral(lowE_break, cor, solarPotential);
-    G4double rand_max_2 =
-      primaryCRenvelope2_integral(highE_break, cor, solarPotential);
-    G4double rand_min_3 =
-      primaryCRenvelope3_integral(highE_break, cor, solarPotential);
-    G4double rand_max_3 =
-      primaryCRenvelope3_integral(highE_primary, cor, solarPotential);
-
-    G4double envelope1_area = rand_max_1 - rand_min_1;
-    G4double envelope2_area = rand_max_2 - rand_min_2;
-    G4double envelope3_area = rand_max_3 - rand_min_3;
-    G4double envelope_area = envelope1_area + envelope2_area + envelope3_area;
-
-    G4double r; 
-    G4double E; // E means energy in GeV
-
-    /*****
-    G4double Ernd; 
-    //----------------------------------------
-    // following lines are when you generate gammas from 30 keV to 100 GeV
-    while(1){
-      Ernd = engine->flat();
-      if (Ernd <= envelope1_area/envelope_area){
-        // use the envelope function in the lower energy range
-        r = engine->flat() * (rand_max_1 - rand_min_1) + rand_min_1;
-        E = primaryCRenvelope1_integral_inv(r, cor, solarPotential);
-      } else if (Ernd <= (envelope1_area + envelope2_area)/envelope_area){
-        // use envelope function in middle energy range
-        r = engine->flat() * (rand_max_2 - rand_min_2) + rand_min_2;
-        E = primaryCRenvelope2_integral_inv(r, cor, solarPotential);
-      } else {
-        // use envelope function in the higher energy range
-        r = engine->flat() * (rand_max_3 - rand_min_3) + rand_min_3;
-        E = primaryCRenvelope3_integral_inv(r, cor, solarPotential);
-      }
-      break;
-    }
-    //----------------------------------------
-    *****/
-
-    //----------------------------------------
-    // following lines are when you generate gammas from 1 MeV to 100 GeV
-    while(1){
-        // use envelope function in the higher energy range
-        r = engine->flat() * (rand_max_3 - rand_min_3) + rand_min_3;
-        E = primaryCRenvelope3_integral_inv(r, cor, solarPotential);
-      break;
-    }
-    //----------------------------------------
-
-    return E;
-  }
   //============================================================
 
 } // End of noname-namespace: private function definitions.
@@ -272,7 +231,52 @@ std::pair<G4double,G4double> CrGammaPrimary::dir(G4double energy,
 // Gives back particle energy
 G4double CrGammaPrimary::energySrc(HepRandomEngine* engine) const
 {
-  return primaryCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
+
+  G4double rand_min_1 = 
+    primaryCRenvelope1_integral(min(lowE_break, max(m_gammaLowEnergy, lowE_primary)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_1 = 
+    primaryCRenvelope1_integral(max(lowE_primary, min(m_gammaHighEnergy, lowE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_2 =
+    primaryCRenvelope2_integral(min(highE_break, max(m_gammaLowEnergy, lowE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_2 =
+    primaryCRenvelope2_integral(max(lowE_break, min(m_gammaHighEnergy, highE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_3 =
+    primaryCRenvelope3_integral(min(highE_primary, max(m_gammaLowEnergy, highE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_3 =
+    primaryCRenvelope3_integral(max(highE_break, min(m_gammaHighEnergy, highE_primary)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  
+  G4double envelope1_area = rand_max_1 - rand_min_1;
+  G4double envelope2_area = rand_max_2 - rand_min_2;
+  G4double envelope3_area = rand_max_3 - rand_min_3;
+  G4double envelope_area = envelope1_area + envelope2_area + envelope3_area;
+  
+  G4double Ernd,r;
+  G4double E; // E means energy in GeV
+  
+  while(1){
+    Ernd = engine->flat();
+    if (Ernd <= envelope1_area/envelope_area){
+      // use the envelope function in the lower energy range
+      r = engine->flat() * (rand_max_1 - rand_min_1) + rand_min_1;
+      E = primaryCRenvelope1_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    } else if (Ernd <= (envelope1_area + envelope2_area)/envelope_area){
+      // use envelope function in middle energy range
+      r = engine->flat() * (rand_max_2 - rand_min_2) + rand_min_2;
+      E = primaryCRenvelope2_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    } else {
+      // use envelope function in the higher energy range
+      r = engine->flat() * (rand_max_3 - rand_min_3) + rand_min_3;
+      E = primaryCRenvelope3_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    }
+    break;
+  }
+    return E;
 }
 
 
@@ -283,6 +287,41 @@ G4double CrGammaPrimary::energySrc(HepRandomEngine* engine) const
 // "primary", "reentrant" and "splash".
 G4double CrGammaPrimary::flux() const
 {
+
+  G4double rand_min_1 = 
+    primaryCRenvelope1_integral(min(lowE_break, max(m_gammaLowEnergy, lowE_primary)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_1 = 
+    primaryCRenvelope1_integral(max(lowE_primary, min(m_gammaHighEnergy, lowE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_2 =
+    primaryCRenvelope2_integral(min(highE_break, max(m_gammaLowEnergy, lowE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_2 =
+    primaryCRenvelope2_integral(max(lowE_break, min(m_gammaHighEnergy, highE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_3 =
+    primaryCRenvelope3_integral(min(highE_primary, max(m_gammaLowEnergy, highE_break)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_3 =
+    primaryCRenvelope3_integral(max(highE_break, min(m_gammaHighEnergy, highE_primary)), 
+				m_cutOffRigidity, m_solarWindPotential);
+  
+  G4double envelope1_area = rand_max_1 - rand_min_1;
+  G4double envelope2_area = rand_max_2 - rand_min_2;
+  G4double envelope3_area = rand_max_3 - rand_min_3;
+  G4double envelope_area = envelope1_area + envelope2_area + envelope3_area;
+  ENERGY_INTEGRAL_primary = envelope_area;
+
+  /***
+  cout << "m_gammaLowEnergy: " << m_gammaLowEnergy << endl;
+  cout << "m_gammaHighEnergy: " << m_gammaHighEnergy << endl;
+  cout << "envelope1_area: " << envelope1_area << endl;
+  cout << "envelope2_area: " << envelope2_area << endl;
+  cout << "envelope3_area: " << envelope3_area << endl;
+  cout << "envelope_area: " << ENERGY_INTEGRAL_primary << endl;
+  ***/
+
   // We assume that the flux is uniform above the earth horizon.
   // Then the average flux is equal to the vertically downward one.
 

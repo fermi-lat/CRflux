@@ -20,6 +20,8 @@
  * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
  * 2002-05 Modified by T. Mizuno to calculate geomagnetic cutoff rigidity
  *           and solar potential
+ * 2003-12 Modified by T. Mizuno
+ *           user can set lower and upper energy to generate gammas.
  ****************************************************************************
  */
 
@@ -69,11 +71,39 @@ CrSpectrum::CrSpectrum()
   // set the satellite position and calculate geomagnetic position,
   // cut off rigidity and solar modulation potential
   setPosition(m_latitude, m_longitude, m_time, m_altitude); 
+
+  // set lower and upper energy to generate gammas
+  m_gammaLowEnergy = 1.0e-3; // 1 MeV
+  m_gammaHighEnergy = 100.0; // 100 GeV
 }
 
 CrSpectrum::~CrSpectrum()
 {
   ;
+}
+
+void CrSpectrum::setGammaLowEnergy(double ene){ 
+  using std::cout;
+  using std::endl;
+
+  if (ene>m_gammaHighEnergy){
+    cout << "low energy limit to generate gamma should be less than high energy limit of " 
+         << m_gammaHighEnergy << " GeV" << endl;
+    ene = m_gammaHighEnergy;
+  }
+  m_gammaLowEnergy = ene;
+}
+
+void CrSpectrum::setGammaHighEnergy(double ene){ 
+  using std::cout;
+  using std::endl;
+
+  if (ene<m_gammaLowEnergy){
+    cout << "high energy limit to generate gamma should be more than low energy limit of " 
+         << m_gammaLowEnergy << " GeV" << endl;
+    ene = m_gammaLowEnergy;
+  }
+  m_gammaHighEnergy = ene;
 }
 
 // set observation time, which is the elapsed seconds from 
