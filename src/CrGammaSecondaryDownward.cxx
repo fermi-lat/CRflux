@@ -9,10 +9,7 @@
  * generation.
  **************************************************************************
  * This program generates the downward component of CR gamma (2ndary) with
- * proper angular distribution and energy spectrum.
- * The absolute flux and spectrum are assumed 
- * to depend on the geomagnetic cutoff energy (and is fixed for Palestine, 
- * Texas in the current codes). 
+ * proper angular distribution and energy spectrum at Palestine, Texas.
  * We assume that the spectral shape below 10 MeV and above 1 GeV 
  * does not depend on the
  * zenith angle, and express the angular dependence of the 
@@ -20,8 +17,8 @@
  * =======================================
  * relative_flux[c/sr]       theta[rad]
  * ---------------------------------------
- * 1                         0--0.698
- * 0.2067*exp(2.263*theta)   0.698--2.007
+ * 1/cos(theta)              0--pi/3
+ * 0.1676*exp(2.368*theta)   pi/3--2.007
  * 2590.67*exp(-2.441*theta) 2.007--2.443
  * 20/3                      2.443-pi 
  * =======================================
@@ -47,6 +44,7 @@
  * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
  * 2002-01 Modified by T. Mizuno
  *         angular distribution is changed to be original (broader) one.
+ * 2002-05 Angular distribution is modified by T. Mizuno (Hiroshima Univ). 
  **************************************************************************
  */
 
@@ -56,19 +54,17 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrGammaSecondaryDownward.hh"
 
-
-typedef  double G4double;
-
+typedef double G4double;
 
 // Private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // lower and higher energy limit of secondary gamma-ray in units of GeV
   const G4double lowE_downward  = 30.0e-6; // 30 keV
   const G4double highE_downward = 100.0;  // 100 GeV
@@ -79,12 +75,7 @@ namespace {
   // The constant defined below ("ENERGY_INTEGRAL_downward") is the straight 
   // downward (theta=0) flux integrated between lowE_* and highE_*.
   // It must be computed in units of [c/s/m^2/sr] and given here.
-  // ** Change the value  when the COR or force-field potential
-  // are changed.  Current value is for COR = 4.46 [GV] and Phi = 
-  // 1100 [MV], respectively, and lowE_downward and highE_downward are 
-  // set as 
-  // lowE_downward = 30 keV and highE_downward = 1 GeV.
-  // **
+  //
   // Integrated flux of continuum over energy is 2.10e3 [c/s/m^2/sr].
   // We also added 511keV line of intensity = 70.5 [c/s/m^/sr],
   // hence the total integral becomes 2.17e3 [c/s/m^2/sr]
@@ -125,25 +116,25 @@ namespace {
   // 511keV line intensity
   const G4double A_511keV = 70.5;  // [c/s/m^2/sr]
   
-  const double MeVtoGeV = 1e-3;
+  const G4double MeVtoGeV = 1e-3;
 
   // spectral model of low energy component
   inline G4double downwardCRSpec1(G4double E /* GeV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A1_downward * pow(EMeV, -a1_downward);
   }
 
   // envelope function in lower energy
   inline G4double downwardCRenvelope1
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A1_downward * pow(EMeV, -a1_downward);
   }
 
   // integral of envelope function in lower energy
   inline G4double downwardCRenvelope1_integral
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A1_downward/(-a1_downward+1) * pow(EMeV, -a1_downward+1);
   }
 
@@ -157,21 +148,21 @@ namespace {
 
   // spectral model in high energy, power-law component
   inline G4double downwardCRSpec2(G4double E /* GeV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A2_downward * pow(EMeV, -a2_downward);
   }
 
   // envelope function in higher energy
   inline G4double downwardCRenvelope2
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A2_downward * pow(EMeV, -a2_downward);
   }
 
   // integral of envelope function in higher energy
   inline G4double downwardCRenvelope2_integral
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A2_downward/(-a2_downward+1) * 
       pow(EMeV, -a2_downward+1);
   }
@@ -186,7 +177,7 @@ namespace {
 
   // spectral model in high energy, power-law with exponential cutoff
   inline G4double downwardCRSpec3(G4double E /* GeV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A3_downward * pow(EMeV, -a3_downward) *
       exp(-pow(EMeV/Cutoff, -a3_downward+1));
   }
@@ -194,7 +185,7 @@ namespace {
   // envelope function in higher energy
   inline G4double downwardCRenvelope3
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A3_downward * pow(EMeV, -a3_downward) *
       exp(-pow(EMeV/Cutoff, -a3_downward+1));
   }
@@ -202,7 +193,7 @@ namespace {
   // integral of envelope function in higher energy
   inline G4double downwardCRenvelope3_integral
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A3_downward * pow(Cutoff, -a3_downward+1) / (a3_downward-1) *
       exp(-pow(EMeV/Cutoff, -a3_downward+1));
   }
@@ -218,21 +209,21 @@ namespace {
 
   // spectral model of the highest energy component
   inline G4double downwardCRSpec4(G4double E /* GeV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A4_downward * pow(EMeV, -a4_downward);
   }
 
   // envelope function in the highest energy
   inline G4double downwardCRenvelope4
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A4_downward * pow(EMeV, -a4_downward);
   }
 
   // integral of envelope function in the highest energy
   inline G4double downwardCRenvelope4_integral
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A4_downward/(-a4_downward+1) * pow(EMeV, -a4_downward+1);
   }
 
@@ -269,15 +260,17 @@ namespace {
     G4double envelope2_area = rand_max_2 - rand_min_2;
     G4double envelope3_area = rand_max_3 - rand_min_3;
     G4double envelope4_area = rand_max_4 - rand_min_4;
+
     /*****
     G4double envelope_area = envelope1_area + envelope2_area 
                                + envelope3_area +envelope4_area;
     *****/
-    G4double envelope_area = envelope2_area + envelope3_area +envelope4_area;
 
-    double Ernd,r; 
+    G4double Ernd,r; 
     G4double E; // E means energy in GeV
-      // continuum
+    //----------------------------------------
+    // following lines are when you generate gammas from 1 MeV to 100 GeV
+    G4double envelope_area = envelope2_area + envelope3_area +envelope4_area;
     while(1){
       Ernd = engine->flat();
       if (Ernd <= (envelope2_area)/envelope_area){
@@ -294,6 +287,7 @@ namespace {
       }
       break;
     }
+    //----------------------------------------
     return E;
   }
   //============================================================
@@ -318,7 +312,7 @@ CrGammaSecondaryDownward::~CrGammaSecondaryDownward()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<double,double> CrGammaSecondaryDownward::dir(double energy, 
+std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy, 
 					       HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),
@@ -328,47 +322,50 @@ std::pair<double,double> CrGammaSecondaryDownward::dir(double energy,
   // Based on the measurement by Shonfelder et al.,
   // We expressed zenith-angle dependence of the relative_flux [/sr]
   // in low energy region (<10 MeV) as follows;
-  // 1 (0--0.698 [radian], or 0-40[degree])
-  // 0.2067*exp(2.263*theta) (theta=0.698--2.007[rad], or 40--115[degree])
+  // 1/cos(theta) (0--pi/3 [radian], or 0-60[degree])
+  // 0.1676*exp(2.368*theta) (theta=pi/3--2.007[rad], or 60--115[degree])
   // 2590.67*exp(-2.441*theta) (theta=2.007--2.443[rad], or 115--140[degree])
   // 20/3 (2.443-pi[rad], or 140--180[degree])
   // Here, theta=0 means particle going vertically downward,
   // and theta=pi is the particle going vertically upward.
   // Integrals over solid angle become as follows;
-  // 1.47 (theta=0--0.698[rad])
-  // 16.08  (theta=0.698--pi/2[rad])
-  // 32.453 (theta=pi/2--2.007[rad])
+  // 4.355  (theta=0--pi/3[rad])
+  // 12.617 (theta=pi/3--pi/2[rad])
+  // 31.874 (theta=pi/2--2.007[rad])
   // 26.373 (theta=2.007--2.443[rad])
   // 9.811  (theta=2.443--pi[rad])
 
-  double rand = engine->flat();
-  double theta;
-  if (rand*(1.47+16.08)<=1.47){ // from 0 to 0.698 radian
-    theta = acos(1-(engine->flat())*(cos(0)-cos(0.698)));
+  G4double rand = engine->flat();
+  G4double theta;
+  if (rand*(4.355+12.617)<=4.355){ // from 0 to pi/3 radian
+    while(1){
+      theta = acos( cos(M_PI/3)+(engine->flat())*(cos(0)-cos(M_PI/3)) );
+      if ( 2*engine->flat()< (1/cos(theta)) ){break;}
+    }
   } else { 
-    // 0.698 to pi/2 [rad], where the flux [/sr] depends on theta as
+    // pi/3 to pi/2 [rad], where the flux [/sr] depends on theta as
     // a*exp(b*theta)
     while(1){
       // zenith angle distribution: flux[c/s/m^2/sr] is proportional to
       // a*exp(b*theta)
-      double a=0.2067;
-      double b=2.263; 
-      double max = a/b*exp(b*pi/2);
-      double min = a/b*exp(b*0.698);
-      double r = engine->flat() * (max-min) + min;
+      G4double a=0.1676;
+      G4double b=2.368; 
+      G4double max = a/b*exp(b*M_PI/2);
+      G4double min = a/b*exp(b*M_PI/3);
+      G4double r = engine->flat() * (max-min) + min;
       theta = 1/b*log(b*r/a);
       if (engine->flat()<sin (theta)){break;}
     }
   }
   
-  double phi   = engine->flat() * 2 * pi;
+  G4double phi   = engine->flat() * 2 * M_PI;
 
-  return std::pair<double,double>(cos(theta), phi);
+  return std::pair<G4double,G4double>(cos(theta), phi);
 }
 
 
 // Gives back particle energy
-double CrGammaSecondaryDownward::energySrc(HepRandomEngine* engine) const
+G4double CrGammaSecondaryDownward::energySrc(HepRandomEngine* engine) const
 {
   return downwardCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
 }
@@ -378,7 +375,7 @@ double CrGammaSecondaryDownward::energySrc(HepRandomEngine* engine) const
 // and devided by 4pi sr: then the unit is [c/s/m^2/sr].
 // This value is used as relative normalization among 
 // "primary", "secondary downward" and "secondary upward".
-double CrGammaSecondaryDownward::flux() const
+G4double CrGammaSecondaryDownward::flux() const
 {
   // Averaged energy-integrated flux over 4 pi solod angle used 
   // in relative normalizaiotn among "primary", "downward(2ndary)" 
@@ -387,21 +384,21 @@ double CrGammaSecondaryDownward::flux() const
   // (between lowE_downward and highE_downward) at theta=0 
   // (vertically downward).
 
-  // Integral over solid angle from theta=0 to 0.698[rad] 
-  // becomes 1.47*ENERGY_INTEGRAL_downward,
-  // and that from 0.698 to pi/2[rad] becomes
-  // 16.08*ENERGY_INTEGRAL_downward (see comments at a "dir" method).
+  // Integral over solid angle from theta=0 to pi/3[rad] 
+  // becomes 4.355*ENERGY_INTEGRAL_downward,
+  // and that from pi/3 to pi/2[rad] becomes
+  // 12.617*ENERGY_INTEGRAL_downward (see comments at a "dir" method).
   // Hence the total integrated flux becomes
-  // 2.79*2pi*ENERGY_INTEGRAL_downward.
+  // 2.701*2pi*ENERGY_INTEGRAL_downward.
 
   // Integrated over the upper (sky-side) hemisphere and divided by 4pi.
-  return  2.79 * 0.5 * ENERGY_INTEGRAL_downward;  // [c/s/m^2/sr]
+  return  2.701 * 0.5 * ENERGY_INTEGRAL_downward;  // [c/s/m^2/sr]
 }
 
 // Gives back solid angle from which particle comes
-double CrGammaSecondaryDownward::solidAngle() const
+G4double CrGammaSecondaryDownward::solidAngle() const
 {
-  return  2 * pi;
+  return  2 * M_PI;
 }
 
 
@@ -412,57 +409,9 @@ const char* CrGammaSecondaryDownward::particleName() const
 }
 
 
-//
-// "flux" package stuff
-//
-
-float CrGammaSecondaryDownward::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-
-  return (float)energySrc(&engine);
-}
-
-
-double CrGammaSecondaryDownward::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrGammaSecondaryDownward::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrGammaSecondaryDownward::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
+// Gives back the name of the component
 std::string CrGammaSecondaryDownward::title() const
 {
   return  "CrGammaSecondaryDownward";
-}
-
-
-float CrGammaSecondaryDownward::fraction(float energy)
-// This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrGammaSecondaryDownward::dir(float energy) const
-{
-  HepJamesRandom  engine;
-
-  std::pair<double,double>  d = dir(energy, &engine);
-  
-  return  std::pair<float,float>(d.first, d.second);
 }
 

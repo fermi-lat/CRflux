@@ -17,6 +17,13 @@
  * 2001-05 Comments added and unused codes removed by T. Kamae (SLAC)
  * 2001-05 Program checked by T. Kamae and H. Mizushima (Hiroshima)
  * 2001-11 Modified by T. Mizuno to construct a `stand-alone' module
+ *         (User no longer need Geant4 to generate cosmic-ray particles)
+ *         Instead of CosmicRayGeneratorAction of BalloonTestV13, 
+ *         CrGenerator.cxx provides user with an interface 
+ *         to all particle models and is used in end-to-end simulation
+ *         framework of Tune's group. User can alternatively use 
+ *         this CrElectron.cxx to generate cosmic-ray electrons and this class
+ *         is used in CRflux package in SLAC CVS. 
  ****************************************************************************
  */
 
@@ -27,6 +34,7 @@
 #include <vector>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrElectron.hh"
@@ -37,12 +45,10 @@
 #include "CrSpectrum.hh"
 
 // define a factory for anonomous instantiation
-#include "FluxSvc/ISpectrumFactory.h"
+// Comment-out the next line when importing into the CRflux package.
+//#include "FluxSvc/ISpectrumFactory.h"
 
-typedef  double G4double;
-namespace{
-  const G4double pi    = 3.14159265358979323846264339;
-}
+typedef double G4double;
 
 // Constructor. Includes each component
 CrElectron::CrElectron(const std::string& paramstring)
@@ -57,7 +63,7 @@ CrElectron::CrElectron(const std::string& paramstring)
   if(flag& 1) m_subComponents.push_back(new CrElectronPrimary);
   if(flag& 2) m_subComponents.push_back(new CrElectronReentrant);
   if(flag& 4) m_subComponents.push_back(new CrElectronSplash);
-  
+
   m_engine = new HepJamesRandom;
 }
 
@@ -75,8 +81,8 @@ CrElectron::~CrElectron()
 // Gives back component in the ratio of the flux
 CrSpectrum* CrElectron::selectComponent()
 {
-  std::map<CrSpectrum*,double>       integ_flux;
-  double                             total_flux = 0;
+  std::map<CrSpectrum*,G4double> integ_flux;
+  G4double                       total_flux = 0;
   std::vector<CrSpectrum*>::iterator i;
 
   // calculate the total flux 
@@ -85,7 +91,7 @@ CrSpectrum* CrElectron::selectComponent()
     integ_flux[*i] = total_flux;
   }
   // select component based on the flux
-  double  rnum = m_engine->flat() * total_flux;
+  G4double  rnum = m_engine->flat() * total_flux;
   for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
     if (integ_flux[*i] >= rnum) { break; }
   }
@@ -97,7 +103,7 @@ CrSpectrum* CrElectron::selectComponent()
 
 
 // Gives back energy
-double CrElectron::energy(double time)
+G4double CrElectron::energy(G4double time)
 {
   selectComponent();
   return m_component->energySrc(m_engine);
@@ -105,7 +111,7 @@ double CrElectron::energy(double time)
 
 
 // Gives back paticle direction in cos(theta) and phi[rad]
-std::pair<double,double> CrElectron::dir(double energy)
+std::pair<G4double,G4double> CrElectron::dir(G4double energy)
 {
   if (!m_component){ selectComponent(); }
 
@@ -114,7 +120,7 @@ std::pair<double,double> CrElectron::dir(double energy)
 
 
 // Gives back the total flux (summation of each component's flux)
-G4double CrElectron::flux(double time) const
+G4double CrElectron::flux(G4double time) const
 {
   G4double          total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
@@ -127,11 +133,34 @@ G4double CrElectron::flux(double time) const
 // Gives back solid angle from which particles come
 G4double CrElectron::solidAngle() const
 {
-  return 4 * pi;
+  return 4 * M_PI;
 }
 
-// Gives back the interval to the next event
-G4double CrElectron::interval(double time){
+// print out the information of each component
+void CrElectron::dump()
+{
+  std::vector<CrSpectrum*>::const_iterator i;
+  for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
+    cout << "title: " << (*i)->title() << endl;
+    cout << " flux(c/s/m^2/sr)= " << (*i)->flux() << endl;
+    cout << " geographic latitude/longitude(deg)= " 
+         << (*i)->latitude() << " " << (*i)->longitude() << endl;
+    cout << " geomagnetic latitude/longitude(deg)= " 
+         << (*i)->geomagneticLatitude() << " " 
+         << (*i)->geomagneticLongitude() << endl;
+    cout << " time(s)= " << (*i)->time() 
+         << " altitude(km)= " << (*i)->altitude() << endl;
+    cout << " cor(GV)= " << (*i)->cutOffRigidity() 
+         << " phi(MV)= " << (*i)->solarWindPotential() << endl;
+  }
+}
+
+// Gives back the interval to the next event.
+// If interval(time) is negative, FluxSvc will call
+// flux(time) to determine the average flux for that time
+// and calculate the arrival time for the next particle using
+// the poission distribution.
+G4double CrElectron::interval(G4double time){
   return -1.0;
 }
 
@@ -145,3 +174,5 @@ void CrElectron::parseParamList(std::string input, std::vector<float>& output)
     input= input.substr(i+1);
   } 
 }
+
+

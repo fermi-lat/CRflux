@@ -15,6 +15,13 @@
  * 2001-07 Written by Y. Fukazawa (Hiroshima Univ.)
  * 2001-10 Modified by T. Mizuno and Y. Fukazawa
  * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
+ *         (User no longer need Geant4 to generate cosmic-ray particles)
+ *         Instead of CosmicRayGeneratorAction of BalloonTestV13, 
+ *         CrGenerator.cxx provides user with an interface 
+ *         to all particle models and is used in end-to-end simulation
+ *         framework of Tune's group. User can alternatively use 
+ *         this CrPositron.cxx to generate cosmic-ray positrons and this class
+ *         is used in CRflux package in SLAC CVS. 
  ****************************************************************************
  */
 
@@ -25,6 +32,7 @@
 #include <vector>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrPositron.hh"
@@ -35,12 +43,10 @@
 #include "CrSpectrum.hh"
 
 // define a factory for anonomous instantiation
-#include "FluxSvc/ISpectrumFactory.h"
+// Comment-out the next line when importing into the CRflux package.
+//#include "FluxSvc/ISpectrumFactory.h"
 
-typedef  double G4double;
-namespace{
-  const G4double pi    = 3.14159265358979323846264339;
-}
+typedef double G4double;
 
 // Constructor. Includes each component
 CrPositron::CrPositron(const std::string& paramstring)
@@ -55,7 +61,7 @@ CrPositron::CrPositron(const std::string& paramstring)
   if(flag& 1) m_subComponents.push_back(new CrPositronPrimary);
   if(flag& 2) m_subComponents.push_back(new CrPositronReentrant);
   if(flag& 4) m_subComponents.push_back(new CrPositronSplash);
-  
+
   m_engine = new HepJamesRandom;
 }
 
@@ -73,8 +79,8 @@ CrPositron::~CrPositron()
 // Gives back component in the ratio of the flux
 CrSpectrum* CrPositron::selectComponent()
 {
-  std::map<CrSpectrum*,double>       integ_flux;
-  double                             total_flux = 0;
+  std::map<CrSpectrum*,G4double> integ_flux;
+  G4double                       total_flux = 0;
   std::vector<CrSpectrum*>::iterator i;
 
   // calculate the total flux 
@@ -83,7 +89,7 @@ CrSpectrum* CrPositron::selectComponent()
     integ_flux[*i] = total_flux;
   }
   // select component based on the flux
-  double  rnum = m_engine->flat() * total_flux;
+  G4double  rnum = m_engine->flat() * total_flux;
   for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
     if (integ_flux[*i] >= rnum) { break; }
   }
@@ -95,7 +101,7 @@ CrSpectrum* CrPositron::selectComponent()
 
 
 // Gives back energy
-double CrPositron::energy(double time)
+G4double CrPositron::energy(G4double time)
 {
   selectComponent();
   return m_component->energySrc(m_engine);
@@ -103,7 +109,7 @@ double CrPositron::energy(double time)
 
 
 // Gives back paticle direction in cos(theta) and phi[rad]
-std::pair<double,double> CrPositron::dir(double energy)
+std::pair<G4double,G4double> CrPositron::dir(G4double energy)
 {
   if (!m_component){ selectComponent(); }
 
@@ -112,7 +118,7 @@ std::pair<double,double> CrPositron::dir(double energy)
 
 
 // Gives back the total flux (summation of each component's flux)
-G4double CrPositron::flux(double time) const
+G4double CrPositron::flux(G4double time) const
 {
   G4double          total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
@@ -125,11 +131,34 @@ G4double CrPositron::flux(double time) const
 // Gives back solid angle from whick particles come
 G4double CrPositron::solidAngle() const
 {
-  return 4 * pi;
+  return 4 * M_PI;
+}
+
+// print out the information of each component
+void CrPositron::dump()
+{
+  std::vector<CrSpectrum*>::const_iterator i;
+  for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
+    cout << "title: " << (*i)->title() << endl;
+    cout << " flux(c/s/m^2/sr)= " << (*i)->flux() << endl;
+    cout << " geographic latitude/longitude(deg)= " 
+         << (*i)->latitude() << " " << (*i)->longitude() << endl;
+    cout << " geomagnetic latitude/longitude(deg)= " 
+         << (*i)->geomagneticLatitude() << " " 
+         << (*i)->geomagneticLongitude() << endl;
+    cout << " time(s)= " << (*i)->time() 
+         << " altitude(km)= " << (*i)->altitude() << endl;
+    cout << " cor(GV)= " << (*i)->cutOffRigidity() 
+         << " phi(MV)= " << (*i)->solarWindPotential() << endl;
+  }
 }
 
 // Gives back the interval to the next event
-G4double CrPositron::interval(double time){
+// If interval(time) is negative, FluxSvc will call
+// flux(time) to determine the average flux for that time
+// and calculate the arrival time for the next particle using
+// the poission distribution.
+G4double CrPositron::interval(G4double time){
   return -1.0;
 }
 
@@ -143,4 +172,3 @@ void CrPositron::parseParamList(std::string input, std::vector<float>& output)
     input= input.substr(i+1);
   } 
 }
-

@@ -13,7 +13,14 @@
  * cosmic-ray gamma generators.
  **************************************************************************
  * 2001-07 Written by Y. Fukazawa (Hiroshima Univ)
- * 2001-12 Modified by T. Mizuno in order to construct a `stand-alone' module
+ * 2001-12 Modified by T. Mizuno in order to construct a `stand-alone' module.
+ *         (User no longer need Geant4 to generate cosmic-ray particles)
+ *         Instead of CosmicRayGeneratorAction of BalloonTestV13, 
+ *         CrGenerator.cxx provides user with an interface 
+ *         to all particle models and is used in end-to-end simulation
+ *         framework of Tune's group. User can alternatively use 
+ *         this CrGamma.cxx to generate cosmic-ray gammas and this class
+ *         is used in CRflux package in SLAC CVS. 
  ****************************************************************************
  */
 
@@ -24,6 +31,7 @@
 #include <vector>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrGamma.hh"
@@ -34,12 +42,10 @@
 #include "CrSpectrum.hh"
 
 // define a factory for anonomous instantiation
-#include "FluxSvc/ISpectrumFactory.h"
+// Comment-out the next line when importing into the CRflux package.
+//#include "FluxSvc/ISpectrumFactory.h"
 
-typedef  double G4double;
-namespace{
-  const G4double pi    = 3.14159265358979323846264339;
-}
+typedef double G4double;
 
 
 // Constructor. Includes each component
@@ -53,9 +59,9 @@ CrGamma::CrGamma(const std::string& paramstring)
   int flag = params.empty() || params[0]==0 ? 7 : params[0];
   // including each component if it is present in the bit field...
   if(flag& 1) m_subComponents.push_back(new CrGammaPrimary);
-  if(flag& 2) m_subComponents.push_back(new CrGammaSecondaryUpward);
-  if(flag& 4) m_subComponents.push_back(new CrGammaSecondaryDownward);
-  
+  if(flag& 2) m_subComponents.push_back(new CrGammaSecondaryDownward);
+  if(flag& 4) m_subComponents.push_back(new CrGammaSecondaryUpward);
+
   m_engine = new HepJamesRandom;
 }
 
@@ -73,8 +79,8 @@ CrGamma::~CrGamma()
 // Gives back component in the ratio of the flux
 CrSpectrum* CrGamma::selectComponent()
 {
-  std::map<CrSpectrum*,double>       integ_flux;
-  double                             total_flux = 0;
+  std::map<CrSpectrum*,G4double> integ_flux;
+  G4double                       total_flux = 0;
   std::vector<CrSpectrum*>::iterator i;
 
   // calculate the total flux 
@@ -83,7 +89,7 @@ CrSpectrum* CrGamma::selectComponent()
     integ_flux[*i] = total_flux;
   }
   // select component based on the flux
-  double  rnum = m_engine->flat() * total_flux;
+  G4double  rnum = m_engine->flat() * total_flux;
   for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
     if (integ_flux[*i] >= rnum) { break; }
   }
@@ -95,7 +101,7 @@ CrSpectrum* CrGamma::selectComponent()
 
 
 // Gives back energy
-double CrGamma::energy(double time)
+G4double CrGamma::energy(G4double time)
 {
   selectComponent();
   return m_component->energySrc(m_engine);
@@ -103,7 +109,7 @@ double CrGamma::energy(double time)
 
 
 // Gives back paticle direction in cos(theta) and phi[rad]
-std::pair<double,double> CrGamma::dir(double energy)
+std::pair<G4double,G4double> CrGamma::dir(G4double energy)
 {
   if (!m_component){ selectComponent(); }
 
@@ -112,7 +118,7 @@ std::pair<double,double> CrGamma::dir(double energy)
 
 
 // Gives back the total flux (summation of each component's flux)
-G4double CrGamma::flux(double time) const
+G4double CrGamma::flux(G4double time) const
 {
   G4double          total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
@@ -125,11 +131,34 @@ G4double CrGamma::flux(double time) const
 // Gives back solid angle from whick particles come
 G4double CrGamma::solidAngle() const
 {
-  return 4 * pi;
+  return 4 * M_PI;
 }
 
-// Gives back the interval to the next event
-G4double CrGamma::interval(double time){
+// print out the information of each component
+void CrGamma::dump()
+{
+  std::vector<CrSpectrum*>::const_iterator i;
+  for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
+    cout << "title: " << (*i)->title() << endl;
+    cout << " flux(c/s/m^2/sr)= " << (*i)->flux() << endl;
+    cout << " geographic latitude/longitude(deg)= " 
+         << (*i)->latitude() << " " << (*i)->longitude() << endl;
+    cout << " geomagnetic latitude/longitude(deg)= " 
+         << (*i)->geomagneticLatitude() << " " 
+         << (*i)->geomagneticLongitude() << endl;
+    cout << " time(s)= " << (*i)->time() 
+         << " altitude(km)= " << (*i)->altitude() << endl;
+    cout << " cor(GV)= " << (*i)->cutOffRigidity() 
+         << " phi(MV)= " << (*i)->solarWindPotential() << endl;
+  }
+}
+
+// Gives back the interval to the next event.
+// If interval(time) is negative, FluxSvc will call
+// flux(time) to determine the average flux for that time
+// and calculate the arrival time for the next particle using
+// the poission distribution.
+G4double CrGamma::interval(G4double time){
   return -1.0;
 }
 

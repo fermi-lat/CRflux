@@ -49,18 +49,9 @@ public:
   // Gives back particle name
   const char* particleName() const;
 
-  //
-  // "flux" package stuff
-  //
-  /// r in [0,1)
-  float operator()(float r);
-  double calculate_rate(double old_rate);
-  float flux(float latitude, float longitude) const;
-  float flux(std::pair<double,double> coords) const;
+  // Gives back the name of the component
   std::string title() const;
-  /// fraction function doesn't work in this class... :-(
-  float fraction(float energy);
-  std::pair<float,float> dir(float energy) const;
+
 };
 #endif // CrElectronPrimary_H
 

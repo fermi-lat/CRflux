@@ -49,19 +49,17 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrProtonPrimary.hh"
 
-
-typedef  double G4double;
-
+typedef double G4double;
 
 // private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // rest energy (rest mass) of proton in units of GeV
   const G4double restE = 0.938;
 
@@ -100,7 +98,7 @@ namespace {
    *    mod_spec(E, phi) = org_spec(E+phi*1e-3) * 
    *     ((E+restE)**2 - restE**2)/((E+restE+phi*1e-3)**2-restE**2)
    *    org_spec(E) = A * rigidity(E)**-a
-   *      A = 16.9 and a = 2.79
+   *      A = 23.9 and a = 2.83
    *    rigidity(E) = sqrt((E+restE)**2 - restE**2)
    *    beta(E) = sqrt(1 - (E/restE+1)**-2)
    *    geomag_cut(E, CutOff) = 1/(1 + (rigidity(E)/CutOff)**-12.0)
@@ -380,7 +378,7 @@ std::pair<double,double> CrProtonPrimary::dir(double energy,
   // the theta distribution should be sin(theta) for a constant theta width.
 
   double theta = acos(engine->flat());
-  double phi   = engine->flat() * 2 * pi;
+  double phi   = engine->flat() * 2 * M_PI;
 
   return std::pair<double,double>(cos(theta), phi);
 }
@@ -446,7 +444,7 @@ double CrProtonPrimary::flux() const
 // Gives back solid angle from which particle comes
 double CrProtonPrimary::solidAngle() const
 {
-  return  2 * pi;
+  return  2 * M_PI;
 }
 
 
@@ -457,53 +455,10 @@ const char* CrProtonPrimary::particleName() const
 }
 
 
-float CrProtonPrimary::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-
-  return (float)energySrc(&engine);
-}
-
-
-double CrProtonPrimary::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrProtonPrimary::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrProtonPrimary::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
+// Gives back the name of the component
 std::string CrProtonPrimary::title() const
 {
   return  "CrProtonPrimary";
 }
 
-
-float CrProtonPrimary::fraction(float energy)
-// This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrProtonPrimary::dir(float energy) const
-{
-  HepJamesRandom  engine;
-
-  std::pair<double,double>  d = dir(energy, &engine);
-  
-  return  std::pair<float,float>(d.first, d.second);
-}
 

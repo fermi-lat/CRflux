@@ -28,6 +28,11 @@
 #include "CrSpectrum.hh"
 #include <iostream>
 
+// CLHEP
+#include <CLHEP/config/CLHEP.h>
+
+typedef double G4double;
+
 CrSpectrum::CrSpectrum()
 {
   // earth radius in km
@@ -268,5 +273,4 @@ double CrSpectrum::solarWindPotential() const
 {
   return m_solarWindPotential;
 }
-
 

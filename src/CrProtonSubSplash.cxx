@@ -14,17 +14,17 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrProtonSubSplash.hh"
 
-typedef  double G4double;
+typedef double G4double;
 
 // private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // rest energy (rest mass) of proton in units of GeV
   const G4double restE = 0.938;
   // lower and higher energy limit of secondary proton in units of GeV
@@ -35,8 +35,8 @@ namespace {
   // cutoff power-law function: A*E^-a*exp(-E/cut)
 
   // The spectral model: cutoff power-law
-  inline double cutOffPowSpec
-  (double norm, double index, double cutOff, double E /* GeV */){
+  inline G4double cutOffPowSpec
+  (G4double norm, G4double index, G4double cutOff, G4double E /* GeV */){
     return norm * pow(E, -index) * exp(-E/cutOff);
   }
   
@@ -44,14 +44,14 @@ namespace {
   // Random numbers are generated to this envelope function for
   // whose integral the inverse function can be found.  The final one 
   // is obtained by throwing away some random picks of energy.
-  inline double envelopeCutOffPowSpec
-  (double norm, double index, double E /* GeV */){
+  inline G4double envelopeCutOffPowSpec
+  (G4double norm, G4double index, G4double E /* GeV */){
     return norm * pow(E, -index);
   }
   
   // integral of the envelope function of cutoff power-law
-  inline double envelopeCutOffPowSpec_integral
-  (double norm, double index, double E /* GeV */){
+  inline G4double envelopeCutOffPowSpec_integral
+  (G4double norm, G4double index, G4double E /* GeV */){
     if (index==1){
       return norm*log(E);
     } else {
@@ -60,8 +60,8 @@ namespace {
   }
   
   // inverse function of the integral of the envelope
-  inline double envelopeCutOffPowSpec_integral_inv
-  (double norm, double index, double value){
+  inline G4double envelopeCutOffPowSpec_integral_inv
+  (G4double norm, G4double index, G4double value){
     if (index==1){
       return exp(value/norm);
     } else {
@@ -74,21 +74,21 @@ namespace {
   // cutoff power-law function: A*E^-a*exp(-(E/cut)^(-a+1)))
 
   // The spectral model:
-  inline double cutOffPowSpec2
-  (double norm, double index, double cutOff, double E /* GeV */){
+  inline G4double cutOffPowSpec2
+  (G4double norm, G4double index, G4double cutOff, G4double E /* GeV */){
     return norm * pow(E, -index) * exp(-pow(E/cutOff, -index+1));
   }
   
   // integral of the envelope function of cutoff power-law
-  inline double cutOffPowSpec2_integral
-  (double norm, double index, double cutOff, double E /* GeV */){
+  inline G4double cutOffPowSpec2_integral
+  (G4double norm, G4double index, G4double cutOff, G4double E /* GeV */){
     return norm * pow(cutOff, -index+1)/(index-1) *
       exp(-pow(E/cutOff, -index+1));
   }
   
   // inverse function of the integral
-  inline double cutOffPowSpec2_integral_inv
-  (double norm, double index, double cutOff, double value){
+  inline G4double cutOffPowSpec2_integral_inv
+  (G4double norm, G4double index, G4double cutOff, G4double value){
     return cutOff * pow(-log( (index-1)*value/(norm*pow(cutOff, -index+1)) ), 
 			1./(-index+1));
   }
@@ -98,14 +98,14 @@ namespace {
   // power-law
   
   // The spectral model: power law
-  inline double powSpec
-  (double norm, double index, double E /* GeV */){
+  inline G4double powSpec
+  (G4double norm, G4double index, G4double E /* GeV */){
     return norm * pow(E, -index);
   }
   
   // integral of the power-law
-  inline double powSpec_integral
-  (double norm, double index, double E /* GeV */){
+  inline G4double powSpec_integral
+  (G4double norm, G4double index, G4double E /* GeV */){
     if (index==1){
       return norm * log(E);
     } else {
@@ -114,8 +114,8 @@ namespace {
   }
   
   // inverse function of the integral of the power-law
-  inline double powSpec_integral_inv
-  (double norm, double index, double value){
+  inline G4double powSpec_integral_inv
+  (G4double norm, G4double index, G4double value){
     if (index==1){
       return exp(value/norm);
     } else {
@@ -164,23 +164,23 @@ CrProtonSplash_0002::~CrProtonSplash_0002()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0002::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0002::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, breakE);
-  double rand_min_B = 
+  G4double rand_min_B = 
     envelopeCutOffPowSpec_integral(B_splash, b_splash, breakE);
-  double rand_max_B = 
+  G4double rand_max_B = 
     envelopeCutOffPowSpec_integral(B_splash, b_splash, highE_splash);
   
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double spec_area = specA_area + specB_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double spec_area = specA_area + specB_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   while(1){
     rnd = engine->flat();
@@ -203,7 +203,7 @@ double CrProtonSplash_0002::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0002::upwardFlux(){
+G4double CrProtonSplash_0002::upwardFlux(){
   return 97.21;
 }
 //------------------------------------------------------------
@@ -250,28 +250,28 @@ CrProtonSplash_0203::~CrProtonSplash_0203()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0203::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0203::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, lowE_break);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_splash, b_splash, lowE_break);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_splash, b_splash, highE_break);
-  double rand_min_C = 
+  G4double rand_min_C = 
     powSpec_integral(C_splash, c_splash, highE_break);
-  double rand_max_C = 
+  G4double rand_max_C = 
     powSpec_integral(C_splash, c_splash, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double specC_area = rand_max_C - rand_min_C;
-  double spec_area = specA_area + specB_area + specC_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double spec_area = specA_area + specB_area + specC_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -291,7 +291,7 @@ double CrProtonSplash_0203::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0203::upwardFlux(){
+G4double CrProtonSplash_0203::upwardFlux(){
   return 48.63;
 }
 //------------------------------------------------------------
@@ -332,23 +332,23 @@ CrProtonSplash_0304::~CrProtonSplash_0304()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0304::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0304::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, breakE);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_splash, b_splash, breakE);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_splash, b_splash, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double spec_area = specA_area + specB_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double spec_area = specA_area + specB_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -364,7 +364,7 @@ double CrProtonSplash_0304::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0304::upwardFlux(){
+G4double CrProtonSplash_0304::upwardFlux(){
   return 42.56;
 }
 //------------------------------------------------------------
@@ -411,28 +411,28 @@ CrProtonSplash_0405::~CrProtonSplash_0405()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0405::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0405::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, lowE_break);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_splash, b_splash, lowE_break);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_splash, b_splash, highE_break);
-  double rand_min_C = 
+  G4double rand_min_C = 
     powSpec_integral(C_splash, c_splash, highE_break);
-  double rand_max_C = 
+  G4double rand_max_C = 
     powSpec_integral(C_splash, c_splash, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double specC_area = rand_max_C - rand_min_C;
-  double spec_area = specA_area + specB_area + specC_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double spec_area = specA_area + specB_area + specC_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -452,7 +452,7 @@ double CrProtonSplash_0405::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0405::upwardFlux(){
+G4double CrProtonSplash_0405::upwardFlux(){
   return 41.31;
 }
 //------------------------------------------------------------
@@ -499,28 +499,28 @@ CrProtonSplash_0506::~CrProtonSplash_0506()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0506::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0506::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, lowE_break);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_splash, b_splash, lowE_break);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_splash, b_splash, highE_break);
-  double rand_min_C = 
+  G4double rand_min_C = 
     powSpec_integral(C_splash, c_splash, highE_break);
-  double rand_max_C = 
+  G4double rand_max_C = 
     powSpec_integral(C_splash, c_splash, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double specC_area = rand_max_C - rand_min_C;
-  double spec_area = specA_area + specB_area + specC_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double spec_area = specA_area + specB_area + specC_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -540,7 +540,7 @@ double CrProtonSplash_0506::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0506::upwardFlux(){
+G4double CrProtonSplash_0506::upwardFlux(){
   return 39.02;
 }
 //------------------------------------------------------------
@@ -581,23 +581,23 @@ CrProtonSplash_0607::~CrProtonSplash_0607()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0607::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0607::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, breakE);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_splash, b_splash, breakE);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_splash, b_splash, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double spec_area = specA_area + specB_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double spec_area = specA_area + specB_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -613,7 +613,7 @@ double CrProtonSplash_0607::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0607::upwardFlux(){
+G4double CrProtonSplash_0607::upwardFlux(){
   return 48.05;
 }
 //------------------------------------------------------------
@@ -655,23 +655,23 @@ CrProtonSplash_0708::~CrProtonSplash_0708()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0708::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0708::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, breakE);
-  double rand_min_B = 
+  G4double rand_min_B = 
     cutOffPowSpec2_integral(B_splash, b_splash, cutOff, breakE);
-  double rand_max_B = 
+  G4double rand_max_B = 
     cutOffPowSpec2_integral(B_splash, b_splash, cutOff, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double spec_area = specA_area + specB_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double spec_area = specA_area + specB_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -687,7 +687,7 @@ double CrProtonSplash_0708::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0708::upwardFlux(){
+G4double CrProtonSplash_0708::upwardFlux(){
   return 71.52;
 }
 //------------------------------------------------------------
@@ -729,23 +729,23 @@ CrProtonSplash_0809::~CrProtonSplash_0809()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0809::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0809::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, breakE);
-  double rand_min_B = 
+  G4double rand_min_B = 
     cutOffPowSpec2_integral(B_splash, b_splash, cutOff, breakE);
-  double rand_max_B = 
+  G4double rand_max_B = 
     cutOffPowSpec2_integral(B_splash, b_splash, cutOff, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double spec_area = specA_area + specB_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double spec_area = specA_area + specB_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -761,7 +761,7 @@ double CrProtonSplash_0809::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0809::upwardFlux(){
+G4double CrProtonSplash_0809::upwardFlux(){
   return 118.46;
 }
 //------------------------------------------------------------
@@ -803,23 +803,23 @@ CrProtonSplash_0910::~CrProtonSplash_0910()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-double CrProtonSplash_0910::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0910::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_splash, a_splash, breakE);
-  double rand_min_B = 
+  G4double rand_min_B = 
     cutOffPowSpec2_integral(B_splash, b_splash, cutOff, breakE);
-  double rand_max_B = 
+  G4double rand_max_B = 
     cutOffPowSpec2_integral(B_splash, b_splash, cutOff, highE_splash);
 
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double spec_area = specA_area + specB_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double spec_area = specA_area + specB_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   rnd = engine->flat();
   if (rnd <= specA_area / spec_area){
@@ -835,7 +835,7 @@ double CrProtonSplash_0910::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrProtonSplash_0910::upwardFlux(){
+G4double CrProtonSplash_0910::upwardFlux(){
   return 246.24;
 }
 //------------------------------------------------------------

@@ -14,17 +14,17 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrElectronSubReentrant.hh"
 
-typedef  double G4double;
+typedef double G4double;
 
 // private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // rest energy (rest mass) of electron in units of GeV
   const G4double restE = 5.11e-4;
   // lower and higher energy limit of secondary electron in units of GeV
@@ -35,8 +35,8 @@ namespace {
   // cutoff power-law function: A*E^-a*exp(-E/cut)
 
   // The spectral model: cutoff power-law
-  inline double cutOffPowSpec
-  (double norm, double index, double cutOff, double E /* GeV */){
+  inline G4double cutOffPowSpec
+  (G4double norm, G4double index, G4double cutOff, G4double E /* GeV */){
     return norm * pow(E, -index) * exp(-E/cutOff);
   }
   
@@ -44,14 +44,14 @@ namespace {
   // Random numbers are generated to this envelope function for
   // whose integral the inverse function can be found.  The final one 
   // is obtained by throwing away some random picks of energy.
-  inline double envelopeCutOffPowSpec
-  (double norm, double index, double E /* GeV */){
+  inline G4double envelopeCutOffPowSpec
+  (G4double norm, G4double index, G4double E /* GeV */){
     return norm * pow(E, -index);
   }
   
   // integral of the envelope function of cutoff power-law
-  inline double envelopeCutOffPowSpec_integral
-  (double norm, double index, double E /* GeV */){
+  inline G4double envelopeCutOffPowSpec_integral
+  (G4double norm, G4double index, G4double E /* GeV */){
     if (index==1){
       return norm*log(E);
     } else {
@@ -60,8 +60,8 @@ namespace {
   }
   
   // inverse function of the integral of the envelope
-  inline double envelopeCutOffPowSpec_integral_inv
-  (double norm, double index, double value){
+  inline G4double envelopeCutOffPowSpec_integral_inv
+  (G4double norm, G4double index, G4double value){
     if (index==1){
       return exp(value/norm);
     } else {
@@ -74,21 +74,21 @@ namespace {
   // cutoff power-law function: A*E^-a*exp(-(E/cut)^(-a+1)))
 
   // The spectral model:
-  inline double cutOffPowSpec2
-  (double norm, double index, double cutOff, double E /* GeV */){
+  inline G4double cutOffPowSpec2
+  (G4double norm, G4double index, G4double cutOff, G4double E /* GeV */){
     return norm * pow(E, -index) * exp(-pow(E/cutOff, -index+1));
   }
   
   // integral of the cutoff power-law
-  inline double cutOffPowSpec2_integral
-  (double norm, double index, double cutOff, double E /* GeV */){
+  inline G4double cutOffPowSpec2_integral
+  (G4double norm, G4double index, G4double cutOff, G4double E /* GeV */){
     return norm * pow(cutOff, -index+1)/(index-1) *
       exp(-pow(E/cutOff, -index+1));
   }
   
   // inverse function of the integral
-  inline double cutOffPowSpec2_integral_inv
-  (double norm, double index, double cutOff, double value){
+  inline G4double cutOffPowSpec2_integral_inv
+  (G4double norm, G4double index, G4double cutOff, G4double value){
     return cutOff * pow(-log( (index-1)*value/(norm*pow(cutOff, -index+1)) ), 
 			1./(-index+1));
   }
@@ -98,14 +98,14 @@ namespace {
   // power-law
   
   // The spectral model: power law
-  inline double powSpec
-  (double norm, double index, double E /* GeV */){
+  inline G4double powSpec
+  (G4double norm, G4double index, G4double E /* GeV */){
     return norm * pow(E, -index);
   }
   
   // integral of the power-law
-  inline double powSpec_integral
-  (double norm, double index, double E /* GeV */){
+  inline G4double powSpec_integral
+  (G4double norm, G4double index, G4double E /* GeV */){
     if (index==1){
       return norm * log(E);
     } else {
@@ -114,8 +114,8 @@ namespace {
   }
   
   // inverse function of the integral of the power-law
-  inline double powSpec_integral_inv
-  (double norm, double index, double value){
+  inline G4double powSpec_integral_inv
+  (G4double norm, G4double index, G4double value){
     if (index==1){
       return exp(value/norm);
     } else {
@@ -173,33 +173,33 @@ CrElectronReentrant_0003::~CrElectronReentrant_0003()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-double CrElectronReentrant_0003::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0003::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_reent, a_reent, lowE_break);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_reent, b_reent, lowE_break);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_reent, b_reent, highE_break);
-  double rand_min_C1 = 
+  G4double rand_min_C1 = 
     powSpec_integral(C1_reent, c1_reent, highE_break);
-  double rand_max_C1 = 
+  G4double rand_max_C1 = 
     powSpec_integral(C1_reent, c1_reent, highE_reent);
-  double rand_min_C2 = 
+  G4double rand_min_C2 = 
     cutOffPowSpec2_integral(C2_reent, c2_reent, cutOff, highE_break);
-  double rand_max_C2 = 
+  G4double rand_max_C2 = 
     cutOffPowSpec2_integral(C2_reent, c2_reent, cutOff, highE_reent);
   
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double specC1_area = rand_max_C1 - rand_min_C1;
-  double specC2_area = rand_max_C2 - rand_min_C2;
-  double spec_area = specA_area + specB_area + specC1_area + specC2_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC1_area = rand_max_C1 - rand_min_C1;
+  G4double specC2_area = rand_max_C2 - rand_min_C2;
+  G4double spec_area = specA_area + specB_area + specC1_area + specC2_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   while(1){
     rnd = engine->flat();
@@ -229,7 +229,7 @@ double CrElectronReentrant_0003::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrElectronReentrant_0003::downwardFlux(){
+G4double CrElectronReentrant_0003::downwardFlux(){
   return 91.93;
 }
 //------------------------------------------------------------
@@ -274,28 +274,28 @@ CrElectronReentrant_0306::~CrElectronReentrant_0306()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-double CrElectronReentrant_0306::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0306::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_reent, a_reent, breakE);
-  double rand_min_B1 = 
+  G4double rand_min_B1 = 
     powSpec_integral(B1_reent, b1_reent, breakE);
-  double rand_max_B1 = 
+  G4double rand_max_B1 = 
     powSpec_integral(B1_reent, b1_reent, highE_reent);
-  double rand_min_B2 = 
+  G4double rand_min_B2 = 
     cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, breakE);
-  double rand_max_B2 = 
+  G4double rand_max_B2 = 
     cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, highE_reent);
   
-  double specA_area = rand_max_A - rand_min_A;
-  double specB1_area = rand_max_B1 - rand_min_B1;
-  double specB2_area = rand_max_B2 - rand_min_B2;
-  double spec_area = specA_area + specB1_area + specB2_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB1_area = rand_max_B1 - rand_min_B1;
+  G4double specB2_area = rand_max_B2 - rand_min_B2;
+  G4double spec_area = specA_area + specB1_area + specB2_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   while(1){
     rnd = engine->flat();
@@ -320,7 +320,7 @@ double CrElectronReentrant_0306::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrElectronReentrant_0306::downwardFlux(){
+G4double CrElectronReentrant_0306::downwardFlux(){
   return 89.26;
 }
 //------------------------------------------------------------
@@ -365,28 +365,28 @@ CrElectronReentrant_0608::~CrElectronReentrant_0608()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-double CrElectronReentrant_0608::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0608::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_reent, a_reent, breakE);
-  double rand_min_B1 = 
+  G4double rand_min_B1 = 
     powSpec_integral(B1_reent, b1_reent, breakE);
-  double rand_max_B1 = 
+  G4double rand_max_B1 = 
     powSpec_integral(B1_reent, b1_reent, highE_reent);
-  double rand_min_B2 = 
+  G4double rand_min_B2 = 
     cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, breakE);
-  double rand_max_B2 = 
+  G4double rand_max_B2 = 
     cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, highE_reent);
   
-  double specA_area = rand_max_A - rand_min_A;
-  double specB1_area = rand_max_B1 - rand_min_B1;
-  double specB2_area = rand_max_B2 - rand_min_B2;
-  double spec_area = specA_area + specB1_area + specB2_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB1_area = rand_max_B1 - rand_min_B1;
+  G4double specB2_area = rand_max_B2 - rand_min_B2;
+  G4double spec_area = specA_area + specB1_area + specB2_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   while(1){
     rnd = engine->flat();
@@ -411,7 +411,7 @@ double CrElectronReentrant_0608::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrElectronReentrant_0608::downwardFlux(){
+G4double CrElectronReentrant_0608::downwardFlux(){
   return 123.84;
 }
 //------------------------------------------------------------
@@ -456,28 +456,28 @@ CrElectronReentrant_0809::~CrElectronReentrant_0809()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-double CrElectronReentrant_0809::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0809::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_reent, a_reent, breakE);
-  double rand_min_B1 = 
+  G4double rand_min_B1 = 
     powSpec_integral(B1_reent, b1_reent, breakE);
-  double rand_max_B1 = 
+  G4double rand_max_B1 = 
     powSpec_integral(B1_reent, b1_reent, highE_reent);
-  double rand_min_B2 = 
+  G4double rand_min_B2 = 
     cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, breakE);
-  double rand_max_B2 = 
+  G4double rand_max_B2 = 
     cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, highE_reent);
   
-  double specA_area = rand_max_A - rand_min_A;
-  double specB1_area = rand_max_B1 - rand_min_B1;
-  double specB2_area = rand_max_B2 - rand_min_B2;
-  double spec_area = specA_area + specB1_area + specB2_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB1_area = rand_max_B1 - rand_min_B1;
+  G4double specB2_area = rand_max_B2 - rand_min_B2;
+  G4double spec_area = specA_area + specB1_area + specB2_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   while(1){
     rnd = engine->flat();
@@ -502,7 +502,7 @@ double CrElectronReentrant_0809::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrElectronReentrant_0809::downwardFlux(){
+G4double CrElectronReentrant_0809::downwardFlux(){
   return 73.13;
 }
 //------------------------------------------------------------
@@ -550,28 +550,28 @@ CrElectronReentrant_0910::~CrElectronReentrant_0910()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-double CrElectronReentrant_0910::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0910::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_reent, a_reent, lowE_break);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_reent, b_reent, lowE_break);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_reent, b_reent, highE_break);
-  double rand_min_C = 
+  G4double rand_min_C = 
     envelopeCutOffPowSpec_integral(C_reent, c_reent, highE_break);
-  double rand_max_C = 
+  G4double rand_max_C = 
     envelopeCutOffPowSpec_integral(C_reent, c_reent, highE_reent);
   
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double specC_area = rand_max_C - rand_min_C;
-  double spec_area = specA_area + specB_area + specC_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double spec_area = specA_area + specB_area + specC_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   while(1){
     rnd = engine->flat();
@@ -599,7 +599,7 @@ double CrElectronReentrant_0910::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrElectronReentrant_0910::downwardFlux(){
+G4double CrElectronReentrant_0910::downwardFlux(){
   return 120.73;
 }
 //------------------------------------------------------------
@@ -640,23 +640,23 @@ CrElectronReentrant_1011::~CrElectronReentrant_1011()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-double CrElectronReentrant_1011::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_1011::energy(HepRandomEngine* engine){
 
-  double rand_min_A = 
+  G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
-  double rand_max_A = 
+  G4double rand_max_A = 
     powSpec_integral(A_reent, a_reent, breakE);
-  double rand_min_B = 
+  G4double rand_min_B = 
     powSpec_integral(B_reent, b_reent, breakE);
-  double rand_max_B = 
+  G4double rand_max_B = 
     powSpec_integral(B_reent, b_reent, highE_reent);
   
-  double specA_area = rand_max_A - rand_min_A;
-  double specB_area = rand_max_B - rand_min_B;
-  double spec_area = specA_area + specB_area;
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double spec_area = specA_area + specB_area;
 
-  double r, E; // E means energy in GeV
-  double rnd;
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
   
   while(1){
     rnd = engine->flat();
@@ -676,7 +676,7 @@ double CrElectronReentrant_1011::energy(HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-double CrElectronReentrant_1011::downwardFlux(){
+G4double CrElectronReentrant_1011::downwardFlux(){
   return 187.45;
 }
 //------------------------------------------------------------

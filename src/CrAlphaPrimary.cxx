@@ -39,19 +39,17 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrAlphaPrimary.hh"
 
-
-typedef  double G4double;
-
+typedef double G4double;
 
 // private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // rest energy of alpha particle in units of GeV
   const G4double restE = 3.72;
 
@@ -64,9 +62,8 @@ namespace {
   // cutoff-rigidity. The value is set also in constructor and 
   // when the satellite position is set.
   G4double cutE_primary;
-
+  // atomic number of alpha particle
   const G4double z_alpha = 2.0;
-
 
   // gives back v/c as a function of kinetic Energy
   inline G4double beta(G4double E /* GeV */){
@@ -109,7 +106,7 @@ namespace {
    *  CutOff: calculated as (Rc/GV) = 14.9 * (1+h/R)^-2 * (cos(theta_M))^4,
    *          where h is the altitude from earth surface, 
    *                R is the mean radius of earth,
-   *            and theta_M is geomagnetic lattitude. 
+   *                and theta_M is geomagnetic lattitude. 
    *          References:
    *          "Handbook of space astronomy and astrophysics" 2nd edition, p225 
    *            (Zombeck, 1990, Cambridge University Press)
@@ -218,7 +215,7 @@ namespace {
     G4double envelope1_area = rand_max_1 - rand_min_1;
     G4double envelope2_area = rand_max_2 - rand_min_2;
 
-    double r, E; // E means energy in GeV
+    G4double r, E; // E means energy in GeV
     while(1){
       if (engine->flat() <= envelope1_area/(envelope1_area + envelope2_area)){
         // Use the envelop function in the lower energy range
@@ -254,26 +251,23 @@ namespace {
   // COR = 0.5, 1, 2, ..., 15 [GV]
   // phi = 500, 600, ..., 1100 [MV]
   G4double integral_array[16][7] = {
-    {321.7, 269.0, 229.5, 199.1, 174.4, 154.5, 138.1}, // COR = 0.5GV
-    {294.1, 250.1, 216.0, 188.9, 166.9, 148.7, 133.5}, // COR = 1 GV
-    {203.9, 181.2, 162.3, 146.2, 132.4, 120.6, 110.2}, // COR = 2 GV
-    {136.9, 125.3, 115.2, 106.2, 98.2, 91.1, 84.7}, // COR = 3 GV
-    {96.0, 89.5, 83.7, 78.3, 73.5, 69.1, 65.0}, // COR = 4 GV
-    {70.6, 66.6, 63.0, 59.6, 56.5, 53.6, 50.9}, // COR = 5 GV
-    {54.0, 51.4, 48.9, 46.7, 44.5, 42.5, 40.7}, // COR = 6 GV
-    {42.5, 40.7, 39.0, 37.4, 35.9, 34.5, 33.2}, // COR = 7 GV
-    {34.4, 33.1, 31.8, 30.7, 29.6, 28.5, 27.5}, // COR = 8 GV
-    {28.3, 27.4, 26.4, 25.5, 24.7, 23.9, 23.1}, // COR = 9 GV
-    {23.7, 23.0, 22.3, 21.6, 20.9, 20.3, 19.7}, // COR = 10 GV
-    {20.1, 19.5, 19.0, 18.5, 17.9, 17.4, 17.0}, // COR = 11 GV
-    {17.3, 16.8, 16.4, 15.9, 15.5, 15.1, 14.7}, // COR = 12 GV
-    {15.0, 14.6, 14.2, 13.9, 13.5, 13.2, 12.9}, // COR = 13 GV
-    {13.1, 12.8, 12.5, 12.2, 11.9, 11.6, 11.4}, // COR = 14 GV
-    {11.5, 11.2, 11.0, 10.7, 10.5, 10.3, 10.1} // COR = 15 GV
+    {323.1, 270.4, 230.9, 200.5, 175.8, 155.9, 139.9}, // COR = 0.5GV
+    {295.5, 251.5, 217.4, 190.3, 168.3, 150.1, 134.9}, // COR = 1 GV
+    {205.3, 182.6, 163.7, 147.6, 131.8, 121.9, 111.6}, // COR = 2 GV
+    {138.3, 126.7, 116.6, 107.6, 99.6, 92.4, 86.1}, // COR = 3 GV
+    {97.4, 91.0, 85.1, 79.7, 75.0, 70.5, 66.4}, // COR = 4 GV
+    {72.0, 68.0, 64.4, 61.0, 57.9, 55.0, 52.7}, // COR = 5 GV
+    {55.4, 52.8, 50.3, 48.1, 45.9, 43.9, 42.1}, // COR = 6 GV
+    {44.0, 42.2, 40.5, 38.8, 37.3, 35.9, 34.5}, // COR = 7 GV
+    {35.8, 34.5, 33.3, 32.1, 31.0, 29.0, 28.9}, // COR = 8 GV
+    {29.7, 28.8, 27.8, 27.0, 26.1, 25.3, 24.5}, // COR = 9 GV
+    {25.1, 24.4, 23.8, 23.0, 22.3, 21.7, 21.1}, // COR = 10 GV
+    {21.6, 21.0, 20.4, 19.9, 19.3, 18.8, 18.3}, // COR = 11 GV
+    {18.7, 18.2, 17.8, 17.3, 16.9, 16.5, 16.1}, // COR = 12 GV
+    {16.4, 16.0, 15.6, 15.3, 14.9, 14.6, 14.3}, // COR = 13 GV
+    {14.5, 14.2, 13.9, 13.6, 13.3, 13.0, 12.7}, // COR = 14 GV
+    {12.9, 12.6, 12.4, 12.1, 11.9, 11.6, 11.4} // COR = 15 GV
   };
-  
-
-
   //============================================================
 
 } // End of noname-namespace: private function definitions.
@@ -303,7 +297,7 @@ CrAlphaPrimary::~CrAlphaPrimary()
 
 // Set satellite position and calculate energies related to COR.
 // These energies will be used to generate particles.
-void CrAlphaPrimary::setPosition(double latitude, double longitude){
+void CrAlphaPrimary::setPosition(G4double latitude, G4double longitude){
   CrSpectrum::setPosition(latitude, longitude);
 
   // Set lower and higher energy limit of the primary alpha (GeV).
@@ -319,7 +313,7 @@ void CrAlphaPrimary::setPosition(double latitude, double longitude){
 // Set satellite position and calculate energies related to COR.
 // These energies will be used to generate particles.
 void CrAlphaPrimary::setPosition
-(double latitude, double longitude, double time){
+(G4double latitude, G4double longitude, G4double time){
   CrSpectrum::setPosition(latitude, longitude, time);
 
   // Set lower and higher energy limit of the primary alpha (GeV).
@@ -335,7 +329,8 @@ void CrAlphaPrimary::setPosition
 // Set satellite position and calculate energies related to COR.
 // These energies will be used to generate particles.
 void CrAlphaPrimary::
-setPosition(double latitude, double longitude, double time, double altitude){
+setPosition(G4double latitude, G4double longitude, 
+	    G4double time, G4double altitude){
   CrSpectrum::setPosition(latitude, longitude, time, altitude);
 
   // Set lower and higher energy limit of the primary alpha (GeV).
@@ -350,7 +345,7 @@ setPosition(double latitude, double longitude, double time, double altitude){
 
 // Set geomagnetic cutoff rigidity and calculate the energies related.
 // These energies are used to generate the particle. 
-void CrAlphaPrimary::setCutOffRigidity(double cor){
+void CrAlphaPrimary::setCutOffRigidity(G4double cor){
   CrSpectrum::setCutOffRigidity(cor);
 
   // Set lower and higher energy limit of the primary alpha (GeV).
@@ -364,7 +359,7 @@ void CrAlphaPrimary::setCutOffRigidity(double cor){
 }
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<double,double> CrAlphaPrimary::dir(double energy, 
+std::pair<G4double,G4double> CrAlphaPrimary::dir(G4double energy, 
                                               HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),
@@ -375,15 +370,15 @@ std::pair<double,double> CrAlphaPrimary::dir(double energy,
   // After integration over the azimuth angle (phi), 
   // the theta distribution should be sin(theta) for a constant theta width.
 
-  double theta = acos(engine->flat());
-  double phi   = engine->flat() * 2 * pi;
+  G4double theta = acos(engine->flat());
+  G4double phi   = engine->flat() * 2 * M_PI;
 
-  return std::pair<double,double>(cos(theta), phi);
+  return std::pair<G4double,G4double>(cos(theta), phi);
 }
 
 
 // Gives back particle energy
-double CrAlphaPrimary::energySrc(HepRandomEngine* engine) const
+G4double CrAlphaPrimary::energySrc(HepRandomEngine* engine) const
 {
   return primaryCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
 }
@@ -393,7 +388,7 @@ double CrAlphaPrimary::energySrc(HepRandomEngine* engine) const
 // and devided by 4pi sr: then the unit is [c/s/m^2/sr].
 // This value is used as relative normalization among
 // "primary", "reentrant" and "splash".
-double CrAlphaPrimary::flux() const
+G4double CrAlphaPrimary::flux() const
 {
   // Straight downward (theta=0) flux integrated over energy,
   // given by integral_array[16][7]
@@ -441,9 +436,9 @@ double CrAlphaPrimary::flux() const
 }
 
 // Gives back solid angle from which particle comes
-double CrAlphaPrimary::solidAngle() const
+G4double CrAlphaPrimary::solidAngle() const
 {
-  return  2 * pi;
+  return  2 * M_PI;
 }
 
 
@@ -454,53 +449,10 @@ const char* CrAlphaPrimary::particleName() const
 }
 
 
-float CrAlphaPrimary::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-
-  return (float)energySrc(&engine);
-}
-
-
-double CrAlphaPrimary::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrAlphaPrimary::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrAlphaPrimary::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
+// Gives back the name of the component
 std::string CrAlphaPrimary::title() const
 {
-  return  "CrAlphaPrimary";
+  return "CrAlphaPrimary";
 }
 
-
-float CrAlphaPrimary::fraction(float energy)
-  // This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrAlphaPrimary::dir(float energy) const
-{
-  HepJamesRandom  engine;
-
-  std::pair<double,double>  d = dir(energy, &engine);
-  
-  return  std::pair<float,float>(d.first, d.second);
-}
 

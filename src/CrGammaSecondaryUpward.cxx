@@ -20,8 +20,8 @@
  * =======================================
  * relative_flux[c/sr]       theta[rad]
  * ---------------------------------------
- * 1                         0--0.698
- * 0.2067*exp(2.263*theta)   0.698--2.007
+ * 1/cos(theta)              0--pi/3
+ * 0.1676*exp(2.368*theta)   pi/3--2.007
  * 2590.67*exp(-2.441*theta) 2.007--2.443
  * 20/3                      2.443-pi 
  * =======================================
@@ -46,6 +46,7 @@
  * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
  * 2002-01 Modified by T. Mizuno
  *         angular distribution is changed to be original (broader) one.
+ * 2002-05 Angular distribution is modified by T. Mizuno (Hiroshima Univ). 
  **************************************************************************
  */
 
@@ -54,6 +55,7 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
@@ -61,12 +63,11 @@
 #include "CrGammaSecondaryUpward.hh"
 
 
-typedef  double G4double;
+typedef double G4double;
 
 
 // Private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // lower and higher energy limit of secondary gamma-ray in units of GeV
   const G4double lowE_upward  = 30.0e-6; // 30 keV
   const G4double highE_upward = 100.0; // 100 GeV
@@ -77,12 +78,7 @@ namespace {
   // The constant defined below ("ENERGY_INTEGRAL_upward") is the straight 
   // upward (theta=pi) flux integrated between lowE_* and highE_*.
   // It must be computed in units of [c/s/m^2/sr] and given here.
-  // ** Change the value  when the COR or force-field potential
-  // are changed.  Current value is for COR = 4.46 [GV] and Phi = 
-  // 1100 [MV], respectively, and lowE_upward and highE_upward are 
-  // set as 
-  // lowE_upward = 30 keV and highE_upward = 100 GeV.
-  // **
+  //
   // Integrated flux of continuum is 1.36e4 [c/s/m^2/sr].
   // We also added 511keV line of intensity = 470[c/s/m^/sr],
   // hence the total integral becomes 1.41e4 [c/s/m^2/sr]
@@ -227,13 +223,16 @@ namespace {
     G4double envelope1_area = rand_max_1 - rand_min_1;
     G4double envelope2_area = rand_max_2 - rand_min_2;
     G4double envelope3_area = rand_max_3 - rand_min_3;
+
     /*****
     G4double envelope_area = envelope1_area + envelope2_area + envelope3_area;
     *****/
-    G4double envelope_area = envelope2_area + envelope3_area;
 
     double Ernd,r; // E means energy in GeV
     G4double E;
+    //----------------------------------------
+    // following lines are when you generate gammas from 1 MeV to 100 GeV
+    G4double envelope_area = envelope2_area + envelope3_area;
     while(1){
       Ernd = engine->flat();
       if (Ernd <= (envelope2_area)/envelope_area){
@@ -247,6 +246,7 @@ namespace {
       }
       break;
     }
+    //----------------------------------------
     return E;
   }
   //============================================================
@@ -271,7 +271,7 @@ CrGammaSecondaryUpward::~CrGammaSecondaryUpward()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<double,double> CrGammaSecondaryUpward::dir(double energy, 
+std::pair<G4double,G4double> CrGammaSecondaryUpward::dir(G4double energy, 
 					       HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The upward has plus sign in cos(theta),
@@ -281,57 +281,56 @@ std::pair<double,double> CrGammaSecondaryUpward::dir(double energy,
   // Based on the measurement by Shonfelder et al.,
   // We expressed zenith-angle dependence of the relative_flux [/sr]
   // in low energy region (<10 MeV) as follows;
-  // 1 (0--0.698 [radian], or 0-40[degree])
-  // 0.2067*exp(2.263*theta) (theta=0.698--2.007[rad], or 40--115[degree])
+  // 1/cos(theta) (0--pi/3 [radian], or 0-60[degree])
+  // 0.1676*exp(2.368*theta) (theta=pi/3--2.007[rad], or 60--115[degree])
   // 2590.67*exp(-2.441*theta) (theta=2.007--2.443[rad], or 115--140[degree])
   // 20/3 (2.443-pi[rad], or 140--180[degree])
   // Here, theta=0 means particle going vertically downward,
   // and theta=pi is the particle going vertically upward.
   // Integrals over solid angle become as follows;
-  // 1.47 (theta=0--0.698[rad])
-  // 16.08  (theta=0.698--pi/2[rad])
-  // 32.453 (theta=pi/2--2.007[rad])
+  // 4.355  (theta=0--pi/3[rad])
+  // 12.617 (theta=pi/3--pi/2[rad])
+  // 31.874 (theta=pi/2--2.007[rad])
   // 26.373 (theta=2.007--2.443[rad])
   // 9.811  (theta=2.443--pi[rad])
 
-  double rand = engine->flat();
-  double theta;
-  if (rand*(32.453+26.373+9.811)<=9.811){ // from 140 to 180 deg.
-    theta = acos(-1+(engine->flat())*(cos(2.443)-cos(pi)));
+  G4double rand = engine->flat();
+  G4double theta;
+  if (rand*(31.874+26.373+9.811)<=9.811){ // from 140 to 180 deg.
+    theta = acos(-1+(engine->flat())*(cos(2.443)-cos(M_PI)));
   }
   // pi/2 to 2.443 [rad], where the flux [/sr] depends on theta as
   // a*exp(b*theta)
-  else if (rand*(32.453+26.373+9.811)<=(26.373+9.811)){ 
-    double a=2590.67;
-    double b=-2.441; 
+  else if (rand*(31.874+26.373+9.811)<=(26.373+9.811)){ 
+    G4double a=2590.67;
+    G4double b=-2.441; 
     while(1){
-      double max = a/b*exp(b*2.443);
-      double min = a/b*exp(b*2.007);
-      double r = engine->flat() * (max-min) + min;
+      G4double max = a/b*exp(b*2.443);
+      G4double min = a/b*exp(b*2.007);
+      G4double r = engine->flat() * (max-min) + min;
       theta = 1/b*log(b*r/a);
       if (engine->flat()<sin (theta)){break;}
     }
   } else {
-    double a=0.2067;
-    double b=2.263; 
+    G4double a=0.1676;
+    G4double b=2.368; 
     while(1){
-      double max = a/b*exp(b*2.007);
-      double min = a/b*exp(b*pi/2);
-      double r = engine->flat() * (max-min) + min;
+      G4double max = a/b*exp(b*2.007);
+      G4double min = a/b*exp(b*M_PI/2);
+      G4double r = engine->flat() * (max-min) + min;
       theta = 1/b*log(b*r/a);
       if (engine->flat()<sin (theta)){break;}
     }
   }
 
-  //  double theta = acos(engine->flat());
-  double phi   = engine->flat() * 2 * pi;
+  G4double phi   = engine->flat() * 2 * M_PI;
 
-  return std::pair<double,double>(cos(theta), phi);
+  return std::pair<G4double,G4double>(cos(theta), phi);
 }
 
 
 // Gives back particle energy
-double CrGammaSecondaryUpward::energySrc(HepRandomEngine* engine) const
+G4double CrGammaSecondaryUpward::energySrc(HepRandomEngine* engine) const
 {
   return upwardCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
 }
@@ -341,7 +340,7 @@ double CrGammaSecondaryUpward::energySrc(HepRandomEngine* engine) const
 // and devided by 4pi sr: then the unit is [c/s/m^2/sr].
 // This value is used as relative normalization among 
 // "primary", "secondary downward" and "secondary upward".
-double CrGammaSecondaryUpward::flux() const
+G4double CrGammaSecondaryUpward::flux() const
 {
   // Averaged energy-integrated flux over 4 pi solod angle used 
   // in relative normalizaiotn among "primary", "downward(2ndary)" 
@@ -351,22 +350,22 @@ double CrGammaSecondaryUpward::flux() const
   // (vertically upward).
 
   // Integral over solid angle from theta=pi/2 to 2.007[rad] 
-  // becomes 4.868*ENERGY_INTEGRAL_upward,
+  // becomes 4.781*ENERGY_INTEGRAL_upward,
   // that from 2.007 to 2.443 becomes
   // 3.955*ENERGY_INTEGRAL_upward,
   // and that from 2.443 to pi becomes
   // 1.471*ENERGY_INTEGRAL_upward (see comments at a "dir" method).
   // Hence the total integrated flux becomes
-  // 1.64*2pi*ENERGY_INTEGRAL_upward.
+  // 1.62*2pi*ENERGY_INTEGRAL_upward.
 
   // Integrated over the lower (earth-side) hemisphere and divided by 4pi.
-  return  1.64 * 0.5 * ENERGY_INTEGRAL_upward;  // [c/s/m^2/sr]
+  return  1.62 * 0.5 * ENERGY_INTEGRAL_upward;  // [c/s/m^2/sr]
 }
 
 // Gives back solid angle from which particle comes
-double CrGammaSecondaryUpward::solidAngle() const
+G4double CrGammaSecondaryUpward::solidAngle() const
 {
-  return  2 * pi;
+  return  2 * M_PI;
 }
 
 
@@ -377,58 +376,10 @@ const char* CrGammaSecondaryUpward::particleName() const
 }
 
 
-//
-// "flux" package stuff
-//
-
-float CrGammaSecondaryUpward::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-
-  return (float)energySrc(&engine);
-}
-
-
-double CrGammaSecondaryUpward::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrGammaSecondaryUpward::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrGammaSecondaryUpward::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
+// Gives back the name of the component
 std::string CrGammaSecondaryUpward::title() const
 {
   return  "CrGammaSecondaryUpward";
-}
-
-
-float CrGammaSecondaryUpward::fraction(float energy)
-// This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrGammaSecondaryUpward::dir(float energy) const
-{
-  HepJamesRandom  engine;
-
-  std::pair<double,double>  d = dir(energy, &engine);
-  
-  return  std::pair<float,float>(d.first, d.second);
 }
 
 

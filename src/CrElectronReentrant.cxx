@@ -49,6 +49,7 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
@@ -57,11 +58,10 @@
 #include "CrElectronSubReentrant.hh"
 
 
-typedef  double G4double;
+typedef double G4double;
 
 // private function definitions.
 namespace {
-  const G4double pi    = 3.14159265358979323846264339;
   const G4double restE = 5.11e-4; // rest energy of electron in [GeV]
 
   // gives back v/c as a function of kinetic Energy
@@ -127,8 +127,8 @@ CrElectronReentrant::~CrElectronReentrant()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<double,double> CrElectronReentrant::dir
-(double energy, HepRandomEngine* engine) const
+std::pair<G4double,G4double> CrElectronReentrant::dir
+(G4double energy, HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
@@ -145,22 +145,22 @@ std::pair<double,double> CrElectronReentrant::dir
    *   "A Review of Cosmic-Ray Albedo Studies: 1949-1970" (1 + 0.6 sin(theta))
    */
 
-  double theta;
+  G4double theta;
   while (1){
     theta = acos(engine->flat());
     if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
   }
 
-  double phi = engine->flat() * 2 * pi;
+  G4double phi = engine->flat() * 2 * M_PI;
 
-  return std::pair<double,double>(cos(theta), phi);
+  return std::pair<G4double,G4double>(cos(theta), phi);
 }
 
 
 // Gives back particle energy
-double CrElectronReentrant::energySrc(HepRandomEngine* engine) const
+G4double CrElectronReentrant::energySrc(HepRandomEngine* engine) const
 {
-  double r1, r2;
+  G4double r1, r2;
   if (m_geomagneticLatitude*M_PI/180.0<0.15){
     return crElectronReentrant_0003->energy(engine);
   } else if (m_geomagneticLatitude*M_PI/180.0>=0.15 && m_geomagneticLatitude*M_PI/180.0<0.45){
@@ -214,14 +214,14 @@ double CrElectronReentrant::energySrc(HepRandomEngine* engine) const
 // and devided by 4pi sr: then the unit is [c/s/m^2/sr].
 // This value is used as relative normalization among 
 // "primary", "reentrant" and "splash".
-double CrElectronReentrant::flux() const
+G4double CrElectronReentrant::flux() const
 {
   // Averaged energy-integrated flux over 4 pi solod angle used 
   // in relative normalizaiotn among "primary", "reentrant" and "splash".
 
   // energy integrated vertically downward flux, [c/s/m^2/sr]
-  double downwardFlux; 
-  double r1, r2;
+  G4double downwardFlux; 
+  G4double r1, r2;
   if (m_geomagneticLatitude*M_PI/180.0<0.15){
     downwardFlux = crElectronReentrant_0003->downwardFlux();
   } else if (m_geomagneticLatitude*M_PI/180.0>=0.15 && m_geomagneticLatitude*M_PI/180.0<0.45){
@@ -256,16 +256,16 @@ double CrElectronReentrant::flux() const
   // We have assumed that the flux is proportional to 1+0.6 sin(theta)
   // Then, the flux integrated over solid angle is
   // (1+0.15pi)*downwardFlux*2pi
-  return 0.5 * (1 + 0.15*pi) * downwardFlux; // [c/s/m^2/sr]
+  return 0.5 * (1 + 0.15*M_PI) * downwardFlux; // [c/s/m^2/sr]
 
 
 }
 
 
 // Gives back solid angle from which particle comes
-double CrElectronReentrant::solidAngle() const
+G4double CrElectronReentrant::solidAngle() const
 {
-  return 2 * pi;
+  return 2 * M_PI;
 }
 
 
@@ -275,56 +275,11 @@ const char* CrElectronReentrant::particleName() const
   return "e-";
 }
 
-//
-// "flux" package stuff
-//
 
-float CrElectronReentrant::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-
-  return (float)energySrc(&engine);
-}
-
-
-double CrElectronReentrant::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrElectronReentrant::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrElectronReentrant::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
+// Gives back the name of the component
 std::string CrElectronReentrant::title() const
 {
   return  "CrElectronReentrant";
 }
 
 
-float CrElectronReentrant::fraction(float energy)
-  // This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrElectronReentrant::dir(float energy) const
-{
-  HepJamesRandom  engine;
-
-  std::pair<double,double>  d = dir(energy, &engine);
-
-  return  std::pair<float,float>(d.first, d.second);
-}

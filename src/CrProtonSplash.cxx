@@ -52,6 +52,7 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
@@ -60,12 +61,11 @@
 #include "CrProtonSubSplash.hh"
 
 
-typedef  double G4double;
+typedef double G4double;
 
 
 // private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // rest energy (rest mass) of proton in units of GeV
   const G4double restE = 0.938;
 
@@ -145,9 +145,9 @@ std::pair<double,double> CrProtonSplash::dir(double energy,
     theta = acos(engine->flat()); // theta is from 0 to pi/2
     if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
   }
-  theta = pi - theta;
+  theta = M_PI - theta;
 
-  double phi = engine->flat() * 2 * pi;
+  double phi = engine->flat() * 2 * M_PI;
 
   return std::pair<double,double>(cos(theta), phi);
 }
@@ -291,7 +291,7 @@ double CrProtonSplash::flux() const
   // We have assumed that the flux is proportional to 1+0.6 sin(theta)
   // Then, the flux integrated over solid angle is
   // (1+0.15pi)*upwardFlux*2pi
-  return 0.5 * (1 + 0.15*pi) * upwardFlux; // [c/s/m^2/sr]
+  return 0.5 * (1 + 0.15*M_PI) * upwardFlux; // [c/s/m^2/sr]
 
 }
 
@@ -299,7 +299,7 @@ double CrProtonSplash::flux() const
 // Gives back solid angle from which particle comes
 double CrProtonSplash::solidAngle() const
 {
-  return 2 * pi;
+  return 2 * M_PI;
 }
 
 
@@ -310,53 +310,9 @@ const char* CrProtonSplash::particleName() const
 }
 
 
-float CrProtonSplash::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-  
-  return (float)energySrc(&engine);
-}
-
-
-double CrProtonSplash::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrProtonSplash::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrProtonSplash::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
+// Gives back the name of the component
 std::string CrProtonSplash::title() const
 {
   return  "CrProtonSplash";
-}
-
-
-float CrProtonSplash::fraction(float energy)
-// This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrProtonSplash::dir(float energy) const
-{
-  HepJamesRandom  engine;
-
-  std::pair<double,double>  d = dir(energy, &engine);
-    
-  return  std::pair<float,float>(d.first, d.second);
 }
 

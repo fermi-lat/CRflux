@@ -39,19 +39,18 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrGammaPrimary.hh"
 
-
-typedef  double G4double;
+typedef double G4double;
 
 
 // private function definitions.
 namespace {
-  const G4double pi = 3.14159265358979323846264339;
   // lower and higher energy limit of primary gamma-ray in units of GeV
   const G4double lowE_primary  = 30.0e-6; // 30 keV
   const G4double highE_primary = 100.0; // 100 GeV
@@ -74,7 +73,7 @@ namespace {
    * 570.8*(E/MeV)^-1.86 (30-50keV)    [c/s/m^2/sr/MeV]
    *  40.0*(E/MeV)^-2.75 (50keV-1MeV)  [c/s/m^2/sr/MeV]
    *  40.0*(E/MeV)^-2.15 (1MeV-100GeV) [c/s/m^2/sr/MeV]
-   * For more detail, see reports by Y. Fukazawa.
+   * For more detail, see reports by T. Mizuno.
    */
 
   // normalization of incident spectrum
@@ -86,12 +85,12 @@ namespace {
   const G4double a2_primary = 2.75; 
   const G4double a3_primary = 2.15; 
 
-  const double MeVtoGeV = 1e-3;
+  const G4double MeVtoGeV = 1e-3;
 
   // The model function of CR primary gamma
   inline G4double primaryCRspec
   (G4double E /* GeV */, G4double cor /* GV */, G4double phi /* MV */){
-    double Aflux,EMeV;
+    G4double Aflux,EMeV;
     EMeV = E*1e3;
     if ( EMeV < lowE_break ) {
       Aflux = A1_primary * pow(EMeV, -a1_primary);
@@ -107,14 +106,14 @@ namespace {
   // envelope function in lower energy
   inline G4double primaryCRenvelope1
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A1_primary * pow(EMeV, -a1_primary);
   }
 
   // integral of envelope function in lower energy
   inline G4double primaryCRenvelope1_integral
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3 ;
+    G4double EMeV = E*1e3 ;
     return A1_primary/(-a1_primary+1) * pow(EMeV, -a1_primary+1);
   }
 
@@ -129,14 +128,14 @@ namespace {
   // envelope function in middle energy
   inline G4double primaryCRenvelope2
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A2_primary * pow(EMeV, -a2_primary);
   }
 
   // integral of envelope function in middle energy
   inline G4double primaryCRenvelope2_integral
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A2_primary/(-a2_primary+1) * pow(EMeV, -a2_primary+1);
   }
 
@@ -151,14 +150,14 @@ namespace {
   // envelope function in higher energy
   inline G4double primaryCRenvelope3
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A3_primary * pow(EMeV, -a3_primary);
   }
 
   // integral of envelope function in higher energy
   inline G4double primaryCRenvelope3_integral
   (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
-    double EMeV = E*1e3;
+    G4double EMeV = E*1e3;
     return A3_primary/(-a3_primary+1) * pow(EMeV, -a3_primary+1);
   }
 
@@ -191,9 +190,12 @@ namespace {
     G4double envelope3_area = rand_max_3 - rand_min_3;
     G4double envelope_area = envelope1_area + envelope2_area + envelope3_area;
 
-    double Ernd, r; 
+    G4double Ernd, r; 
     G4double E; // E means energy in GeV
+
     /*****
+    //----------------------------------------
+    // following lines are when you generate gammas from 30 keV to 100 GeV
     while(1){
       Ernd = engine->flat();
       if (Ernd <= envelope1_area/envelope_area){
@@ -211,13 +213,19 @@ namespace {
       }
       break;
     }
+    //----------------------------------------
     *****/
+
+    //----------------------------------------
+    // following lines are when you generate gammas from 1 MeV to 100 GeV
     while(1){
         // use envelope function in the higher energy range
         r = engine->flat() * (rand_max_3 - rand_min_3) + rand_min_3;
         E = primaryCRenvelope3_integral_inv(r, cor, solarPotential);
       break;
     }
+    //----------------------------------------
+
     return E;
   }
   //============================================================
@@ -242,7 +250,7 @@ CrGammaPrimary::~CrGammaPrimary()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<double,double> CrGammaPrimary::dir(double energy, 
+std::pair<G4double,G4double> CrGammaPrimary::dir(G4double energy, 
 					     HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),
@@ -253,15 +261,15 @@ std::pair<double,double> CrGammaPrimary::dir(double energy,
   // After integration over the azimuth angle (phi), 
   // the theta distribution should be sin(theta) for a constant theta width.
 
-  double theta = acos(engine->flat());
-  double phi   = engine->flat() * 2 * pi;
+  G4double theta = acos(engine->flat());
+  G4double phi   = engine->flat() * 2 * M_PI;
 
-  return std::pair<double,double>(cos(theta), phi);
+  return std::pair<G4double,G4double>(cos(theta), phi);
 }
 
 
 // Gives back particle energy
-double CrGammaPrimary::energySrc(HepRandomEngine* engine) const
+G4double CrGammaPrimary::energySrc(HepRandomEngine* engine) const
 {
   return primaryCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
 }
@@ -271,7 +279,7 @@ double CrGammaPrimary::energySrc(HepRandomEngine* engine) const
 // and devided by 4pi sr: then the unit is [c/s/m^2/sr].
 // This value is used as relative normalization among 
 // "primary", "secondary downward" and "secondary upward".
-double CrGammaPrimary::flux() const
+G4double CrGammaPrimary::flux() const
 {
   // Averaged energy-integrated flux over 4 pi solod angle used 
   // in relative normalizaiotn among "primary", "downward(2ndary)" 
@@ -284,9 +292,9 @@ double CrGammaPrimary::flux() const
 }
 
 // Gives back solid angle from which particle comes
-double CrGammaPrimary::solidAngle() const
+G4double CrGammaPrimary::solidAngle() const
 {
-  return  2 * pi;
+  return  2 * M_PI;
 }
 
 
@@ -297,57 +305,9 @@ const char* CrGammaPrimary::particleName() const
 }
 
 
-//
-// "flux" package stuff
-//
-
-float CrGammaPrimary::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-
-  return (float)energySrc(&engine);
-}
-
-
-double CrGammaPrimary::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrGammaPrimary::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrGammaPrimary::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
 std::string CrGammaPrimary::title() const
 {
   return  "CrGammaPrimary";
 }
 
-
-float CrGammaPrimary::fraction(float energy)
-// This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrGammaPrimary::dir(float energy) const
-{
-  HepJamesRandom  engine;
-
-  std::pair<double,double>  d = dir(energy, &engine);
-  
-  return  std::pair<float,float>(d.first, d.second);
-}
 

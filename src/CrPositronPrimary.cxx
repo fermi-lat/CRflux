@@ -44,6 +44,7 @@
 #include <math.h>
 
 // CLHEP
+#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
@@ -56,7 +57,6 @@ typedef  double G4double;
 
 // private function definitions.
 namespace {
-  const G4double pi    = 3.14159265358979323846264339;
   // The rest energy (rest mass) of positron in [GeV]
   const G4double restE = 5.11e-4; // rest energy of positron in [GeV]
   // The lower and higher (kinetic) energy limits of primary positrons 
@@ -422,7 +422,7 @@ std::pair<double,double> CrPositronPrimary::dir(double energy,
   // be sin(theta) for a constant theta width.
 
   double theta = acos(engine->flat());
-  double phi   = engine->flat() * 2 * pi;
+  double phi   = engine->flat() * 2 * M_PI;
 
   return std::pair<double,double>(cos(theta), phi);
 }
@@ -488,7 +488,7 @@ double CrPositronPrimary::flux() const
 // Gives back solid angle from which particle comes
 double CrPositronPrimary::solidAngle() const
 {
-  return  2 * pi;
+  return  2 * M_PI;
 }
 
 
@@ -498,56 +498,10 @@ const char* CrPositronPrimary::particleName() const
   return "e+";
 }
 
-//
-// "flux" package stuff
-//
 
-
-float CrPositronPrimary::operator()(float r)
-{
-  HepJamesRandom  engine;
-  engine.setSeed(r * 900000000);
-  // 900000000 comes from HepJamesRandom::setSeed function's comment...
-
-  return (float)energySrc(&engine);
-}
-
-
-double CrPositronPrimary::calculate_rate(double old_rate)
-{
-  return  old_rate;
-}
-
-
-float CrPositronPrimary::flux(float latitude, float longitude) const
-{
-  return  flux();
-}
-
-
-float CrPositronPrimary::flux(std::pair<double,double> coords) const
-{
-  return  flux();
-}
-
-
+// Gives back the name of the component
 std::string CrPositronPrimary::title() const
 {
   return  "CrPositronPrimary";
-}
-
-
-float CrPositronPrimary::fraction(float energy)
-// This function doesn't work in this class... :-(
-{
-  return  0;
-}
-
-
-std::pair<float,float> CrPositronPrimary::dir(float energy) const
-{
-  HepJamesRandom  engine;
-  std::pair<double,double>  d = dir(energy, &engine);
-  return  std::pair<float,float>(d.first, d.second);
 }
 
