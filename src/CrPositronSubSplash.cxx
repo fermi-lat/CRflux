@@ -204,7 +204,7 @@ G4double CrPositronSplash_0003::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrPositronSplash_0003::upwardFlux(){
-  return 311.0;
+  return 312.7;
 }
 //------------------------------------------------------------
 
@@ -295,26 +295,26 @@ G4double CrPositronSplash_0306::upwardFlux(){
 CrPositronSplash_0608::CrPositronSplash_0608(){
   /*
    * Below 100 MeV
-   *   j(E) = 2.61*10^-2*(E/GeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 3.5*10^-2*(E/GeV)^-1.0 [c/s/m^2/sr]
    * Above 100 MeV
-   *   j(E) = 2.12*10^-4*(E/GeV)^-3.09
-   *          + 3.0*10^-4*(E/GeV)*exp(-(E/2GeV)^2) [c/s/m^2/sr]
+   *   j(E) = 1.75*10^-4*(E/GeV)^-3.3
+   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.5GeV)^2.5) [c/s/m^2/sr]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   * extrapolated the spectrum down to 10 MeV with E^-1.0.
    */
   
   // Normalization and spectral index for E<breakE
-  A_splash = 2.61e-2;
+  A_splash = 3.5e-2;
   a_splash = 1.0;
   // Normalization, spectral index and cutoff for breakE<E
-  B1_splash = 2.12e-4;
-  b1_splash = 3.09;
-  B2_splash = 3.0e-4;
-  b2_splash = -1.0; // positive slope
-  cutOff = 2.0;
+  B1_splash = 1.75e-4;
+  b1_splash = 3.3;
+  B2_splash = 2.0e-4;
+  b2_splash = -1.5; // positive slope
+  cutOff = 2.5;
   // The spectrum breaks at 100MeV
   breakE = 0.1;
 }
@@ -372,7 +372,7 @@ G4double CrPositronSplash_0608::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrPositronSplash_0608::upwardFlux(){
-  return 73.15;
+  return 96.561;
 }
 //------------------------------------------------------------
 
@@ -560,7 +560,7 @@ G4double CrPositronSplash_0910::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrPositronSplash_0910::upwardFlux(){
-  return 120.73;
+  return 118.31;
 }
 //------------------------------------------------------------
 

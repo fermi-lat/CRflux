@@ -335,26 +335,26 @@ G4double CrElectronSplash_0306::upwardFlux(){
 CrElectronSplash_0608::CrElectronSplash_0608(){
   /*
    * Below 100 MeV
-   *   j(E) = 4.51*10^-2*(E/GeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 3.5*10^-2*(E/GeV)^-1.0 [c/s/m^2/sr]
    * Above 100 MeV
-   *   j(E) = 1.33*10^-4*(E/GeV)^-3.53
-   *          + 2.0*10^-4*(E/GeV)^2.0*exp(-(E/3.2GeV)^3) [c/s/m^2/sr]
+   *   j(E) = 1.75*10^-4*(E/GeV)^-3.3
+   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.5GeV)^2.5) [c/s/m^2/sr]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   * extrapolated the spectrum down to 10 MeV with E^-1.0.
    */
   
   // Normalization and spectral index for E<breakE
-  A_splash = 4.51e-2;
+  A_splash = 3.5e-2;
   a_splash = 1.0;
   // Normalization and spectral index for breakE<E
-  B1_splash = 1.33e-4;
-  b1_splash = 3.53;
+  B1_splash = 1.75e-4;
+  b1_splash = 3.3;
   B2_splash = 2.0e-4;
-  b2_splash = -2.0; // positive slope
-  cutOff = 3.2;
+  b2_splash = -1.5; // positive slope
+  cutOff = 2.5;
   // The spectrum breaks at 100MeV
   breakE = 0.1;
 }
@@ -412,7 +412,7 @@ G4double CrElectronSplash_0608::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrElectronSplash_0608::upwardFlux(){
-  return 123.84;
+  return 96.561;
 }
 //------------------------------------------------------------
 
@@ -600,7 +600,7 @@ G4double CrElectronSplash_0910::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrElectronSplash_0910::upwardFlux(){
-  return 120.73;
+  return 118.31;
 }
 //------------------------------------------------------------
 
