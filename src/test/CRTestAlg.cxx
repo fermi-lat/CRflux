@@ -29,6 +29,11 @@
 
 // CR includes
 #include "../CrExample.h"
+#include "../CrProton.hh"
+#include "../CrAlpha.hh"
+#include "../CrElectron.hh"
+#include "../CrPositron.hh"
+#include "../CrGamma.hh"
 
 //#include "FluxAlg.h"
 /*! \class CRTestAlg
@@ -93,6 +98,11 @@ StatusCode CRTestAlg::execute() {
 
   std::vector<const char*> arguments;
   arguments.push_back("CrExample");
+  //  arguments.push_back("CrProton");
+  //  arguments.push_back("CrAlpha");
+  //  arguments.push_back("CrElectron");
+  //  arguments.push_back("CrPositron");
+  arguments.push_back("CrGamma");
   m_fsvc->rootDisplay(arguments);
 
     return sc;

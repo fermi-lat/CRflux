@@ -9,4 +9,41 @@
         </spectrum>
     </source>
 
+    <source name="CrProton">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrAlpha">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrAlpha" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrElectron">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrPositron">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrGamma">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
 </source_library>
+
+

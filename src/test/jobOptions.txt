@@ -10,8 +10,8 @@ ApplicationMgr.DLLs   += { "CRflux" };
 FluxSvc.source_lib = {"$(FLUXSVCROOT)/xml/source_library.xml"};
 ApplicationMgr.ExtSvc += { "ParticlePropertySvc" };
 
-//ApplicationMgr.TopAlg = {"CRTestAlg"};
-ApplicationMgr.TopAlg = {"FluxAlg"};
+ApplicationMgr.TopAlg = {"CRTestAlg"};
+//ApplicationMgr.TopAlg = {"FluxAlg"};
 
 // Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
 MessageSvc.OutputLevel      = 2;
@@ -21,10 +21,15 @@ FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
 FluxSvc.source_lib ={"$(CRFLUXROOT)/xml/source_library.xml"};
 
 // ask for a source that is in the user_library
-FluxAlg.source_name="CrExample";
+//FluxAlg.source_name="CrExample";
+//FluxAlg.source_name="CrProton";
+//FluxAlg.source_name="CrAlpha";
+//FluxAlg.source_name="CrElectron";
+//FluxAlg.source_name="CrPositron";
+FluxAlg.source_name="CrGamma";
 
 ApplicationMgr.EvtSel = "NONE";
-ApplicationMgr.EvtMax = 10;
+ApplicationMgr.EvtMax = 1;
 
 //==============================================================
 //
