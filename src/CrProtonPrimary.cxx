@@ -377,7 +377,8 @@ std::pair<double,double> CrProtonPrimary::dir(double energy,
   // After integration over the azimuth angle (phi), 
   // the theta distribution should be sin(theta) for a constant theta width.
 
-  double theta = acos(engine->flat());
+  /// Cos(theta) ranges from 1 to -0.4
+  double theta = acos(1.4*engine->flat()-0.4);
   double phi   = engine->flat() * 2 * M_PI;
 
   return std::pair<double,double>(cos(theta), phi);
@@ -444,7 +445,8 @@ double CrProtonPrimary::flux() const
 // Gives back solid angle from which particle comes
 double CrProtonPrimary::solidAngle() const
 {
-  return  2 * M_PI;
+   // * 1.4 since Cos(theta) ranges from 1 to -0.4
+  return  2 * M_PI * 1.4;
 }
 
 

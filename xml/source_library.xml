@@ -15,6 +15,13 @@
             <use_spectrum/>
         </spectrum>
     </source>
+    
+    <!-- an alternative for CrProton.  Solid angles are handled consistently -->
+    <source name="CrProtonMix">
+       <nestedSource sourceRef="CrProtonPrimary"/>
+       <nestedSource sourceRef="CrProtonReentrant"/>
+       <nestedSource sourceRef="CrProtonSplash"/>
+    </source>
 
 	<source name="CrProtonPrimary">
         <spectrum escale="GeV"> 
@@ -50,6 +57,13 @@
             <use_spectrum/>
         </spectrum>
     </source>
+    
+	<!-- an alternative for CrElectron.  Solid angles are handled consistently -->    
+    <source name="CrElectronMix">
+       <nestedSource sourceRef="CrElectronPrimary"/>
+       <nestedSource sourceRef="CrElectronReentrant"/>
+       <nestedSource sourceRef="CrElectronSplash"/>
+    </source>
 
 	<source name="CrElectronPrimary">
         <spectrum escale="GeV"> 
@@ -77,6 +91,13 @@
             <SpectrumClass name="CrPositron" /> 
             <use_spectrum/>
         </spectrum>
+    </source>
+    
+    <!-- an alternative for CrPositron.  Solid angles are handled consistently -->
+    <source name="CrPositronMix">
+       <nestedSource sourceRef="CrPositronPrimary"/>
+       <nestedSource sourceRef="CrPositronReentrant"/>
+       <nestedSource sourceRef="CrPositronSplash"/>
     </source>
 
 	<source name="CrPositronPrimary">
@@ -107,6 +128,12 @@
             <SpectrumClass name="CrGamma" /> 
             <use_spectrum/>
         </spectrum>
+    </source>
+    
+    <!-- an alternative for CrGamma.  Solid angles are handled consistently -->
+    <source name="CrGammaMix">
+       <nestedSource sourceRef="CrGammaPrimary"/>
+       <nestedSource sourceRef="CrGammaSecondaryUpward"/>
     </source>
 
     <source name="CrGammaPrimary">

@@ -370,7 +370,8 @@ std::pair<G4double,G4double> CrAlphaPrimary::dir(G4double energy,
   // After integration over the azimuth angle (phi), 
   // the theta distribution should be sin(theta) for a constant theta width.
 
-  G4double theta = acos(engine->flat());
+  /// Cos(theta) ranges from 1 to -0.4
+  G4double theta = acos(1.4*engine->flat()-0.4);
   G4double phi   = engine->flat() * 2 * M_PI;
 
   return std::pair<G4double,G4double>(cos(theta), phi);
@@ -438,7 +439,8 @@ G4double CrAlphaPrimary::flux() const
 // Gives back solid angle from which particle comes
 G4double CrAlphaPrimary::solidAngle() const
 {
-  return  2 * M_PI;
+  // * 1.4 since Cos(theta) ranges from 1 to -0.4
+  return  2 * M_PI * 1.4;
 }
 
 

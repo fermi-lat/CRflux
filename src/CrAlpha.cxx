@@ -118,7 +118,14 @@ G4double CrAlpha::flux(G4double time) const
 // Gives back solid angle from whick particles come
 G4double CrAlpha::solidAngle() const
 {
-  return 4 * M_PI;
+   if(m_subComponents.size() == 1)
+   {
+      std::vector<CrSpectrum*>::const_iterator i;
+      i = m_subComponents.begin();
+      return (*i)->solidAngle();
+   }
+   else
+      return 4 * M_PI;
 }
 
 // print out the information of each component

@@ -59,7 +59,7 @@ CrGamma::CrGamma(const std::string& paramstring)
   int flag = params.empty() || params[0]==0 ? 7 : params[0];
   // including each component if it is present in the bit field...
   if(flag& 1) m_subComponents.push_back(new CrGammaPrimary);
-  if(flag& 2) m_subComponents.push_back(new CrGammaSecondaryDownward);
+//  if(flag& 2) m_subComponents.push_back(new CrGammaSecondaryDownward);  // This isn't needed in orbit
   if(flag& 4) m_subComponents.push_back(new CrGammaSecondaryUpward);
 
   m_engine = new HepJamesRandom;
@@ -131,7 +131,14 @@ G4double CrGamma::flux(G4double time) const
 // Gives back solid angle from whick particles come
 G4double CrGamma::solidAngle() const
 {
-  return 4 * M_PI;
+   if(m_subComponents.size() == 1)
+   {
+      std::vector<CrSpectrum*>::const_iterator i;
+      i = m_subComponents.begin();
+      return (*i)->solidAngle();
+   }
+   else
+      return 4 * M_PI;
 }
 
 // print out the information of each component

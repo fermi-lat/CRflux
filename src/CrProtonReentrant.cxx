@@ -144,9 +144,13 @@ std::pair<G4double,G4double> CrProtonReentrant::dir(G4double energy,
    */
 
   G4double theta;
+  /// Cos(theta) ranges from 1 to -0.4
   while (1){
-    theta = acos(engine->flat());
-    if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
+    theta = acos(1.4*engine->flat()-0.4);
+	double temp = engine->flat()*1.6;
+    if (temp<1+0.6*sin(theta) && 1+0.6*sin(theta) > 0){break;}
+	if (temp<-(1+0.6*sin(theta)) && -(1+0.6*sin(theta)) > 0){break;}
+
   }
 
   G4double phi = engine->flat() * 2 * M_PI;
@@ -310,7 +314,8 @@ G4double CrProtonReentrant::flux() const
 // Gives back solid angle from which particle comes
 G4double CrProtonReentrant::solidAngle() const
 {
-  return 2 * M_PI;
+   // * 1.4 since Cos(theta) ranges from 1 to -0.4
+  return 2 * M_PI * 1.4;
 }
 
 
