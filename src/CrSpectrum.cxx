@@ -26,6 +26,7 @@
 //$Header$
 
 #include "CrSpectrum.hh"
+#include <iostream>
 
 CrSpectrum::CrSpectrum()
 {
@@ -83,6 +84,8 @@ void CrSpectrum::setPosition(double latitude, double longitude, double time)
 void CrSpectrum::setPosition
 (double latitude, double longitude, double time, double altitude)
 {
+    using std::cout;
+    using std::endl;
   m_latitude  = latitude;
   m_longitude  = longitude;
   m_time = time;
@@ -159,6 +162,8 @@ void CrSpectrum::setPosition
 // set solar modulation potential
 void CrSpectrum::setSolarWindPotential(double phi)
 {
+    using std::cout;
+    using std::endl;
   m_solarWindPotential = phi;
 
   // Solar potential is restricted in 500 < phi < 1100[MV]
@@ -179,6 +184,8 @@ void CrSpectrum::setSolarWindPotential(double phi)
 // set cutoff rigidity
 void CrSpectrum::setCutOffRigidity(double cor)
 {
+    using std::cout;
+    using std::endl;
   m_cutOffRigidity = cor;
   // magnetic cutoff rigidity is restricted in 0.5 < cor < 14.9[GV]
   if (m_cutOffRigidity < 0.5){

@@ -16,6 +16,27 @@
         </spectrum>
     </source>
 
+	<source name="CrProtonPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrProtonReentrant">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrProtonSplash">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton"  params="4"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
     <source name="CrAlpha">
         <spectrum escale="GeV"> 
             <SpectrumClass name="CrAlpha" /> 
@@ -30,6 +51,27 @@
         </spectrum>
     </source>
 
+	<source name="CrElectronPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrElectronReentrant">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrElectronSplash">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron"  params="4"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
     <source name="CrPositron">
         <spectrum escale="GeV"> 
             <SpectrumClass name="CrPositron" /> 
@@ -37,9 +79,53 @@
         </spectrum>
     </source>
 
+	<source name="CrPositronPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrPositronReentrant">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrPositronSplash">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron"  params="4"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+
+
     <source name="CrGamma">
         <spectrum escale="GeV"> 
             <SpectrumClass name="CrGamma" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrGammaPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrGammaSecondaryDownward">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrGammaSecondaryUpward">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma"  params="4"/> 
             <use_spectrum/>
         </spectrum>
     </source>

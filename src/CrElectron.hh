@@ -53,6 +53,9 @@ public:
   // Gives back the interval to the next event
   virtual double interval(double time);
 
+  //parses the string of input sent to the constructor
+  void parseParamList(std::string input, std::vector<float>& output);
+
 private:
   std::vector<CrSpectrum*>  m_subComponents;
   CrSpectrum*               m_component;

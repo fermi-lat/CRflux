@@ -54,10 +54,10 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
 
     //declare the factories here:
     static RemoteSpectrumFactory<CrExample> CRfactory(fsvc);
-    //    static RemoteSpectrumFactory<CrProton> CRfactory2(fsvc);
-    //    static RemoteSpectrumFactory<CrAlpha> CRfactory2(fsvc);
-    //    static RemoteSpectrumFactory<CrElectron> CRfactory2(fsvc);
-    //    static RemoteSpectrumFactory<CrPositron> CRfactory2(fsvc);
+    static RemoteSpectrumFactory<CrProton> CRfactory3(fsvc);
+    static RemoteSpectrumFactory<CrAlpha> CRfactory4(fsvc);
+    static RemoteSpectrumFactory<CrElectron> CRfactory5(fsvc);
+    static RemoteSpectrumFactory<CrPositron> CRfactory6(fsvc);
     static RemoteSpectrumFactory<CrGamma> CRfactory2(fsvc);
 
     return StatusCode::SUCCESS;

@@ -49,10 +49,14 @@ CrElectron::CrElectron(const std::string& paramstring)
 : m_component(0)
 {
   std::vector<float> params;
-  // including each component (primary/re-entrant/splash electrons)...
-  m_subComponents.push_back(new CrElectronPrimary);
-  m_subComponents.push_back(new CrElectronReentrant);
-  m_subComponents.push_back(new CrElectronSplash);
+  //use parseParamList to parse out the input string
+   parseParamList(paramstring,params);
+   //the first element in the string is the bit field.(defaults to "all on")
+   int flag = params.empty() || params[0]==0 ? 7 : params[0];
+    // including each component if it is present in the bit field...
+   if(flag& 1) m_subComponents.push_back(new CrElectronPrimary);
+   if(flag& 2) m_subComponents.push_back(new CrElectronReentrant);
+   if(flag& 4) m_subComponents.push_back(new CrElectronSplash);
 
   m_engine = new HepJamesRandom;
 }
@@ -131,4 +135,13 @@ G4double CrElectron::interval(double time){
   return -1.0;
 }
 
-
+void CrElectron::parseParamList(std::string input, std::vector<float>& output)
+{  
+    int i=0;
+    for(;!input.empty() && i!=std::string::npos;){
+        float f = ::atof( input.c_str() );
+        output.push_back(f);
+        i=input.find_first_of(",");
+        input= input.substr(i+1);
+    } 
+}

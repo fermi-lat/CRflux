@@ -97,12 +97,14 @@ StatusCode CRTestAlg::execute() {
     MsgStream   log( msgSvc(), name() );    
 
   std::vector<const char*> arguments;
-  arguments.push_back("CrExample");
+  //  arguments.push_back("CrExample");
   //  arguments.push_back("CrProton");
   //  arguments.push_back("CrAlpha");
-  //  arguments.push_back("CrElectron");
-  //  arguments.push_back("CrPositron");
-  arguments.push_back("CrGamma");
+    arguments.push_back("CrElectron");
+    arguments.push_back("CrElectronPrimary");
+    arguments.push_back("CrElectronReentrant");
+    arguments.push_back("CrElectronSplash");
+  //arguments.push_back("CrGamma");
   m_fsvc->rootDisplay(arguments);
 
     return sc;
