@@ -141,17 +141,17 @@ void CrElectron::dump()
 {
   std::vector<CrSpectrum*>::const_iterator i;
   for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
-    cout << "title: " << (*i)->title() << endl;
-    cout << " flux(c/s/m^2/sr)= " << (*i)->flux() << endl;
-    cout << " geographic latitude/longitude(deg)= " 
-         << (*i)->latitude() << " " << (*i)->longitude() << endl;
-    cout << " geomagnetic latitude/longitude(deg)= " 
+    std::cout << "title: " << (*i)->title() << std::endl;
+    std::cout << " flux(c/s/m^2/sr)= " << (*i)->flux() << std::endl;
+    std::cout << " geographic latitude/longitude(deg)= " 
+         << (*i)->latitude() << " " << (*i)->longitude() << std::endl;
+    std::cout << " geomagnetic latitude/longitude(deg)= " 
          << (*i)->geomagneticLatitude() << " " 
-         << (*i)->geomagneticLongitude() << endl;
-    cout << " time(s)= " << (*i)->time() 
-         << " altitude(km)= " << (*i)->altitude() << endl;
-    cout << " cor(GV)= " << (*i)->cutOffRigidity() 
-         << " phi(MV)= " << (*i)->solarWindPotential() << endl;
+         << (*i)->geomagneticLongitude() << std::endl;
+    std::cout << " time(s)= " << (*i)->time() 
+         << " altitude(km)= " << (*i)->altitude() << std::endl;
+    std::cout << " cor(GV)= " << (*i)->cutOffRigidity() 
+         << " phi(MV)= " << (*i)->solarWindPotential() << std::endl;
   }
 }
 
