@@ -12,7 +12,7 @@
 #include <string>
 #include <utility>
 #include "math.h"
-
+#include "facilities/Observer.h"
 #include "CrCoordinateTransfer.hh"
 
 class HepRandomEngine;
@@ -64,6 +64,9 @@ public:
   virtual const char* particleName() const=0;
   virtual std::string title() const=0;
 
+  /// this one asks the GPS for position
+  int askGPS();
+
 protected:
   // Following member variables defines satellite position 
   // in geographic/geomagnetic coordinate, altitude, time of observation, 
@@ -78,6 +81,8 @@ protected:
   double m_solarWindPotential; // [MV]
 
   double m_earthRadius; // earth radius in km
+private:
+   ObserverAdapter< CrSpectrum > m_observer; //obsever tag
 };
 
 #endif // CrSpectrum_H

@@ -61,6 +61,11 @@ CrSpectrum::CrSpectrum()
   m_latitude = CrLocation::Instance()->getFluxSvc()->location().first; 
   m_longitude = CrLocation::Instance()->getFluxSvc()->location().second;
 
+  // set callback to be notified when the position changes
+  m_observer.setAdapter( new ActionAdapter<CrSpectrum>(this,&CrSpectrum::askGPS) );
+    
+  CrLocation::Instance()->getFluxSvc()->attachGpsObserver( &m_observer );
+
   // set the satellite position and calculate geomagnetic position,
   // cut off rigidity and solar modulation potential
   setPosition(m_latitude, m_longitude, m_time, m_altitude); 
@@ -281,3 +286,9 @@ double CrSpectrum::solarWindPotential() const
   return m_solarWindPotential;
 }
 
+int CrSpectrum::askGPS()
+{
+    setPosition(CrLocation::Instance()->getFluxSvc()->location().first, 
+                CrLocation::Instance()->getFluxSvc()->location().second);
+    return 0; // can't be void in observer pattern
+}
