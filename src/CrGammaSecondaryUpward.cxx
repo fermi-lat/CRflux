@@ -10,25 +10,23 @@
  **************************************************************************
  * This program generates the upward component of cosmic ray gamma (2ndary)
  * with proper angular distribution and energy spectrum.
- * Although the absolute flux and spectrum could depend
- * on the geomagnetic cutoff energy, 
- * it is is fixed at Palestine, Texas in the current codes. 
  * Angular dependence of the atmospheric gamma-ray flux 
  * has been measured by some authors and known to depend strongly
- * on zenith angle. Here we refer to Schonfelder et al.
- * (1977, ApJ 217, 306) where zenith-angle dependence of 
- * 1.5-10MeV gamma-ray were measured, and use their data
- * to represent angular depedence of 3 MeV gamma-ray for simplicity.
- * Then, the relative flux is expressed as
+ * on zenith angle. Here we refer to Thompson et al.
+ * (1981, JGR 86, 1265) where zenith-angle dependence of were
+ * calculated and compared with data by SAS-2.
+ * The relative flux is expressed as
  * =======================================
- * relative_flux[c/sr]       theta[rad]
+ * relative_flux[c/sr]       cosTheta[rad]
  * ---------------------------------------
- * 1/cos(theta)              0--pi/3
- * 0.3673*exp(1.6182*theta)  pi/3--pi/2
- * 8.71e-3*exp(4.00*theta)  pi/2--2.007
- * 25760*exp(-3.424*theta)  2.007--2.443
- * 6                         2.443-pi 
+ * 1                         -1.0 -- -0.8
+ * 39.33*exp(4.59*cosTheta)  -0.8 -- -0.45
+ * 343.5*exp(9.40*cosTheta)  -0.45 -- -0.4
+ * 8*exp(-40(cosTheta+0.4))  -0.4 -- 0.0
  * =======================================
+ * Please note that the relative flux is 1 in cosTheta=-1.0 to -0.8,
+ * 5.0 at cosTheta = -0.45, 8.0 at cosTheta = -0.4,
+ * and drops off sharpely.
  * The energy spectrum of upward 2ndary gamma is expressed with 
  * three power-law functions and 511 keV emission line.
  * A method upwardCRenergy returns an energy and 
@@ -61,6 +59,10 @@
  *         user can set lower and Upper energy to generate gammas.
  * 2004-05 Modified by T. Mizuno
  *           Spectrum and angular distribution are modified.
+ * 2004-10 Modified by T. Mizuno
+ *           Angular dependence is modeled based on SAS-2 paper
+ *           (Thompsont et al. 1981), to represent the flux
+ *           in satellite altitude.
  **************************************************************************
  */
 
@@ -260,50 +262,52 @@ std::pair<G4double,G4double> CrGammaSecondaryUpward::dir(G4double energy,
   // and phi = 0 for particle comming along x-axis (from x>0 to x=0)
   // and phi = pi/2 for that comming along y-axis (from y>0 to y=0)
 {
-  // Based on the measurement by Shonfelder et al.,
-  // We expressed zenith-angle dependence of the relative_flux [/sr]
-  // in low energy region (@1 MeV) as follows;
-  // 1/cos(theta) (0--pi/3 [radian], or 0-60[degree])
-  // 0.3673*exp(1.6182*theta) (theta=pi/3--pi/2[rad], or 60--90[degree])
-  // 8.71e-3*exp(4.00*theta) (theta=pi/2--2.007[rad], or 90--115[degree])
-  // 25760*exp(-3.424*theta) (theta=2.007--2.443[rad], or 115--140[degree])
-  // 6 (2.443-pi[rad], or 140--180[degree])
-  // Here, theta=0 means particle going vertically downward,
-  // and theta=pi is the particle going vertically upward.
+  // We refer to the model for SAS-2 data in Thompson et al. 1981
+  // (solid line in Fig. 3 of Thompson et al. 1981, JGR 86, 1265)
+  // and modled the zenith-angle dependence of the atmospheric gamma
+  // with the following functions.
+  // 1 (cosTheta = -1 to -0.8)
+  // 39.33*exp(4.59*cosTheta) (cosTheta = -0.8 to -0.45)
+  // 343.5*exp(9.40*cosTheta) (cosTheta = -0.45 to -0.4)
+  // 8*exp(-40(cosTheta+0.4)) (cosTheta = -0.4 to 0)
+  // Here, costheta=-1 means particle going vertically upward.
   // Integrals over solid angle become as follows;
-  // 4.355  (theta=0--pi/3[rad])
-  // 9.980  (theta=pi/3--pi/2[rad])
-  // 33.052 (theta=pi/2--2.007[rad])
-  // 31.088 (theta=2.007--2.443[rad])
-  // 8.831  (theta=2.443--pi[rad])
+  // 0.2*2pi   (cosTheta = -1 to -0.8)
+  // 0.868*2pi (cosTheta = -0.8 to -0.45)
+  // 0.319*2pi (cosTheta = -0.45 to -0.4)
+  // 0.20*2pi  (cosTheta = -0.4 to 0)
 
   G4double rand = engine->flat();
-  G4double theta;
-  if (rand*(33.05+31.09+8.83)<=8.83){ // from 140 to 180 deg.
-    theta = acos(-1+(engine->flat())*(cos(2.443)-cos(M_PI)));
+  G4double theta, cosTheta;
+  if (rand*(0.2+0.868+0.319+0.2)<=0.2){ // cosTheta = -1 to -0.8
+    theta = acos(-1+(engine->flat())*(-0.8+1));
   }
-  // pi/2 to 2.443 [rad], where the flux [/sr] depends on theta as
-  // a*exp(b*theta)
-  else if (rand*(33.05+31.09+8.83)<=(31.09+8.82)){ 
-    G4double a=25760;
-    G4double b=-3.424; 
-    while(1){
-      G4double max = a/b*exp(b*2.443);
-      G4double min = a/b*exp(b*2.007);
-      G4double r = engine->flat() * (max-min) + min;
-      theta = 1/b*log(b*r/a);
-      if (engine->flat()<sin (theta)){break;}
-    }
+  // cosTheta = -0.8 to 0, where the flux [/sr] depends on theta as
+  // a*exp(b*cosTheta)
+  else if (rand*(0.2+0.868+0.319+0.2)<=(0.2+0.868)){ 
+    G4double a=39.33;
+    G4double b=4.59; 
+    G4double min = a/b*exp(b*(-0.8));
+    G4double max = a/b*exp(b*(-0.45));
+    G4double r = engine->flat() * (max-min) + min;
+    cosTheta = 1/b*log(b*r/a);
+    theta = acos(cosTheta);
+  } else if (rand*(0.2+0.868+0.319+0.2)<=(0.2+0.868+0.319)){
+    G4double a=343.5;
+    G4double b=9.40; 
+    G4double min = a/b*exp(b*(-0.45));
+    G4double max = a/b*exp(b*(-0.4));
+    G4double r = engine->flat() * (max-min) + min;
+    cosTheta = 1/b*log(b*r/a);
+    theta = acos(cosTheta);
   } else {
-    G4double a=8.71e03;
-    G4double b=4.00; 
-    while(1){
-      G4double max = a/b*exp(b*2.007);
-      G4double min = a/b*exp(b*M_PI/2);
-      G4double r = engine->flat() * (max-min) + min;
-      theta = 1/b*log(b*r/a);
-      if (engine->flat()<sin (theta)){break;}
-    }
+    G4double a=8;
+    G4double b=-40; 
+    G4double min = a/b*exp(b*(-0.4));
+    G4double max = a/b*exp(b*(0.0));
+    G4double r = engine->flat() * (max-min) + min;
+    cosTheta = 1/b*log(b*r/a);
+    theta = acos(cosTheta);
   }
 
   G4double phi   = engine->flat() * 2 * M_PI;
@@ -430,14 +434,9 @@ G4double CrGammaSecondaryUpward::flux() const
   // (between gammaLowEnergy and gammaHighEnergy) at theta=pi 
   // (vertically upward).
 
-  // Integral over solid angle from theta=pi/2 to 2.007[rad] 
-  // becomes 5.509*ENERGY_INTEGRAL_upward,
-  // that from 2.007 to 2.443 becomes
-  // 5.181*ENERGY_INTEGRAL_upward,
-  // and that from 2.443 to pi becomes
-  // 1.471*ENERGY_INTEGRAL_upward (see comments at a "dir" method).
-  // Hence the total integrated flux becomes
-  // 1.936*2pi*ENERGY_INTEGRAL_upward.
+  // Integral over solid angle from theta=pi/2 to pi is
+  // 1.587*2pi*ENERGY_INTEGRAL_upward.
+  // (please look at the formula given in "dir" method)
 
   // Cutoff rigidity dependence:
   // The atmospheric gamma flux is expected to depend on the cutoff rigidity.
@@ -455,7 +454,7 @@ G4double CrGammaSecondaryUpward::flux() const
 
   G4double Rc_palestine = 4.46; // Cutoff rigidity at Palestine, Texas [GV]
   // Integrated over the lower (earth-side) hemisphere and divided by 2pi.
-  return  1.936 * ENERGY_INTEGRAL_upward * 
+  return  1.587 * ENERGY_INTEGRAL_upward * 
     pow(m_cutOffRigidity/Rc_palestine, -1.13);  // [c/s/m^2/sr]
 }
 
