@@ -115,7 +115,7 @@ namespace {
    *     a = 3.33
    *   rigidity(E) = sqrt((E+restE)**2 - restE**2)
    *   beta(E) = sqrt(1 - (E/restE+1)**-2)
-   *   geomag_cut(E, CutOff) = 1/(1 + (rigidity(E)/CutOff)**-12.0)
+   *   geomag_cut(E, CutOff) = 1/(1 + (rigidity(E)/CutOff)**-6.0)
    *     CutOff = 4.46 for Theta_M = 0.735 and altitude = 35km 
    *                                           (balloon experiment)
    *     phi = 540, 1100 [MV] for Solar minimum, maximum
@@ -123,11 +123,13 @@ namespace {
    *   j: [c/s/m^2/sr/MeV]
    *
    * References:
-   *  org_spec: primary electron spectrum is derived from
-   *            Komori, Y. et al. 1999, Proc. of Dai-Kikyu (large balloon) 
+   *  org_spec: Komori, Y. et al. 1999, Proc. of Dai-Kikyu (large balloon) 
    *                                    Sympo. Heisei-11yr, 33-36  (Fig. 2)
-   *            and positron fraction e+/(e+ + e-) is assumed to be
-   *            0.078 based on Golden et al. (ApJL, 1996 457, 103)
+   *            R.L.Golden et al. 1996, ApJL 457, 103
+   *            Webber 1983, Composition and Origin of Cosmic Rays
+   *              (ed. M. M. Shapiro)
+   *            Longair, M. S. 1992, High Energy Astrophysics, vol 1
+   *              (2nd edition, Cambridge University Press)
    *  mod_spec: Gleeson, L. J. and Axford, W. I. 
    *            1968, ApJ, 154, 1011-1026 (Eq. 11)
    *  geomag_cut formula: an eyeball fitting function to represent 
@@ -144,9 +146,9 @@ namespace {
    */
 
   // Normalization factor of the original spec.
-  const G4double A_primary = 0.0564; // 0.0723*0.078
+  const G4double A_primary = 0.05; // 0.07*0.078
   // Differential spectral index
-  const G4double a_primary = 3.33;
+  const G4double a_primary = 3.3;
 
 
   // Gives back the geomagnetic cutoff factor to the intrinsic 
@@ -154,7 +156,7 @@ namespace {
   // and a cut-off rigidity value (GV).
   inline G4double geomag_cut(G4double E /* GeV */, G4double cor /* GV */)
   {
-    return 1./(1 + pow(rigidity(E)/cor, -12.0));
+    return 1./(1 + pow(rigidity(E)/cor, -6.0));
   }
 
 
@@ -301,22 +303,22 @@ namespace {
   // COR = 0.5, 1, 2, ..., 15 [GV]
   // phi = 500, 600, ..., 1100 [MV]
   G4double integral_array[16][7] = {
-    {10.49, 7.664, 5.782, 4.481, 3.552, 2.87, 2.357}, // COR = 0.5GV
-    {5.623, 4.477, 3.625, 2.979, 2.48, 2.088, 1.776}, // COR = 1 GV
-    {2.171, 1.877, 1.634, 1.432, 1.262, 1.118, 0.995}, // COR = 2 GV
-    {1.094, 0.983, 0.887, 0.803, 0.73, 0.665, 0.607}, // COR = 3 GV
-    {0.643, 0.591, 0.544, 0.503, 0.465, 0.431, 0.401}, // COR = 4 GV
-    {0.416, 0.389, 0.363, 0.34, 0.318, 0.299, 0.281}, // COR = 5 GV
-    {0.289, 0.272, 0.257, 0.243, 0.229, 0.217, 0.206}, // COR = 6 GV
-    {0.21, 0.2, 0.19, 0.181, 0.172, 0.164, 0.156}, // COR = 7 GV
-    {0.159, 0.152, 0.145, 0.139, 0.133, 0.127, 0.122}, // COR = 8 GV
-    {0.124, 0.119, 0.114, 0.11, 0.105, 0.101, 0.098}, // COR = 9 GV
-    {0.099, 0.095, 0.092, 0.089, 0.085, 0.082, 0.08}, // COR = 10 GV
-    {0.08, 0.078, 0.075, 0.073, 0.07, 0.068, 0.066}, // COR = 11 GV
-    {0.067, 0.064, 0.062, 0.061, 0.059, 0.057, 0.055}, // COR = 12 GV
-    {0.056, 0.054, 0.053, 0.051, 0.05, 0.048, 0.047}, // COR = 13 GV
-    {0.047, 0.046, 0.045, 0.044, 0.043, 0.041, 0.04}, // COR = 14 GV
-    {0.041, 0.04, 0.039, 0.038, 0.037, 0.036, 0.035} // COR = 15 GV
+    {9.403, 6.87, 5.194, 4.036, 3.208, 2.6, 2.141}, // COR = 0.5GV
+    {5.211, 4.124, 3.327, 2.728, 2.268, 1.909, 1.624}, // COR = 1 GV
+    {2.125, 1.819, 1.571, 1.368, 1.199, 1.058, 0.939}, // COR = 2 GV
+    {1.109, 0.987, 0.883, 0.793, 0.716, 0.648, 0.59}, // COR = 3 GV
+    {0.667, 0.608, 0.555, 0.509, 0.468, 0.431, 0.398}, // COR = 4 GV
+    {0.44, 0.407, 0.377, 0.35, 0.326, 0.304, 0.284}, // COR = 5 GV
+    {0.309, 0.289, 0.271, 0.254, 0.239, 0.225, 0.212}, // COR = 6 GV
+    {0.228, 0.215, 0.203, 0.192, 0.181, 0.172, 0.163}, // COR = 7 GV
+    {0.174, 0.165, 0.157, 0.149, 0.142, 0.135, 0.129}, // COR = 8 GV
+    {0.136, 0.13, 0.124, 0.119, 0.113, 0.109, 0.104}, // COR = 9 GV
+    {0.11, 0.105, 0.101, 0.096, 0.093, 0.089, 0.085}, // COR = 10 GV
+    {0.09, 0.086, 0.083, 0.08, 0.077, 0.074, 0.071}, // COR = 11 GV
+    {0.075, 0.072, 0.069, 0.067, 0.065, 0.062, 0.06}, // COR = 12 GV
+    {0.063, 0.061, 0.059, 0.057, 0.055, 0.053, 0.052}, // COR = 13 GV
+    {0.054, 0.052, 0.05, 0.049, 0.047, 0.046, 0.044}, // COR = 14 GV
+    {0.046, 0.045, 0.043, 0.042, 0.041, 0.04, 0.039} // COR = 15 GV
   };
 
   //============================================================

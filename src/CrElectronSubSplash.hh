@@ -24,12 +24,11 @@ private:
   double A_splash, a_splash;
   // Normalization and spectral index for lowE_break<E<highE_break
   double B_splash, b_splash;
-  // Normalization, spectral index and cutoff for E>highE_break
-  double C1_splash, c1_splash;
-  double C2_splash, c2_splash;
-  double cutOff;
+  // Normalization and spectral index for highE_break<E
+  double C_splash, c_splash;
   // The energies where spectrum breaks
-  double lowE_break, highE_break;
+  double lowE_break;
+  double highE_break;
 
 public:
   double energy(HepRandomEngine* engine);
@@ -46,9 +45,7 @@ private:
   // Normalization and spectral index for E<breakE
   double A_splash, a_splash;
   // Normalization, spectral index and cut off for breakE<E
-  double B1_splash, b1_splash;
-  double B2_splash, b2_splash;
-  double cutOff;
+  double B_splash, b_splash;
   // The energy where spectrum breaks
   double breakE;
 
@@ -106,14 +103,12 @@ public:
   ~CrElectronSplash_0910();
 
 private:
-  // Normalization and spectral index for E<lowE_break
+  // Normalization and spectral index for E<breakE
   double A_splash, a_splash;
-  // Normalization and spectral index for lowE_break<E<highE_break
+  // Normalization, spectral index and cut off for breakE<E
   double B_splash, b_splash;
-  // Normalization, spectral index and cut off for highE_break<E
-  double C_splash, c_splash, cutOff;
-  // The energies where spectrum breaks
-  double lowE_break, highE_break;
+  // The energy where spectrum breaks
+  double breakE;
 
 public:
   double energy(HepRandomEngine* engine);

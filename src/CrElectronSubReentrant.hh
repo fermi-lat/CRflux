@@ -24,12 +24,11 @@ private:
   double A_reent, a_reent;
   // Normalization and spectral index for lowE_break<E<highE_break
   double B_reent, b_reent;
-  // Normalization, spectral index and cutoff for E>highE_break
-  double C1_reent, c1_reent;
-  double C2_reent, c2_reent;
-  double cutOff;
+  // Normalization and spectral index for highE_break<E
+  double C_reent, c_reent;
   // The energies where spectrum breaks
-  double lowE_break, highE_break;
+  double lowE_break;
+  double highE_break;
 
 public:
   double energy(HepRandomEngine* engine);
@@ -46,9 +45,7 @@ private:
   // Normalization and spectral index for E<breakE
   double A_reent, a_reent;
   // Normalization, spectral index and cut off for breakE<E
-  double B1_reent, b1_reent;
-  double B2_reent, b2_reent;
-  double cutOff;
+  double B_reent, b_reent;
   // The energy where spectrum breaks
   double breakE;
 
@@ -106,14 +103,12 @@ public:
   ~CrElectronReentrant_0910();
 
 private:
-  // Normalization and spectral index for E<lowE_break
+  // Normalization and spectral index for E<breakE
   double A_reent, a_reent;
-  // Normalization and spectral index for lowE_break<E<highE_break
+  // Normalization, spectral index and cut off for breakE<E
   double B_reent, b_reent;
-  // Normalization, spectral index and cut off for highE_break<E
-  double C_reent, c_reent, cutOff;
-  // The energies where spectrum breaks
-  double lowE_break, highE_break;
+  // The energy where spectrum breaks
+  double breakE;
 
 public:
   double energy(HepRandomEngine* engine);

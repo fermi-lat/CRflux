@@ -8,22 +8,21 @@
  * via CrElectron, the entry-point class for the cosmic-ray electron 
  * generation.
  **************************************************************************
- * This program generates the reentrant cosmic ray electron flux with
- * proper angular distribution and energy spectrum.
- * The absolute flux and spectrum of "reentrant" electrons are assumed 
- * to depend on the geomagnetic cutoff energy (and is fixed for Palestine,
- * Texas in the current codes). The flux is assumed to 
- * depend on zenith angle as 
- *   1 + 0.6*sin(theta) for theta = 0 to pi/2, and zero for theta> pi/2
- * (theta = pi - zenith angle).
- * The energy spectrum above 100 MeV is assumed to be of a combination 
- * of a power-law function and a power-law with exponential cutoff 
- * in lower energy referring to AMS data.
+ * This program generates the cosmic-ray secondary electron downward flux 
+ * at satellite altitude with proper angular distribution and energy spectrum.
+ * The absolute flux and spectrum of downward electrons are assumed 
+ * to depend on the geomagnetic cutoff energy.
+ * The flux is assumed not to depend on the zenith angle since AMS
+ * didn't detect significant difference between downward and upward flux.
+ * The energy spectrum above 100 MeV is represented by simple analytic
+ * functions such as a power-low referring to AMS data.
  * Below 100 MeV, the spectrum is extrapolated down to 10 MeV
  * assuming that the flux is proportional to E^-1.
- * A method reentrantCRenergy returns an energy and 
- * CrElectronReentrant::dir returns a direction 
- * in cos(theta) and phi (azimuth angle). 
+ * A method reentrantCRenergy returns an energy and CrElectronReentrant::dir 
+ * returns a direction in cos(theta) and phi (azimuth angle). 
+ * Please note that we don't have splash nor reentrant component at
+ * satellite altitude. The class is named "**Reentrant" due to the
+ * historical reason.
  **************************************************************************
  * Definitions:
  * 1) The z-axis points upward (from Calorimeter to Tracker).  
@@ -40,6 +39,7 @@
  *           energy spectrum is extrapolated down to 10 MeV
  * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
  * 2003-02 Modified by T. Mizuno to generate flux at any position in orbit.
+ * 2004-04 Modified by T. Mizuno to simplify the model functions.
  **************************************************************************
  */
 
@@ -134,23 +134,7 @@ std::pair<G4double,G4double> CrElectronReentrant::dir
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
   // and phi=pi/2 for that comming along y-axis (from y>0 to y=0).
 {
-  /***
-   * Here we assume that
-   *   theta (pi - zenith angle): 
-   *     the flux (per steradian) is proportional to 1 + 0.6*sin(theta)
-   *   azimuth angle (phi) : isotropic
-   *
-   * Reference:
-   *   Tylka, A. J. 2000-05-12, GLAST team internal report 
-   *   "A Review of Cosmic-Ray Albedo Studies: 1949-1970" (1 + 0.6 sin(theta))
-   */
-
-  G4double theta;
-  while (1){
-    theta = acos(engine->flat());
-    if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
-  }
-
+  G4double theta = acos(engine->flat());
   G4double phi = engine->flat() * 2 * M_PI;
 
   return std::pair<G4double,G4double>(cos(theta), phi);
@@ -251,11 +235,7 @@ G4double CrElectronReentrant::flux() const
     downwardFlux = crElectronReentrant_1011->downwardFlux();
   }
 
-  // We have assumed that the flux is proportional to 1+0.6 sin(theta)
-  // Then, the flux integrated over the region from which particle comes
-  // (upper hemisphere) is (1+0.15pi)*downwardFlux*2pi 
-  // and the average flux is (1+0.15pi)*downwardFlux
-  return (1 + 0.15*M_PI) * downwardFlux; // [c/s/m^2/sr]
+  return downwardFlux; // [c/s/m^2/sr]
 
 
 }

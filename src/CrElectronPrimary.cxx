@@ -37,6 +37,8 @@
  * 2001-05 Comments added and unused codes removed by T. Kamae (SLAC)
  * 2001-05 Program checked by T. Kamae and H. Mizushima (Hiroshima)
  * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
+ * 2004-04 Model parameters are modified; functions are based on the
+ *         review by Webber.
  ****************************************************************************
  */
 
@@ -112,11 +114,11 @@ namespace {
    *   mod_spec(E, phi) = org_spec(E+phi*1e-3) * 
    *    ((E+restE)**2 - restE**2) / ((E+restE+phi*1e-3)**2 - restE**2)
    *   org_spec(E) = A * rigidity(E)**-a
-   *     A = 6.67e-1
-   *     a = 3.33
+   *     A = 6.5e-1
+   *     a = 3.3
    *   rigidity(E) = sqrt((E+restE)**2 - restE**2)
    *   beta(E) = sqrt(1 - (E/restE+1)**-2)
-   *   geomag_cut(E, CutOff) = 1/(1 + (rigidity(E)/CutOff)**-12.0)
+   *   geomag_cut(E, CutOff) = 1/(1 + (rigidity(E)/CutOff)**-6.0)
    *     CutOff = 4.46 for Theta_M = 0.735 and altitude = 35km 
    *                                           (balloon experiment)
    *     phi = 540, 1100 [MV] for Solar minimum, maximum
@@ -127,6 +129,10 @@ namespace {
    *  org_spec: Komori, Y. et al. 1999, Proc. of Dai-Kikyu (large balloon) 
    *                                    Sympo. Heisei-11yr, 33-36  (Fig. 2)
    *            R.L.Golden et al. 1996, ApJL 457, 103
+   *            Webber 1983, Composition and Origin of Cosmic Rays
+   *              (ed. M. M. Shapiro)
+   *            Longair, M. S. 1992, High Energy Astrophysics, vol 1
+   *              (2nd edition, Cambridge University Press)
    *  mod_spec: Gleeson, L. J. and Axford, W. I. 
    *           1968, ApJ, 154, 1011-1026 (Eq. 11)
    *  geomag_cut formula: 
@@ -142,9 +148,9 @@ namespace {
    */
 
   // Normalization factor of the original spec.
-  const G4double A_primary = 6.67e-1;	
+  const G4double A_primary = 6.5e-1;	
   // Differential spectral index
-  const G4double a_primary = 3.33;
+  const G4double a_primary = 3.3;
 
 
   // Gives back the geomagnetic cutoff factor to the intrinsic 
@@ -152,7 +158,7 @@ namespace {
   // and a cut-off rigidity value (GV).
   inline G4double geomag_cut(G4double E /* GeV */, G4double cor /* GV */)
   {
-    return 1./(1 + pow(rigidity(E)/cor, -12.0));
+    return 1./(1 + pow(rigidity(E)/cor, -6.0));
   }
 
 
@@ -299,22 +305,22 @@ namespace {
   // COR = 0.5, 1, 2, ..., 15 [GV]
   // phi = 500, 600, ..., 1100 [MV]
   G4double integral_array[16][7] = {
-    {124.16, 90.64, 68.379, 52.997, 42.011, 33.944, 27.877}, // COR = 0.5GV
-    {66.499, 52.945, 42.872, 35.229, 29.324, 24.689, 20.998}, // COR = 1 GV
-    {25.676, 22.202, 19.33, 16.936, 14.924, 13.221, 11.769}, // COR = 2 GV
-    {12.936, 11.628, 10.491, 9.499, 8.628, 7.861, 7.183}, // COR = 3 GV
-    {7.601, 6.987, 6.438, 5.946, 5.502, 5.102, 4.739}, // COR = 4 GV
-    {4.925, 4.595, 4.293, 4.017, 3.764, 3.533, 3.319}, // COR = 5 GV
-    {3.415, 3.219, 3.037, 2.869, 2.713, 2.568, 2.433}, // COR = 6 GV
-    {2.488, 2.362, 2.246, 2.136, 2.034, 1.938, 1.848}, // COR = 7 GV
-    {1.881, 1.797, 1.718, 1.644, 1.573, 1.507, 1.444}, // COR = 8 GV
-    {1.466, 1.407, 1.351, 1.298, 1.248, 1.2, 1.155}, // COR = 9 GV
-    {1.169, 1.127, 1.086, 1.047, 1.01, 0.975, 0.941}, // COR = 10 GV
-    {0.951, 0.92, 0.889, 0.86, 0.832, 0.805, 0.779}, // COR = 11 GV
-    {0.787, 0.763, 0.739, 0.717, 0.695, 0.674, 0.654}, // COR = 12 GV
-    {0.66, 0.641, 0.623, 0.605, 0.588, 0.572, 0.556}, // COR = 13 GV
-    {0.56, 0.545, 0.531, 0.517, 0.503, 0.49, 0.477}, // COR = 14 GV
-    {0.481, 0.468, 0.457, 0.445, 0.434, 0.424, 0.413} // COR = 15 GV
+    {122.24, 89.316, 67.518, 52.466, 41.709, 33.798, 27.837}, // COR = 0.5GV
+    {67.749, 53.615, 43.251, 35.462, 29.486, 24.817, 21.112}, // COR = 1 GV
+    {27.631, 23.653, 20.429, 17.784, 15.589, 13.752, 12.201}, // COR = 2 GV
+    {14.416, 12.827, 11.473, 10.31, 9.304, 8.43, 7.666}, // COR = 3 GV
+    {8.675, 7.899, 7.218, 6.615, 6.081, 5.605, 5.18}, // COR = 4 GV
+    {5.721, 5.29, 4.904, 4.556, 4.242, 3.957, 3.698}, // COR = 5 GV
+    {4.021, 3.759, 3.521, 3.304, 3.105, 2.922, 2.754}, // COR = 6 GV
+    {2.961, 2.791, 2.635, 2.491, 2.358, 2.234, 2.12}, // COR = 7 GV
+    {2.26, 2.144, 2.036, 1.936, 1.843, 1.756, 1.675}, // COR = 8 GV
+    {1.774, 1.692, 1.615, 1.543, 1.475, 1.412, 1.352}, // COR = 9 GV
+    {1.424, 1.364, 1.308, 1.254, 1.204, 1.156, 1.111}, // COR = 10 GV
+    {1.166, 1.12, 1.077, 1.037, 0.998, 0.962, 0.927}, // COR = 11 GV
+    {0.969, 0.934, 0.901, 0.87, 0.84, 0.811, 0.784}, // COR = 12 GV
+    {0.816, 0.789, 0.763, 0.738, 0.714, 0.692, 0.67}, // COR = 13 GV
+    {0.696, 0.674, 0.653, 0.633, 0.614, 0.596, 0.578}, // COR = 14 GV
+    {0.599, 0.582, 0.565, 0.548, 0.533, 0.518, 0.503} // COR = 15 GV
   };
 
   //============================================================

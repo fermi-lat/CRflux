@@ -18,15 +18,15 @@
  * on zenith angle. Here we refer to Schonfelder et al.
  * (1977, ApJ 217, 306) where zenith-angle dependence of 
  * 1.5-10MeV gamma-ray were measured, and use their data
- * to represent angular depedence of 1 MeV gamma-ray for simplicity.
+ * to represent angular depedence of 3 MeV gamma-ray for simplicity.
  * Then, the relative flux is expressed as
  * =======================================
  * relative_flux[c/sr]       theta[rad]
  * ---------------------------------------
  * 1/cos(theta)              0--pi/3
  * 0.3673*exp(1.6182*theta)  pi/3--pi/2
- * 0.02752*exp(3.268*theta)  pi/2--2.007
- * 4318.9*exp(-2.693*theta)  2.007--2.443
+ * 8.71e-3*exp(4.00*theta)  pi/2--2.007
+ * 25760*exp(-3.424*theta)  2.007--2.443
  * 6                         2.443-pi 
  * =======================================
  * The energy spectrum of downward 2ndary gamma is expressed with 
@@ -57,6 +57,8 @@
  *           Cutoff rigidity dependence based on Kur'yan et al. (1979)
  *           is implemented.
  *           User can set lower and Upper energy to generate gammas.
+ * 2004-05 Modified by T. Mizuno
+ *           Spectrum and angular distribution are modified.
  **************************************************************************
  */
 
@@ -295,23 +297,23 @@ std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy,
   // in low energy region (@1 MeV) as follows;
   // 1/cos(theta) (0--pi/3 [radian], or 0-60[degree])
   // 0.3673*exp(1.6182*theta) (theta=pi/3--pi/2[rad], or 60--90[degree])
-  // 0.02752*exp(3.268*theta) (theta=pi/2--2.007[rad], or 90--115[degree])
-  // 4318.9*exp(-2.693*theta) (theta=2.007--2.443[rad], or 115--140[degree])
+  // 8.71e-3*exp(4.00*theta) (theta=pi/2--2.007[rad], or 90--115[degree])
+  // 25760*exp(-3.424*theta) (theta=2.007--2.443[rad], or 115--140[degree])
   // 6 (2.443-pi[rad], or 140--180[degree])
   // Here, theta=0 means particle going vertically downward,
   // and theta=pi is the particle going vertically upward.
   // Integrals over solid angle become as follows;
   // 4.355  (theta=0--pi/3[rad])
-  // 9,980  (theta=pi/3--pi/2[rad])
-  // 25.157 (theta=pi/2--2.007[rad])
-  // 25.414 (theta=2.007--2.443[rad])
+  // 9.980  (theta=pi/3--pi/2[rad])
+  // 33.052 (theta=pi/2--2.007[rad])
+  // 31.088 (theta=2.007--2.443[rad])
   // 8.831  (theta=2.443--pi[rad])
 
   G4double rand = engine->flat();
   G4double theta;
   if (rand*(4.355+9.980)<=4.355){ // from 0 to pi/3 radian
     while(1){
-      theta = acos( cos(M_PI/3)+(engine->flat())*(cos(0.)-cos(M_PI/3)) );
+      theta = acos( cos(M_PI/3)+(engine->flat())*(cos(0)-cos(M_PI/3)) );
       if ( 2*engine->flat()< (1/cos(theta)) ){break;}
     }
   } else { 

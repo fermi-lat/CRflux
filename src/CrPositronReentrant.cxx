@@ -5,25 +5,24 @@
  * and GLAST-LAT Technical Note (LAT-TD-250.1) by T. Mizuno et al. 
  * for overall flow of cosmic ray generation in BalloonTestV13.
  * This program is interfaced to CosmicRayGeneratorAction.cc 
- * via CrPositron, the entry-point class for the cosmic-ray positron
+ * via CrPositron, the entry-point class for the cosmic-ray positron 
  * generation.
  **************************************************************************
- * This program generates the reentrant cosmic ray positron flux with
- * proper angular distribution and energy spectrum.
- * The absolute flux and spectrum of "reentrant" positron are assumed 
- * to depend on the geomagnetic cutoff energy (and is fixed for Palestine,
- * Texas in the current codes). The flux is assumed to 
- * depend on zenith angle as 
- *   1 + 0.6*sin(theta) for theta = pi/2 to pi, and zero for theta < pi/2
- * (theta = pi - zenith angle).
- * The energy spectrum above 100 MeV is assumed to be of a combination
- * of a power-low function and a power-law with exponential cutoff 
- * in higher energy referring to AMS data. 
- * Below this energy, it is extrapolated down
- * to 10 MeV assuming that the flux is proportional to E^-1.
- * A method reentrantCRenergy returns an energy and 
- * CrPositronReentrant::dir returns a direction 
- * in cos(theta) and phi (azimuth angle). 
+ * This program generates the cosmic-ray secondary positron downward flux 
+ * at satellite altitude with proper angular distribution and energy spectrum.
+ * The absolute flux and spectrum of downward positrons are assumed 
+ * to depend on the geomagnetic cutoff energy.
+ * The flux is assumed not to depend on the zenith angle since AMS
+ * didn't detect significant difference between downward and upward flux.
+ * The energy spectrum above 100 MeV is represented by simple analytic
+ * functions such as a power-low referring to AMS data.
+ * Below 100 MeV, the spectrum is extrapolated down to 10 MeV
+ * assuming that the flux is proportional to E^-1.
+ * A method reentrantCRenergy returns an energy and CrPositronReentrant::dir 
+ * returns a direction in cos(theta) and phi (azimuth angle). 
+ * Please note that we don't have splash nor reentrant component at
+ * satellite altitude. The class is named "**Reentrant" due to the
+ * historical reason.
  **************************************************************************
  * Definitions:
  * 1) The z-axis points upward (from Calorimeter to Tracker).  
@@ -35,15 +34,17 @@
  * 5) Magnetic latitude theta_M is in radian.
  * 6) Particle direction is defined by cos(theta) and phi (in radian).
  **************************************************************************
- * 2001-07 Written by Y. Fukazawa (Hiroshima Univ.)
- * 2001-10 Modified by T. Mizuno and Y. Fukazawa
- * 2001-11 angular distribution is changed to be uniform (T. Mizuno)
+ * 2001-11 Modified by T. Mizuno.
+ *           angular distribution is changed to be uniform
+ *           energy spectrum is extrapolated down to 10 MeV
  * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
  * 2003-02 Modified by T. Mizuno to generate flux at any position in orbit.
+ * 2004-04 Modified by T. Mizuno to simplify the model functions.
  **************************************************************************
- */ 
+ */
 
-// $Header$
+//$Header$
+
 
 #include <math.h>
 
@@ -58,7 +59,6 @@
 
 
 typedef double G4double;
-
 
 // private function definitions.
 namespace {
@@ -75,9 +75,9 @@ namespace {
   }
 
 
-  // gives back the rigidity (p/Ze where p is the momentum, e means
-  // positron charge magnitude, and Z is the atomic number) in units of [GV],
-  // as a function of kinetic Energy [GeV].
+  // gives back the rigidity (p/Ze where p is the momentum and e is
+  // the unit charge and Z the atomic number) in units of [GV],
+  // as a function of kinetic energy [GeV].
   inline G4double rigidity(G4double E /* GeV */)
   {
 #if 0	// if E ~ restE
@@ -97,10 +97,8 @@ namespace {
     return rigidity;
 #endif
   }
-  
-  
-} // End of noname-namespace: private function definitions.
 
+} // End of noname-namespace: private function definitions.
 
 //
 //
@@ -129,33 +127,17 @@ CrPositronReentrant::~CrPositronReentrant()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrPositronReentrant::dir(G4double energy, 
-					       HepRandomEngine* engine) const
+std::pair<G4double,G4double> CrPositronReentrant::dir
+(G4double energy, HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
   // and phi=pi/2 for that comming along y-axis (from y>0 to y=0).
 {
-  /***
-   * Here we assume that
-   *   theta(pi - zenith angle): 
-   *     the flux (per steradian) is proportional to 1 + 0.6*sin(theta)
-   *  azimuth angle (phi) : isotropic
-   *
-   * Reference:
-   *   Tylka, A. J. 2000-05-12, GLAST team internal report 
-   *   "A Review of Cosmic-Ray Albedo Studies: 1949-1970" (1 + 0.6 sin(theta))
-   */
-
-  G4double theta;
-  while (1){
-    theta = acos(engine->flat());
-    if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
-  }
-
+  G4double theta = acos(engine->flat());
   G4double phi = engine->flat() * 2 * M_PI;
 
-  return  std::pair<G4double,G4double>(cos(theta), phi);
+  return std::pair<G4double,G4double>(cos(theta), phi);
 }
 
 
@@ -253,11 +235,8 @@ G4double CrPositronReentrant::flux() const
     downwardFlux = crPositronReentrant_1011->downwardFlux();
   }
 
-  // We have assumed that the flux is proportional to 1+0.6 sin(theta)
-  // Then, the flux integrated over the region from which particle comes
-  // (upper hemisphere) is (1+0.15pi)*downwardFlux*2pi 
-  // and the average flux is (1+0.15pi)*downwardFlux
-  return (1 + 0.15*M_PI) * downwardFlux; // [c/s/m^2/sr]
+  return downwardFlux; // [c/s/m^2/sr]
+
 
 }
 
@@ -281,6 +260,5 @@ std::string CrPositronReentrant::title() const
 {
   return  "CrPositronReentrant";
 }
-
 
 

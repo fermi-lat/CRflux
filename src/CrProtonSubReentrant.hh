@@ -61,12 +61,15 @@ public:
   ~CrProtonReentrant_0304();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_reent, a_reent;
-  // Normalization and spectral index for breakE<E
+  // Normalization and spectral index for lowE_break<E<highE_break
   double B_reent, b_reent;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for highE_break<E
+  double C_reent, c_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double highE_break;
 
 public:
   double energy(HepRandomEngine* engine);
@@ -124,12 +127,15 @@ public:
   ~CrProtonReentrant_0607();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_reent, a_reent;
-  // Normalization and spectral index for breakE<E
+  // Normalization and spectral index for lowE_break<E<highE_break
   double B_reent, b_reent;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for highE_break<E
+  double C_reent, c_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double highE_break;
 
 public:
   double energy(HepRandomEngine* engine);
@@ -143,12 +149,15 @@ public:
   ~CrProtonReentrant_0708();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_reent, a_reent;
-  // Normalization, spectral index and cut off for breakE<E
-  double B_reent, b_reent, cutOff;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for lowE_break<E<highE_break
+  double B_reent, b_reent;
+  // Normalization and spectral index for highE_break<E
+  double C_reent, c_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double highE_break;
 
 public:
   double energy(HepRandomEngine* engine);
@@ -164,7 +173,7 @@ public:
 private:
   // Normalization and spectral index for E<breakE
   double A_reent, a_reent;
-  // Normalization, spectral index and cut off for breakE<E
+  // Normalization, spectral index and cutoff for E>breakE
   double B_reent, b_reent, cutOff;
   // The energy where spectrum breaks
   double breakE;
@@ -183,7 +192,7 @@ public:
 private:
   // Normalization and spectral index for E<breakE
   double A_reent, a_reent;
-  // Normalization, spectral index and cut off for breakE<E
+  // Normalization, spectral index and cutoff for E>breakE
   double B_reent, b_reent, cutOff;
   // The energy where spectrum breaks
   double breakE;

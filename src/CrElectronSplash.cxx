@@ -8,21 +8,22 @@
  * via CrElectron, the entry-point class for the cosmic-ray electron
  * generation.
  **************************************************************************
- * This program generates the splash cosmic ray electron flux with
- * proper angular distribution and energy spectrum.
- * The absolute flux and spectrum of "splash" electron are assumed 
- * to depend on the geomagnetic cutoff energy (and is fixed for Palestine,
- * Texas in the current codes). The flux is assumed to 
- * depend on zenith angle as 
- *   1 + 0.6*sin(theta) for theta = pi/2 to pi, and zero for theta < pi/2
- * (theta = pi - zenith angle).
- * The energy spectrum above 100 MeV is assumed to be of a power-low 
- * referring to AMS data.
+ * This program generates the cosmic-ray secondary electron upward flux 
+ * at satellite altitude with proper angular distribution and energy spectrum.
+ * The absolute flux and spectrum of upward electrons are assumed 
+ * to depend on the geomagnetic cutoff energy.
+ * The flux is assumed not to depend on the zenith angle since AMS
+ * didn't detect significant difference between downward and upward
+ * flux in theta_M<0.6.
+ * The energy spectrum above 100 MeV is represented by simple analytic
+ * functions such as a power-low referring to AMS data.
  * Below 100 MeV, the spectrum is extrapolated down to 10 MeV
  * assuming that the flux is proportional to E^-1.
- * A method splashCRenergy returns an energy and 
- * CrElectronSplash::dir returns a direction 
- * in cos(theta) and phi (azimuth angle). 
+ * A method reentrantCRenergy returns an energy and CrElectronReentrant::dir 
+ * returns a direction in cos(theta) and phi (azimuth angle). 
+ * Please note that we don't have splash nor reentrant component at
+ * satellite altitude. The class is named "**Splash" due to the
+ * historical reason.
  **************************************************************************
  * Definitions:
  * 1) The z-axis points upward (from Calorimeter to Tracker).  
@@ -42,6 +43,7 @@
  *           angular distribution is changed to be uniform
  *           energy spectrum is extrapolated down to 10 MeV
  * 2003-02 Modified by T. Mizuno to generate flux at any position in orbit.
+ * 2004-04 Modified by T. Mizuno to simplify the model functions.
  **************************************************************************
  */
 
@@ -137,25 +139,9 @@ std::pair<G4double,G4double> CrElectronSplash::dir(G4double energy,
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
   // and phi=pi/2 for that comming along y-axis (from y>0 to y=0).
 {
-  /***
-   * Here we assume that
-   *   theta(pi - zenith angle): 
-   *     the flux (per steradian) is proportional to 1 + 0.6*sin(theta)
-   *  azimuth angle (phi) : isotropic
-   *
-   * Reference:
-   *   Tylka, A. J. 2000-05-12, GLAST team internal report 
-   *   "A Review of Cosmic-Ray Albedo Studies: 1949-1970" (1 + 0.6 sin(theta))
-   */
-
-  G4double theta;
-  while (1){
-    theta = acos(engine->flat()); // theta is from 0 to pi/2
-    if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
-  }
+  double theta = acos(engine->flat()); // theta is from 0 to pi/2
   theta = M_PI - theta;
-
-  G4double phi = engine->flat() * 2 * M_PI;
+  double phi = engine->flat() * 2 * M_PI;
 
   return  std::pair<G4double,G4double>(cos(theta), phi);
 }
@@ -256,12 +242,7 @@ G4double CrElectronSplash::flux() const
     upwardFlux = crElectronSplash_1011->upwardFlux();
   }
 
-  // We have assumed that the flux is proportional to 1+0.6 sin(theta)
-  // Then, the flux integrated over the region from which particle comes
-  // (lower hemisphere) is (1+0.15pi)*upwardFlux*2pi 
-  // and the average flux is (1+0.15pi)*upwardFlux
-  return (1 + 0.15*M_PI) * upwardFlux; // [c/s/m^2/sr]
-
+  return upwardFlux; // [c/s/m^2/sr]
 
 }
 
