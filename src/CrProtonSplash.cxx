@@ -141,12 +141,9 @@ std::pair<double,double> CrProtonSplash::dir(double energy,
    */
 
   double theta;
-    /// Cos(theta) ranges from -1 to -0.4
   while (1){
-    theta = acos(0.6*engine->flat()+0.4); // theta is from 0 to pi/2-0.4
-	double temp = engine->flat()*1.6;
-	if (temp<1+0.6*sin(theta) && 1+0.6*sin(theta) > 0){break;}
-	if (temp<-(1+0.6*sin(theta)) && -(1+0.6*sin(theta)) > 0){break;}
+    theta = acos(engine->flat()); // theta is from 0 to pi/2
+    if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
   }
   theta = M_PI - theta;
 
@@ -291,9 +288,9 @@ double CrProtonSplash::flux() const
 
   // We have assumed that the flux is proportional to 1+0.6 sin(theta)
   // Then, the flux integrated over the region from which particle comes
-  // (cosTheta from -1 to -0.4) is 0.8378*2pi*upwardFlux
-  // and the averaged flux is 0.8378*2pi*upwardFlux/(2pi*0.6)
-  return 1.396 * upwardFlux; // [c/s/m^2/sr]
+  // (lower hemisphere) is (1+0.15pi)*upwardFlux*2pi 
+  // and the average flux is (1+0.15pi)*upwardFlux
+  return (1 + 0.15*M_PI) * upwardFlux; // [c/s/m^2/sr]
 
 }
 
@@ -301,8 +298,7 @@ double CrProtonSplash::flux() const
 // Gives back solid angle from which particle comes
 double CrProtonSplash::solidAngle() const
 {
-   // * 0.6 since Cos(theta) ranges from -1 to -0.4
-  return 2 * M_PI * 0.6;
+  return 2 * M_PI;
 }
 
 

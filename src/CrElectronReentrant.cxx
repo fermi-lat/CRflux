@@ -147,11 +147,8 @@ std::pair<G4double,G4double> CrElectronReentrant::dir
 
   G4double theta;
   while (1){
-	/// Cos(theta) ranges from 1 to -0.4
-    theta = acos(1.4*engine->flat()-0.4);
-	double temp = engine->flat()*1.6;
-	if (temp<1+0.6*sin(theta) && 1+0.6*sin(theta) > 0){break;}
-	if (temp<-(1+0.6*sin(theta)) && -(1+0.6*sin(theta)) > 0){break;}
+    theta = acos(engine->flat());
+    if (engine->flat()*1.6<1+0.6*sin(theta)){break;}
   }
 
   G4double phi = engine->flat() * 2 * M_PI;
@@ -256,9 +253,9 @@ G4double CrElectronReentrant::flux() const
 
   // We have assumed that the flux is proportional to 1+0.6 sin(theta)
   // Then, the flux integrated over the region from which particle comes
-  // (cosTheta from 1 to -0.4) is 2.1046*2pi*downwardFlux
-  // and the averaged flux is 2.1046*2pi*downwardFlux/(2pi*1.4)
-  return 1.503 * downwardFlux; // [c/s/m^2/sr]
+  // (upper hemisphere) is (1+0.15pi)*downwardFlux*2pi 
+  // and the average flux is (1+0.15pi)*downwardFlux
+  return (1 + 0.15*M_PI) * downwardFlux; // [c/s/m^2/sr]
 
 
 }
@@ -267,8 +264,7 @@ G4double CrElectronReentrant::flux() const
 // Gives back solid angle from which particle comes
 G4double CrElectronReentrant::solidAngle() const
 {
-  // * 1.4 since Cos(theta) ranges from 1 to -0.4
-  return 2 * M_PI * 1.4;
+  return 2 * M_PI;
 }
 
 
