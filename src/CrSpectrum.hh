@@ -28,10 +28,10 @@ public:
   virtual void setTime(double time);
 
   // set satellite position in geographic coordinate
-  // The unit of coordinates is in [radian].
-  virtual void setPosition(double latitude, double longitude, double time, double altitude);
-  virtual void setPosition(double latitude, double longitude, double time);
-  virtual void setPosition(double latitude, double longitude);
+  // The unit of coordinates is in [degree].
+  virtual void setPosition(double lat, double lon, double time, double altitude);
+  virtual void setPosition(double lat, double lon, double time);
+  virtual void setPosition(double lat, double lon);
 
   // set geomagnetic cutoff and solar potential
   virtual void setSolarWindPotential(double phi);
@@ -40,6 +40,7 @@ public:
   // Gives back observation time, satellite altitude,
   // position in geographic/geomagnetic coordinate,
   // cutoff rigidity and solar modulation potential
+  // Please note that the unit of angle is [degree] for consistency with FluxSvc.
   virtual double time() const; // [s]
   virtual double altitude() const; // [km]
   virtual double latitude() const; // [deg]
@@ -69,10 +70,10 @@ protected:
   // geomagnetic cutoff rigidity and solar modulation potential.
   double m_time; // [s]
   double m_altitude; // [km]
-  double m_latitude; // [radian]
-  double m_longitude; // [radian]
-  double m_geomagneticLatitude; // [radian]
-  double m_geomagneticLongitude; // [radian]
+  double m_latitude; // [deg]
+  double m_longitude; // [deg]
+  double m_geomagneticLatitude; // [deg]
+  double m_geomagneticLongitude; // [deg]
   double m_cutOffRigidity; // [GV]
   double m_solarWindPotential; // [MV]
 

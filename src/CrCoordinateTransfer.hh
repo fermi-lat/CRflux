@@ -17,15 +17,17 @@ public:
   CrCoordinateTransfer();
   ~CrCoordinateTransfer();
 
-  // calculate geomagnetic latitude and longitude from 
+  // Calculate geomagnetic latitude and longitude from 
   // geographic ones
-  double geomagneticLatitude(double lat, double lon) const; // [radian]
-  double geomagneticLongitude(double lat, double lon) const; // [radian]
+  // The input parameters (lat_deg and lon_deg) and return values are
+  // given in degree, for consistency with a FluxSvc package.
+  double geomagneticLatitude(double lat, double lon) const; // [degree]
+  double geomagneticLongitude(double lat, double lon) const; // [degree]
 
 private:
-  // latitude and longitude of the geomagnetic north pole
-  double latitude_pole;
-  double longitude_pole;
+  // latitude and longitude of the geomagnetic north pole, in unit of degree
+  double latitude_pole; // [deg]
+  double longitude_pole; // [deg]
 
 };
 

@@ -98,13 +98,29 @@ StatusCode CRTestAlg::execute() {
 
   std::vector<const char*> arguments;
   //  arguments.push_back("CrExample");
+
   //  arguments.push_back("CrProton");
+  //  arguments.push_back("CrProtonPrimary");
+  //  arguments.push_back("CrProtonReentrant");
+  //  arguments.push_back("CrProtonSplash");
+
   //  arguments.push_back("CrAlpha");
-    arguments.push_back("CrElectron");
-    arguments.push_back("CrElectronPrimary");
-    arguments.push_back("CrElectronReentrant");
-    arguments.push_back("CrElectronSplash");
+
+  arguments.push_back("CrElectron");
+  arguments.push_back("CrElectronPrimary");
+  arguments.push_back("CrElectronReentrant");
+  arguments.push_back("CrElectronSplash");
+
+  //  arguments.push_back("CrPositron");
+  //  arguments.push_back("CrPositronPrimary");
+  //  arguments.push_back("CrPositronReentrant");
+  //  arguments.push_back("CrPositronSplash");
+
   //arguments.push_back("CrGamma");
+  //arguments.push_back("CrGammaPrimary");
+  //arguments.push_back("CrGammaSecondaryDownward");
+  //arguments.push_back("CrGammaSecondaryUpward");
+
   m_fsvc->rootDisplay(arguments);
 
     return sc;

@@ -45,8 +45,8 @@ CrSpectrum::CrSpectrum()
   m_altitude = 500.0; 
   // (geographic latitude and longitude) = (31.78deg, -95.73deg)
   // (GLAST Balloon Experiment)
-  m_latitude = 31.78*3.14/180;
-  m_longitude = -95.73*3.14/180;
+  m_latitude = 31.78;
+  m_longitude = -95.73;
 
   // set the satellite position and calculate geomagnetic position,
   // cut off rigidity and solar modulation potential
@@ -84,8 +84,9 @@ void CrSpectrum::setPosition(double latitude, double longitude, double time)
 void CrSpectrum::setPosition
 (double latitude, double longitude, double time, double altitude)
 {
-    using std::cout;
-    using std::endl;
+  using std::cout;
+  using std::endl;
+
   m_latitude  = latitude;
   m_longitude  = longitude;
   m_time = time;
@@ -113,7 +114,7 @@ void CrSpectrum::setPosition
   // ------------------------------
 
   m_cutOffRigidity = 
-    14.9 * pow(1+m_altitude/m_earthRadius,-2)* pow(cos(m_geomagneticLatitude),4);
+    14.9 * pow(1+m_altitude/m_earthRadius,-2)* pow(cos(m_geomagneticLatitude*M_PI/180.0),4);
   //  m_cutOffRigidity = 4.46;  // temporarily fixed to Palestine value.
 
   // magnetic cutoff rigidity is restricted in 0.5 < cor < 14.9[GV]
@@ -140,7 +141,7 @@ void CrSpectrum::setPosition
 
   // elapsed seconds of 2001-11-01 from 2000-01-01
   double time_0 = (304+365)*86400; 
-  m_solarWindPotential = 820+280*cos(2*3.1415*(m_time-time_0)/(11*365*86400));
+  m_solarWindPotential = 820+280*cos(2*M_PI*(m_time-time_0)/(11*365*86400));
 
   // Solar potential is restricted in 500 < phi < 1100[MV]
   if (m_solarWindPotential < 500.0){ 
@@ -162,8 +163,9 @@ void CrSpectrum::setPosition
 // set solar modulation potential
 void CrSpectrum::setSolarWindPotential(double phi)
 {
-    using std::cout;
-    using std::endl;
+  using std::cout;
+  using std::endl;
+
   m_solarWindPotential = phi;
 
   // Solar potential is restricted in 500 < phi < 1100[MV]
@@ -184,8 +186,9 @@ void CrSpectrum::setSolarWindPotential(double phi)
 // set cutoff rigidity
 void CrSpectrum::setCutOffRigidity(double cor)
 {
-    using std::cout;
-    using std::endl;
+  using std::cout;
+  using std::endl;
+
   m_cutOffRigidity = cor;
   // magnetic cutoff rigidity is restricted in 0.5 < cor < 14.9[GV]
   if (m_cutOffRigidity < 0.5){
@@ -206,6 +209,8 @@ void CrSpectrum::setCutOffRigidity(double cor)
   tmp = pow(m_cutOffRigidity/14.9*pow(1+m_altitude/m_earthRadius,2), 0.25);
   if (tmp>1.0){tmp=1.0;} // when m_altitude>0 and m_cutOffRigidity~14.9
   m_geomagneticLatitude = acos(tmp);
+  // convert from radian to degree
+  m_geomagneticLatitude = m_geomagneticLatitude*180.0/M_PI;
 }
 
 

@@ -169,67 +169,67 @@ double CrProtonReentrant::energySrc(HepRandomEngine* engine) const
   //  return crProtonReentrant_0910->energy(engine);
 
   double r1, r2;
-  if (m_geomagneticLatitude<0.15){
+  if (m_geomagneticLatitude*M_PI/180.8<0.15){
     return crProtonReentrant_0002->energy(engine);
-  } else if (m_geomagneticLatitude>=0.15 && m_geomagneticLatitude<0.25){
-    r1 = m_geomagneticLatitude-0.15;
-    r2 = 0.25-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.15 && m_geomagneticLatitude*M_PI/180.8<0.25){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.15;
+    r2 = 0.25-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0002->energy(engine);
     } else {
       return crProtonReentrant_0203->energy(engine);
     }
-  } else if (m_geomagneticLatitude>=0.25 && m_geomagneticLatitude<0.35){
-    r1 = m_geomagneticLatitude-0.25;
-    r2 = 0.35-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.25 && m_geomagneticLatitude*M_PI/180.8<0.35){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.25;
+    r2 = 0.35-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0203->energy(engine);
     } else {
       return crProtonReentrant_0304->energy(engine);
     }
-  } else if (m_geomagneticLatitude>=0.35 && m_geomagneticLatitude<0.45){
-    r1 = m_geomagneticLatitude-0.35;
-    r2 = 0.45-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.35 && m_geomagneticLatitude*M_PI/180.8<0.45){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.35;
+    r2 = 0.45-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0304->energy(engine);
     } else {
       return crProtonReentrant_0405->energy(engine);
     }
-  } else if (m_geomagneticLatitude>=0.45 && m_geomagneticLatitude<0.55){
-    r1 = m_geomagneticLatitude-0.45;
-    r2 = 0.55-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.45 && m_geomagneticLatitude*M_PI/180.8<0.55){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.45;
+    r2 = 0.55-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0405->energy(engine);
     } else {
       return crProtonReentrant_0506->energy(engine);
     }
-  } else if (m_geomagneticLatitude>=0.55 && m_geomagneticLatitude<0.65){
-    r1 = m_geomagneticLatitude-0.55;
-    r2 = 0.65-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.55 && m_geomagneticLatitude*M_PI/180.8<0.65){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.55;
+    r2 = 0.65-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0506->energy(engine);
     } else {
       return crProtonReentrant_0607->energy(engine);
     }
-  } else if (m_geomagneticLatitude>=0.65 && m_geomagneticLatitude<0.75){
-    r1 = m_geomagneticLatitude-0.65;
-    r2 = 0.75-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.65 && m_geomagneticLatitude*M_PI/180.8<0.75){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.65;
+    r2 = 0.75-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0607->energy(engine);
     } else {
       return crProtonReentrant_0708->energy(engine);
     }
-  } else if (m_geomagneticLatitude>=0.75 && m_geomagneticLatitude<0.85){
-    r1 = m_geomagneticLatitude-0.75;
-    r2 = 0.85-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.75 && m_geomagneticLatitude*M_PI/180.8<0.85){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.75;
+    r2 = 0.85-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0708->energy(engine);
     } else {
       return crProtonReentrant_0809->energy(engine);
     }
-  } else if (m_geomagneticLatitude>=0.85 && m_geomagneticLatitude<0.95){
-    r1 = m_geomagneticLatitude-0.85;
-    r2 = 0.95-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.85 && m_geomagneticLatitude*M_PI/180.8<0.95){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.85;
+    r2 = 0.95-m_geomagneticLatitude*M_PI/180.8;
     if (engine->flat()*(r1+r2)<r2){
       return crProtonReentrant_0809->energy(engine);
     } else {
@@ -254,46 +254,46 @@ double CrProtonReentrant::flux() const
   // energy integrated vertically downward flux, [c/s/m^2/sr]
   double downwardFlux; 
   double r1, r2;
-  if (m_geomagneticLatitude<0.15){
+  if (m_geomagneticLatitude*M_PI/180.8<0.15){
     downwardFlux = crProtonReentrant_0002->downwardFlux();
-  } else if (m_geomagneticLatitude>=0.15 && m_geomagneticLatitude<0.25){
-    r1 = m_geomagneticLatitude-0.15;
-    r2 = 0.25-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.15 && m_geomagneticLatitude*M_PI/180.8<0.25){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.15;
+    r2 = 0.25-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0002->downwardFlux()
 	     +r1*crProtonReentrant_0203->downwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude>=0.25 && m_geomagneticLatitude<0.35){
-    r1 = m_geomagneticLatitude-0.25;
-    r2 = 0.35-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.25 && m_geomagneticLatitude*M_PI/180.8<0.35){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.25;
+    r2 = 0.35-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0203->downwardFlux()
 	     +r1*crProtonReentrant_0304->downwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude>=0.35 && m_geomagneticLatitude<0.45){
-    r1 = m_geomagneticLatitude-0.35;
-    r2 = 0.45-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.35 && m_geomagneticLatitude*M_PI/180.8<0.45){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.35;
+    r2 = 0.45-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0304->downwardFlux()
 	     +r1*crProtonReentrant_0405->downwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude>=0.45 && m_geomagneticLatitude<0.55){
-    r1 = m_geomagneticLatitude-0.45;
-    r2 = 0.55-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.45 && m_geomagneticLatitude*M_PI/180.8<0.55){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.45;
+    r2 = 0.55-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0405->downwardFlux()
 	     +r1*crProtonReentrant_0506->downwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude>=0.55 && m_geomagneticLatitude<0.65){
-    r1 = m_geomagneticLatitude-0.55;
-    r2 = 0.65-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.55 && m_geomagneticLatitude*M_PI/180.8<0.65){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.55;
+    r2 = 0.65-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0506->downwardFlux()
 	     +r1*crProtonReentrant_0607->downwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude>=0.65 && m_geomagneticLatitude<0.75){
-    r1 = m_geomagneticLatitude-0.65;
-    r2 = 0.75-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.65 && m_geomagneticLatitude*M_PI/180.8<0.75){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.65;
+    r2 = 0.75-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0607->downwardFlux()
 	     +r1*crProtonReentrant_0708->downwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude>=0.75 && m_geomagneticLatitude<0.85){
-    r1 = m_geomagneticLatitude-0.75;
-    r2 = 0.85-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.75 && m_geomagneticLatitude*M_PI/180.8<0.85){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.75;
+    r2 = 0.85-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0708->downwardFlux()
 	     +r1*crProtonReentrant_0809->downwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude>=0.85 && m_geomagneticLatitude<0.95){
-    r1 = m_geomagneticLatitude-0.85;
-    r2 = 0.95-m_geomagneticLatitude;
+  } else if (m_geomagneticLatitude*M_PI/180.8>=0.85 && m_geomagneticLatitude*M_PI/180.8<0.95){
+    r1 = m_geomagneticLatitude*M_PI/180.8-0.85;
+    r2 = 0.95-m_geomagneticLatitude*M_PI/180.8;
     downwardFlux = ( r2*crProtonReentrant_0809->downwardFlux()
 	     +r1*crProtonReentrant_0910->downwardFlux() )/(r1+r2);
   } else {
