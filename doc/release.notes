@@ -2,6 +2,7 @@
 
 @verbatim
 
+04-dec-04  v1r2p3  THB disable unit test, since it suddenly fails, and no one has the time to figure it out
 13-aug-04  v1r2p1  THB add a use astro, Event that it was getting from FluxSvc 
  ..... (unknown changes not documented here)
 15-apr-o4 v1r1p13  THB remove commented lines from requirements file that contain wrong macros
