@@ -156,6 +156,25 @@
             <use_spectrum/>
         </spectrum>
     </source>
+    
+    <!-- All the sources in CRflux -->
+    <source name="CrTotal">
+		<nestedSource sourceRef="CrProton"/>
+		<nestedSource sourceRef="CrElectron"/>
+		<nestedSource sourceRef="CrPositron"/>
+		<nestedSource sourceRef="CrGamma"/>
+		<nestedSource sourceRef="CrAlpha"/>
+    </source>
+    
+    <!-- All the sources in CRflux using the Mix sources instead of the default -->
+    <source name="CrTotalMix">
+		<nestedSource sourceRef="CrProtonMix"/>
+		<nestedSource sourceRef="CrElectronMix"/>
+		<nestedSource sourceRef="CrPositronMix"/>
+		<nestedSource sourceRef="CrGammaMix"/>
+		<nestedSource sourceRef="CrAlpha"/>
+    </source>
+    
 
 </source_library>
 
