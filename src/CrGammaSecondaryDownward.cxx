@@ -313,7 +313,7 @@ std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy,
   G4double theta;
   if (rand*(4.355+9.980)<=4.355){ // from 0 to pi/3 radian
     while(1){
-      theta = acos( cos(M_PI/3)+(engine->flat())*(cos(0)-cos(M_PI/3)) );
+      theta = acos( cos(M_PI/3)+(engine->flat())*(cos(0.0)-cos(M_PI/3)) );
       if ( 2*engine->flat()< (1/cos(theta)) ){break;}
     }
   } else { 
