@@ -1,0 +1,12 @@
+<!-- $Header$
+-->
+<source_library title="cosmic_ray">    
+
+    <source name="CrExample">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrExample" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+</source_library>

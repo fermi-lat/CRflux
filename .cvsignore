@@ -1,0 +1,6 @@
+Visual
+Win32*
+sun4x_*
+i386_linux*
+setup.*
+*.mak*
