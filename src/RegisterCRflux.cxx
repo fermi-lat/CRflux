@@ -13,6 +13,8 @@
 #include "CrPositron.hh"
 #include "CrGamma.hh"
 
+#include "CLHEP/Random/Random.h"
+
 /** @class RegisterCRflux
  *  @brief Register the various CRflux sources
  *  
@@ -59,6 +61,10 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
     static RemoteSpectrumFactory<CrElectron> CRfactory4(fsvc);
     static RemoteSpectrumFactory<CrPositron> CRfactory5(fsvc);
     static RemoteSpectrumFactory<CrGamma> CRfactory6(fsvc);
+
+	// CRflux needs to use the same random engine as FluxSvc
+	HepRandomEngine* engine = fsvc->getRandomEngine();
+	HepRandom::setTheEngine(engine);
 
     return StatusCode::SUCCESS;
 } 
