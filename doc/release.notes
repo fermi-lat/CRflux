@@ -1,16 +1,22 @@
 /** @file release.notes
+@brief CRflux package relase notes
+
+  package CRflux
+  Package coordinators: T. Mizuno
+$Id$
 
 @verbatim
 
-20-mar-05  v1r2p5  THB disable unit test (again) since it invokes ROOT interactively. 
-005-dec-04  v1r2p4  JCT reenable unit test, after fix: FluxSvc/ISpectrum.h taken for base class instead of flux/ISpectrum.h
-04-dec-04  v1r2p3  THB disable unit test, 
-since it suddenly fails, and no one has the time to figure it out
-13-aug-04  v1r2p1  THB add a use astro, Event that it was getting from FluxSvc 
+27-mar-05 v1r3    THB clean up a bit; reorganize geomagnetic interface 
+20-mar-05 v1r2p5  THB disable unit test (again) since it invokes ROOT interactively. 
+05-dec-04 v1r2p4  JCT reenable unit test, after fix: FluxSvc/ISpectrum.h taken for base class instead of flux/ISpectrum.h
+04-dec-04 v1r2p3  THB disable unit test, since it suddenly fails, 
+                        and no one has the time to figure it out
+13-aug-04 v1r2p1  THB add a use astro, Event that it was getting from FluxSvc 
  ..... (unknown changes not documented here)
-15-apr-o4 v1r1p13  THB remove commented lines from requirements file that contain wrong macros
+15-apr-04 v1r1p13 THB remove commented lines from requirements file that contain wrong macros
  ..... (unknown changes not documented here)
- 03-oct-o3 v1r1p6  THB fix for vc 7.1
- 29-aug-03 v1r1p3  THB change name of alpha to He, since that is our official name
+03-oct-03 v1r1p6  THB fix for vc 7.1
+29-aug-03 v1r1p3  THB change name of alpha to He, since that is our official name
 @endverbatim
 */

@@ -33,6 +33,8 @@
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
 #include "CrLocation.h"
+#include "CrCoordinateTransfer.hh"
+
 typedef double G4double;
 
 CrSpectrum::CrSpectrum()
@@ -59,18 +61,10 @@ CrSpectrum::CrSpectrum()
   // m_latitude = 31.78;
   // m_longitude = -95.73;
 
-  // Set the initial location with value from FluxSvc
-  m_latitude = CrLocation::Instance()->getFluxSvc()->location().first; 
-  m_longitude = CrLocation::Instance()->getFluxSvc()->location().second;
-
   // set callback to be notified when the position changes
   m_observer.setAdapter( new ActionAdapter<CrSpectrum>(this,&CrSpectrum::askGPS) );
-    
-  CrLocation::Instance()->getFluxSvc()->attachGpsObserver( &m_observer );
-
-  // set the satellite position and calculate geomagnetic position,
-  // cut off rigidity and solar modulation potential
-  setPosition(m_latitude, m_longitude, m_time, m_altitude); 
+  CrLocation::instance()->getFluxSvc()->GPSinstance()->notification().attach( &m_observer);
+  askGPS(); //initial setup
 
   // set lower and upper energy to generate gammas
   m_gammaLowEnergy = 1.0e-3; // 1 MeV
@@ -140,7 +134,7 @@ void CrSpectrum::setPosition
   m_altitude = altitude;
   // compute the geomagnetic coordinates
 
-  class CrCoordinateTransfer transfer;
+  CrCoordinateTransfer transfer;
   m_geomagneticLatitude = 
     transfer.geomagneticLatitude(m_latitude, m_longitude);
   m_geomagneticLongitude = 
@@ -316,9 +310,13 @@ double CrSpectrum::solarWindPotential() const
   return m_solarWindPotential;
 }
 
+// call back from GPS when position changes
 int CrSpectrum::askGPS()
 {
-    setPosition(CrLocation::Instance()->getFluxSvc()->location().first, 
-                CrLocation::Instance()->getFluxSvc()->location().second);
+    GPS* gps = CrLocation::instance()->getFluxSvc()->GPSinstance();
+
+    astro::EarthCoordinate m_pos = gps->earthpos();
+    setPosition(m_pos.latitude(), m_pos.longitude(), m_pos.altitude());
+    
     return 0; // can't be void in observer pattern
 }

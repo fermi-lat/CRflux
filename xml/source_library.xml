@@ -171,7 +171,7 @@
 		<nestedSource sourceRef="CrProtonMix"/>
 		<nestedSource sourceRef="CrElectronMix"/>
 		<nestedSource sourceRef="CrPositronMix"/>
-		<nestedSource sourceRef="CrGammaMix"/>
+<!--		<nestedSource sourceRef="CrGammaMix"/> -->
 		<nestedSource sourceRef="CrAlpha"/>
     </source>
     

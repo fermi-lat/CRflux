@@ -14,11 +14,7 @@
 
 class CrLocation {
 public:
-   static CrLocation* Instance();
-   double getLat() const;
-   double getLon() const;
-   void setLat(double lat);
-   void setLon(double lon);
+   static CrLocation* instance();
    void setFluxSvc(IFluxSvc* f);
    IFluxSvc* getFluxSvc(void);
 
@@ -27,8 +23,6 @@ protected:
    virtual ~CrLocation();
 private:
    static CrLocation* _instance;
-   double latitude;
-   double longitude;
    IFluxSvc* fsvc;
 };
 

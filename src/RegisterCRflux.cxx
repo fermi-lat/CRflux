@@ -69,11 +69,9 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
 	HepRandom::setTheEngine(engine);
 
    // Get the initial location from FluxSvc and store in the CrLocation singleton
-   CrLocation::Instance()->setLat(fsvc->location().first);
-   CrLocation::Instance()->setLon(fsvc->location().second);
-   CrLocation::Instance()->setFluxSvc(fsvc);
+   CrLocation::instance()->setFluxSvc(fsvc);
 
-    return StatusCode::SUCCESS;
+   return StatusCode::SUCCESS;
 } 
 
 

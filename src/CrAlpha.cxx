@@ -23,7 +23,7 @@
 
 //$Header$
 
-#include <math.h>
+#include <cmath>
 #include <map>
 #include <vector>
 
@@ -36,9 +36,6 @@
 
 #include "CrSpectrum.hh"
 
-// Define a factory for anonomous instantiation.
-// Comment-out the next line when importing into the CRflux package.
-//#include "FluxSvc/ISpectrumFactory.h"
 
 typedef double G4double;
 

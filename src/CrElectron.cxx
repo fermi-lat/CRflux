@@ -44,10 +44,6 @@
 
 #include "CrSpectrum.hh"
 
-// define a factory for anonomous instantiation
-// Comment-out the next line when importing into the CRflux package.
-//#include "FluxSvc/ISpectrumFactory.h"
-
 typedef double G4double;
 
 // Constructor. Includes each component

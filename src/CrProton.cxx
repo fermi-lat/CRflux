@@ -28,7 +28,7 @@
 
 //$Header$
 
-#include <math.h>
+#include <cmath>
 #include <map>
 #include <vector>
 
