@@ -112,7 +112,7 @@ namespace {
    *   mod_spec(E, phi) = org_spec(E+phi*1e-3) * 
    *    ((E+restE)**2 - restE**2) / ((E+restE+phi*1e-3)**2 - restE**2)
    *   org_spec(E) = A * rigidity(E)**-a
-   *     A = 7.23e-1
+   *     A = 6.67e-1
    *     a = 3.33
    *   rigidity(E) = sqrt((E+restE)**2 - restE**2)
    *   beta(E) = sqrt(1 - (E/restE+1)**-2)
@@ -126,6 +126,7 @@ namespace {
    * References:
    *  org_spec: Komori, Y. et al. 1999, Proc. of Dai-Kikyu (large balloon) 
    *                                    Sympo. Heisei-11yr, 33-36  (Fig. 2)
+   *            R.L.Golden et al. 1996, ApJL 457, 103
    *  mod_spec: Gleeson, L. J. and Axford, W. I. 
    *           1968, ApJ, 154, 1011-1026 (Eq. 11)
    *  geomag_cut formula: 
@@ -141,7 +142,7 @@ namespace {
    */
 
   // Normalization factor of the original spec.
-  const G4double A_primary = 7.23e-1;	
+  const G4double A_primary = 6.67e-1;	
   // Differential spectral index
   const G4double a_primary = 3.33;
 
@@ -298,22 +299,22 @@ namespace {
   // COR = 0.5, 1, 2, ..., 15 [GV]
   // phi = 500, 600, ..., 1100 [MV]
   G4double integral_array[16][7] = {
-    {134.5, 98.25, 74.12, 57.44, 45.53, 36.79, 30.21}, // COR = 0.5GV
-    {72.08, 57.39, 46.47, 38.18, 31.78, 26.76, 22.76}, // COR = 1 GV
-    {27.83, 24.06, 20.95, 18.35, 16.17, 14.33, 12.75}, // COR = 2 GV
-    {14.02, 12.60, 11.37, 10.29, 9.35, 8.52, 7.78}, // COR = 3 GV
-    {8.23, 7.57, 6.97, 6.44, 5.96, 5.53, 5.13}, // COR = 4 GV
-    {5.33, 4.98, 4.65, 4.35, 4.08, 3.82, 3.59}, // COR = 5 GV
-    {3.70, 3.48, 3.29, 3.11, 2.94, 2.78, 2.63}, // COR = 6 GV
-    {2.69, 2.56, 2.43, 2.31, 2.20, 2.10, 2.00}, // COR = 7 GV
-    {2.03, 1.94, 1.86, 1.78, 1.70, 1.63, 1.56}, // COR = 8 GV
-    {1.58, 1.52, 1.46, 1.40, 1.35, 1.30, 1.25}, // COR = 9 GV
-    {1.26, 1.22, 1.17, 1.13, 1.09, 1.05, 1.02}, // COR = 10 GV
-    {1.03, 0.997, 0.964, 0.932, 0.902, 0.87, 0.845}, // COR = 11 GV
-    {0.853, 0.827, 0.801, 0.777, 0.753, 0.731, 0.709}, // COR = 12 GV
-    {0.715, 0.695, 0.675, 0.656, 0.638, 0.62, 0.603}, // COR = 13 GV
-    {0.607, 0.591, 0.575, 0.56, 0.545, 0.531, 0.517}, // COR = 14 GV
-    {0.521, 0.508, 0.495, 0.483, 0.471, 0.459, 0.448} // COR = 15 GV
+    {124.16, 90.64, 68.379, 52.997, 42.011, 33.944, 27.877}, // COR = 0.5GV
+    {66.499, 52.945, 42.872, 35.229, 29.324, 24.689, 20.998}, // COR = 1 GV
+    {25.676, 22.202, 19.33, 16.936, 14.924, 13.221, 11.769}, // COR = 2 GV
+    {12.936, 11.628, 10.491, 9.499, 8.628, 7.861, 7.183}, // COR = 3 GV
+    {7.601, 6.987, 6.438, 5.946, 5.502, 5.102, 4.739}, // COR = 4 GV
+    {4.925, 4.595, 4.293, 4.017, 3.764, 3.533, 3.319}, // COR = 5 GV
+    {3.415, 3.219, 3.037, 2.869, 2.713, 2.568, 2.433}, // COR = 6 GV
+    {2.488, 2.362, 2.246, 2.136, 2.034, 1.938, 1.848}, // COR = 7 GV
+    {1.881, 1.797, 1.718, 1.644, 1.573, 1.507, 1.444}, // COR = 8 GV
+    {1.466, 1.407, 1.351, 1.298, 1.248, 1.2, 1.155}, // COR = 9 GV
+    {1.169, 1.127, 1.086, 1.047, 1.01, 0.975, 0.941}, // COR = 10 GV
+    {0.951, 0.92, 0.889, 0.86, 0.832, 0.805, 0.779}, // COR = 11 GV
+    {0.787, 0.763, 0.739, 0.717, 0.695, 0.674, 0.654}, // COR = 12 GV
+    {0.66, 0.641, 0.623, 0.605, 0.588, 0.572, 0.556}, // COR = 13 GV
+    {0.56, 0.545, 0.531, 0.517, 0.503, 0.49, 0.477}, // COR = 14 GV
+    {0.481, 0.468, 0.457, 0.445, 0.434, 0.424, 0.413} // COR = 15 GV
   };
 
   //============================================================
@@ -437,9 +438,10 @@ double CrElectronPrimary::energySrc(HepRandomEngine* engine) const
 }
 
 
-// flux() returns the value integrated over whole energy and direction
-// and devided by 4pi sr: then the unit is [c/s/m^2/sr].
-// This value is used as relative normalization among 
+// flux() returns the energy integrated flux averaged over
+// the region from which particle is coming from 
+// and the unit is [c/s/m^2/sr].
+// flux()*solidAngle() is used as relative normalization among
 // "primary", "reentrant" and "splash".
 double CrElectronPrimary::flux() const
 {
@@ -481,8 +483,9 @@ double CrElectronPrimary::flux() const
     energy_integral = tmp1 + (tmp2-tmp1)*(phi-int(phi));
   }
 
-  // Integrated over the upper (sky-side) hemisphere and divided by 4pi.
-  return  0.5 * energy_integral;  // [c/s/m^2/sr]
+  // We assume that the flux is uniform above the earth horizon.
+  // Then the average flux is equal to the vertically downward one.
+  return  energy_integral;  // [c/s/m^2/sr]
 }
 
 

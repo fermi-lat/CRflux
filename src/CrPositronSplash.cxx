@@ -212,15 +212,13 @@ G4double CrPositronSplash::energySrc(HepRandomEngine* engine) const
 }
 
 
-// flux() returns the value integrated over whole energy and direction
-// and devided by 4pi sr: then the unit is [c/s/m^2/sr].
-// This value is used as relative normalization among 
+// flux() returns the energy integrated flux averaged over
+// the region from which particle is coming from 
+// and the unit is [c/s/m^2/sr].
+// flux()*solidAngle() is used as relative normalization among
 // "primary", "reentrant" and "splash".
 G4double CrPositronSplash::flux() const
 {
-  // Averaged energy-integrated flux over 4 pi solod angle used 
-  // in relative normalizaiotn among "primary", "reentrant" and "splash".
-
   // energy integrated vertically downward flux, [c/s/m^2/sr]
   G4double upwardFlux; 
   G4double r1, r2;
@@ -257,9 +255,10 @@ G4double CrPositronSplash::flux() const
   }
 
   // We have assumed that the flux is proportional to 1+0.6 sin(theta)
-  // Then, the flux integrated over solid angle is
-  // (1+0.15pi)*upwardFlux*2pi
-  return 0.5 * (1 + 0.15*M_PI) * upwardFlux; // [c/s/m^2/sr]
+  // Then, the flux integrated over the region from which particle comes
+  // (cosTheta from -1 to -0.4) is 0.8378*2pi*upwardFlux
+  // and the averaged flux is 0.8378*2pi*upwardFlux/(2pi*0.6)
+  return 1.396 * upwardFlux; // [c/s/m^2/sr]
 
 }
 

@@ -101,32 +101,33 @@ StatusCode CRTestAlg::execute() {
 
   // The mix sources handle solid angles better
 
-    arguments.push_back("CrProton");
-    arguments.push_back("CrProtonMix"); // new alternative for CrProton
-    arguments.push_back("CrProtonPrimary");
-    arguments.push_back("CrProtonReentrant");
-    arguments.push_back("CrProtonSplash");
+  arguments.push_back("CrProton");
+  arguments.push_back("CrProtonMix"); // new alternative for CrProton
+  arguments.push_back("CrProtonPrimary");
+  arguments.push_back("CrProtonReentrant");
+  arguments.push_back("CrProtonSplash");
 
- //   arguments.push_back("CrAlpha");
+  //  arguments.push_back("CrAlpha");
 
- //   arguments.push_back("CrElectron");
- //   arguments.push_back("CrElectronMix"); // alternative
- //   arguments.push_back("CrElectronPrimary");
- //   arguments.push_back("CrElectronReentrant");
- //   arguments.push_back("CrElectronSplash");
+  //  arguments.push_back("CrElectron");
+  //  arguments.push_back("CrElectronMix"); // alternative
+  //  arguments.push_back("CrElectronPrimary");
+  //  arguments.push_back("CrElectronReentrant");
+  //  arguments.push_back("CrElectronSplash");
 
-//    arguments.push_back("CrPositron");
-//    arguments.push_back("CrPositronMix"); // alternative
-//    arguments.push_back("CrPositronPrimary");
-//    arguments.push_back("CrPositronReentrant");
-//    arguments.push_back("CrPositronSplash");
+  //  arguments.push_back("CrPositron");
+  //  arguments.push_back("CrPositronMix"); // alternative
+  //  arguments.push_back("CrPositronPrimary");
+  //  arguments.push_back("CrPositronReentrant");
+  //  arguments.push_back("CrPositronSplash");
 
-//  arguments.push_back("CrGamma");
-//  arguments.push_back("CrGammaMix"); // alternative
-//  arguments.push_back("CrGammaPrimary");
-//  arguments.push_back("CrGammaSecondaryDownward");
-//  arguments.push_back("CrGammaSecondaryUpward");
- // arguments.push_back("-no_integrate");
+  //  arguments.push_back("CrGamma");
+  //  arguments.push_back("CrGammaMix"); // alternative
+  //  arguments.push_back("CrGammaPrimary");
+  //  arguments.push_back("CrGammaSecondaryDownward");
+  //  arguments.push_back("CrGammaSecondaryUpward");
+  //  arguments.push_back("-no_integrate");
+
   m_fsvc->rootDisplay(arguments);
 
     return sc;

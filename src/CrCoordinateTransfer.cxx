@@ -12,6 +12,11 @@
 
 #include "CrCoordinateTransfer.hh"
 
+// CLHEP
+#include <CLHEP/config/CLHEP.h>
+
+typedef double G4double;
+
 CrCoordinateTransfer::CrCoordinateTransfer()
 {
   // latitude and longitude of the geomagnetic north pole in 2000
@@ -39,6 +44,18 @@ double CrCoordinateTransfer::geomagneticLatitude
 	  cos(latitude*M_PI/180.0)*cos(latitude_pole*M_PI/180.0)
 	  *cos(longitude*M_PI/180.0 - longitude_pole*M_PI/180.0) );
 
+  // in case that sin(m_geomagneticLatitude) is not from -1.0 to 1.0 due to rounding error
+  if ( sin(latitude*M_PI/180.0)*sin(latitude_pole*M_PI/180.0) + 
+	  cos(latitude*M_PI/180.0)*cos(latitude_pole*M_PI/180.0)
+	  *cos(longitude*M_PI/180.0 - longitude_pole*M_PI/180.0)<-0.999 ){
+    m_geomagneticLatitude = -M_PI/2;
+  }
+  if ( sin(latitude*M_PI/180.0)*sin(latitude_pole*M_PI/180.0) + 
+	  cos(latitude*M_PI/180.0)*cos(latitude_pole*M_PI/180.0)
+	  *cos(longitude*M_PI/180.0 - longitude_pole*M_PI/180.0)>0.999 ){
+    m_geomagneticLatitude = M_PI/2;
+  }
+
   // convert radian to degree
   m_geomagneticLatitude = m_geomagneticLatitude*180.0/M_PI;
 
@@ -65,6 +82,18 @@ double CrCoordinateTransfer::geomagneticLongitude
     acos ( (cos(latitude*M_PI/180.0)*cos(longitude*M_PI/180.0 - longitude_pole*M_PI/180.0) - 
             cos(latitude_pole*M_PI/180.0)*sin(m_geomagneticLatitude*M_PI/180.0))
            /(sin(latitude_pole*M_PI/180.0)*cos(m_geomagneticLatitude*M_PI/180.0)) );
+  // in case that cos(m_geomagneticLongitude) is not from -1.0 to 1.0 due to rounding error
+  if ( (cos(latitude*M_PI/180.0)*cos(longitude*M_PI/180.0 - longitude_pole*M_PI/180.0) - 
+            cos(latitude_pole*M_PI/180.0)*sin(m_geomagneticLatitude*M_PI/180.0))
+    /(sin(latitude_pole*M_PI/180.0)*cos(m_geomagneticLatitude*M_PI/180.0))<-0.999 ){
+    m_geomagneticLongitude = M_PI;
+  }
+  if ( (cos(latitude*M_PI/180.0)*cos(longitude*M_PI/180.0 - longitude_pole*M_PI/180.0) - 
+            cos(latitude_pole*M_PI/180.0)*sin(m_geomagneticLatitude*M_PI/180.0))
+    /(sin(latitude_pole*M_PI/180.0)*cos(m_geomagneticLatitude*M_PI/180.0))>0.999 ){
+    m_geomagneticLongitude = 0.0;
+  }
+
   if ( cos(latitude*M_PI/180.0)*sin(longitude*M_PI/180.0 - longitude_pole*M_PI/180.0)/cos(m_geomagneticLatitude*M_PI/180.0) < 0.0 ){
     m_geomagneticLongitude = m_geomagneticLongitude + M_PI;
   }

@@ -392,9 +392,10 @@ double CrProtonPrimary::energySrc(HepRandomEngine* engine) const
 }
 
 
-// flux() returns the value integrated over whole energy and direction
-// and devided by 4pi sr: then the unit is [c/s/m^2/sr].
-// This value is used as relative normalization among
+// flux() returns the energy integrated flux averaged over
+// the region from which particle is coming from 
+// and the unit is [c/s/m^2/sr].
+// flux()*solidAngle() is used as relative normalization among
 // "primary", "reentrant" and "splash".
 double CrProtonPrimary::flux() const
 {
@@ -436,8 +437,9 @@ double CrProtonPrimary::flux() const
     energy_integral = tmp1 + (tmp2-tmp1)*(phi-int(phi));
   }
 
-  // Integrated over the upper (sky-side) hemisphere and divided by 4pi.
-  return  0.5 * energy_integral;  // [c/s/m^2/sr]
+  // We assume that the flux is uniform above the earth horizon.
+  // Then the average flux is equal to the vertically downward one.
+  return  energy_integral;  // [c/s/m^2/sr]
 
 
 }

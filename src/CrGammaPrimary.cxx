@@ -194,6 +194,7 @@ namespace {
     G4double E; // E means energy in GeV
 
     /*****
+    G4double Ernd; 
     //----------------------------------------
     // following lines are when you generate gammas from 30 keV to 100 GeV
     while(1){
@@ -275,20 +276,17 @@ G4double CrGammaPrimary::energySrc(HepRandomEngine* engine) const
 }
 
 
-// flux() returns the value integrated over whole energy and direction
-// and devided by 4pi sr: then the unit is [c/s/m^2/sr].
-// This value is used as relative normalization among 
-// "primary", "secondary downward" and "secondary upward".
+// flux() returns the energy integrated flux averaged over
+// the region from which particle is coming from 
+// and the unit is [c/s/m^2/sr].
+// flux()*solidAngle() is used as relative normalization among
+// "primary", "reentrant" and "splash".
 G4double CrGammaPrimary::flux() const
 {
-  // Averaged energy-integrated flux over 4 pi solod angle used 
-  // in relative normalizaiotn among "primary", "downward(2ndary)" 
-  // and "upward(2ndary)".
-  // "ENERGY_INTEGRAL_primary" is the energy integrated flux 
-  // (between lowE_primary and highE_primary) at theta=0 (downward).
+  // We assume that the flux is uniform above the earth horizon.
+  // Then the average flux is equal to the vertically downward one.
 
-  // Integrated over the upper (sky-side) hemisphere and divided by 4pi.
-  return  0.5 * ENERGY_INTEGRAL_primary;  // [c/s/m^2/sr]
+  return  ENERGY_INTEGRAL_primary;  // [c/s/m^2/sr]
 }
 
 // Gives back solid angle from which particle comes

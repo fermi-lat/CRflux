@@ -39,8 +39,8 @@ public:
   // Gives back particle energy
   double energySrc(HepRandomEngine* engine) const;
 
-  // flux() returns the value integrated over whole energy and direction
-  // and devided by 4pi sr: then the unit is [c/s/m^2/sr]
+  // flux() returns the value averaged over the region from which
+  // the particle is coming from and the unit is [c/s/m^2/sr]
   double flux() const;
 
   // Gives back solid angle from which particle comes

@@ -8,19 +8,26 @@
  * via CrGamma, the entry-point class for the cosmic-ray gamma
  * generation.
  **************************************************************************
- * This program generates the downward component of CR gamma (2ndary) with
- * proper angular distribution and energy spectrum at Palestine, Texas.
- * We assume that the spectral shape below 10 MeV and above 1 GeV 
- * does not depend on the
- * zenith angle, and express the angular dependence of the 
- * relative_flux (<10 MeV) as follows;
+ * This program generates the downward component of cosmic ray gamma (2ndary)
+ * with proper angular distribution and energy spectrum.
+ * Although the absolute flux and spectrum could depend
+ * on the geomagnetic cutoff energy, 
+ * it is is fixed at Palestine, Texas in the current codes. 
+ * Angular dependence of the atmospheric gamma-ray flux 
+ * has been measured by some authors and known to depend strongly
+ * on zenith angle. Here we refer to Schonfelder et al.
+ * (1977, ApJ 217, 306) where zenith-angle dependence of 
+ * 1.5-10MeV gamma-ray were measured, and use their data
+ * to represent angular depedence of 1 MeV gamma-ray for simplicity.
+ * Then, the relative flux is expressed as
  * =======================================
  * relative_flux[c/sr]       theta[rad]
  * ---------------------------------------
  * 1/cos(theta)              0--pi/3
- * 0.1676*exp(2.368*theta)   pi/3--2.007
- * 2590.67*exp(-2.441*theta) 2.007--2.443
- * 20/3                      2.443-pi 
+ * 0.3673*exp(1.6182*theta)  pi/3--pi/2
+ * 0.02752*exp(3.268*theta)  pi/2--2.007
+ * 4318.9*exp(-2.693*theta)  2.007--2.443
+ * 6                         2.443-pi 
  * =======================================
  * The energy spectrum of downward 2ndary gamma is expressed with 
  * a power-law function, a power-law with exponential cutoff,
@@ -45,6 +52,7 @@
  * 2002-01 Modified by T. Mizuno
  *         angular distribution is changed to be original (broader) one.
  * 2002-05 Angular distribution is modified by T. Mizuno (Hiroshima Univ). 
+ * 2003-08 Energy spectrum/angular distribution of gamma upward is modified by T. Mizuno.
  **************************************************************************
  */
 
@@ -77,10 +85,10 @@ namespace {
   // It must be computed in units of [c/s/m^2/sr] and given here.
   //
   // Integrated flux of continuum over energy is 2.10e3 [c/s/m^2/sr].
-  // We also added 511keV line of intensity = 70.5 [c/s/m^/sr],
-  // hence the total integral becomes 2.17e3 [c/s/m^2/sr]
+  // We also added 511keV line of intensity = 78.33 [c/s/m^/sr],
+  // hence the total integral becomes 2.178e3 [c/s/m^2/sr]
 
-  //const G4double ENERGY_INTEGRAL_downward = 2.17e3; // [c/s/m^2/sr]
+  //const G4double ENERGY_INTEGRAL_downward = 2.178e3; // [c/s/m^2/sr]
 
   // we generate gamma above 1 MeV
   const G4double ENERGY_INTEGRAL_downward = 414.2; // [c/s/m^2/sr]
@@ -114,7 +122,7 @@ namespace {
   const G4double a4_downward = 2.20; 
   const G4double Cutoff = 120; // in unit of MeV
   // 511keV line intensity
-  const G4double A_511keV = 70.5;  // [c/s/m^2/sr]
+  const G4double A_511keV = 78.3;  // [c/s/m^2/sr]
   
   const G4double MeVtoGeV = 1e-3;
 
@@ -321,25 +329,26 @@ std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy,
 {
   // Based on the measurement by Shonfelder et al.,
   // We expressed zenith-angle dependence of the relative_flux [/sr]
-  // in low energy region (<10 MeV) as follows;
+  // in low energy region (@1 MeV) as follows;
   // 1/cos(theta) (0--pi/3 [radian], or 0-60[degree])
-  // 0.1676*exp(2.368*theta) (theta=pi/3--2.007[rad], or 60--115[degree])
-  // 2590.67*exp(-2.441*theta) (theta=2.007--2.443[rad], or 115--140[degree])
-  // 20/3 (2.443-pi[rad], or 140--180[degree])
+  // 0.3673*exp(1.6182*theta) (theta=pi/3--pi/2[rad], or 60--90[degree])
+  // 0.02752*exp(3.268*theta) (theta=pi/2--2.007[rad], or 90--115[degree])
+  // 4318.9*exp(-2.693*theta) (theta=2.007--2.443[rad], or 115--140[degree])
+  // 6 (2.443-pi[rad], or 140--180[degree])
   // Here, theta=0 means particle going vertically downward,
   // and theta=pi is the particle going vertically upward.
   // Integrals over solid angle become as follows;
   // 4.355  (theta=0--pi/3[rad])
-  // 12.617 (theta=pi/3--pi/2[rad])
-  // 31.874 (theta=pi/2--2.007[rad])
-  // 26.373 (theta=2.007--2.443[rad])
-  // 9.811  (theta=2.443--pi[rad])
+  // 9,980  (theta=pi/3--pi/2[rad])
+  // 25.157 (theta=pi/2--2.007[rad])
+  // 25.414 (theta=2.007--2.443[rad])
+  // 8.831  (theta=2.443--pi[rad])
 
   G4double rand = engine->flat();
   G4double theta;
-  if (rand*(4.355+12.617)<=4.355){ // from 0 to pi/3 radian
+  if (rand*(4.355+9.980)<=4.355){ // from 0 to pi/3 radian
     while(1){
-      theta = acos( cos(M_PI/3)+(engine->flat())*(cos(0.)-cos(M_PI/3)) );
+      theta = acos( cos(M_PI/3)+(engine->flat())*(cos(0)-cos(M_PI/3)) );
       if ( 2*engine->flat()< (1/cos(theta)) ){break;}
     }
   } else { 
@@ -348,8 +357,8 @@ std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy,
     while(1){
       // zenith angle distribution: flux[c/s/m^2/sr] is proportional to
       // a*exp(b*theta)
-      G4double a=0.1676;
-      G4double b=2.368; 
+      G4double a=0.3673;
+      G4double b=1.6182; 
       G4double max = a/b*exp(b*M_PI/2);
       G4double min = a/b*exp(b*M_PI/3);
       G4double r = engine->flat() * (max-min) + min;
@@ -371,15 +380,13 @@ G4double CrGammaSecondaryDownward::energySrc(HepRandomEngine* engine) const
 }
 
 
-// flux() returns the value integrated over whole energy and direction
-// and devided by 4pi sr: then the unit is [c/s/m^2/sr].
-// This value is used as relative normalization among 
-// "primary", "secondary downward" and "secondary upward".
+// flux() returns the energy integrated flux averaged over
+// the region from which particle is coming from 
+// and the unit is [c/s/m^2/sr].
+// flux()*solidAngle() is used as relative normalization among
+// "primary", "reentrant" and "splash".
 G4double CrGammaSecondaryDownward::flux() const
 {
-  // Averaged energy-integrated flux over 4 pi solod angle used 
-  // in relative normalizaiotn among "primary", "downward(2ndary)" 
-  // and "upward(2ndary)".
   // "ENERGY_INTEGRAL_downward" is the energy integrated flux 
   // (between lowE_downward and highE_downward) at theta=0 
   // (vertically downward).
@@ -387,12 +394,12 @@ G4double CrGammaSecondaryDownward::flux() const
   // Integral over solid angle from theta=0 to pi/3[rad] 
   // becomes 4.355*ENERGY_INTEGRAL_downward,
   // and that from pi/3 to pi/2[rad] becomes
-  // 12.617*ENERGY_INTEGRAL_downward (see comments at a "dir" method).
+  // 9.980*ENERGY_INTEGRAL_downward (see comments at a "dir" method).
   // Hence the total integrated flux becomes
-  // 2.701*2pi*ENERGY_INTEGRAL_downward.
+  // 2.281*2pi*ENERGY_INTEGRAL_downward.
 
-  // Integrated over the upper (sky-side) hemisphere and divided by 4pi.
-  return  2.701 * 0.5 * ENERGY_INTEGRAL_downward;  // [c/s/m^2/sr]
+  // Integrated over the upper (sky-side) hemisphere and divided by 2pi.
+  return  2.281 * ENERGY_INTEGRAL_downward;  // [c/s/m^2/sr]
 }
 
 // Gives back solid angle from which particle comes
