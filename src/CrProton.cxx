@@ -84,11 +84,23 @@ CrSpectrum* CrProton::selectComponent()
   G4double                             total_flux = 0;
   std::vector<CrSpectrum*>::iterator i;
 
-  // calculate the total flux 
-  for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
-    total_flux += (*i)->flux();
-    integ_flux[*i] = total_flux;
+  // calculate the total flux
+  if(m_subComponents.size() > 1)
+  {
+     for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
+        total_flux += (*i)->solidAngle()*(*i)->flux();
+        integ_flux[*i] = total_flux; // Don't divide by 4 pi it's not needed here
+     }
   }
+  else
+  {
+     for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
+        total_flux += (*i)->flux();
+        integ_flux[*i] = total_flux;
+     }
+  }
+
+
   // select component based on the flux
   G4double  rnum = m_engine->flat() * total_flux;
   for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
@@ -96,6 +108,8 @@ CrSpectrum* CrProton::selectComponent()
   }
 
   m_component = *i;
+
+  m_component->flux();
 
   return *i;
 }
@@ -123,11 +137,23 @@ G4double CrProton::flux(G4double time) const
 {
   G4double          total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
-  for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
-    total_flux += (*i)->flux();
-    //    cout << "flux of this component = " << (*i)->flux() << endl;
+
+  // if summing over several sources scale by solid angles
+  if(m_subComponents.size() > 1)
+  {
+     for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
+        total_flux += (*i)->solidAngle()*(*i)->flux();
+     }
+     return total_flux / (4 * M_PI);
   }
-  return total_flux;
+  else
+  {
+     for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
+        total_flux += (*i)->flux();
+        //    cout << "flux of this component = " << (*i)->flux() << endl;
+     }
+     return total_flux;
+  }
 }
 
 // Gives back solid angle from whick particles come
