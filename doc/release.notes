@@ -1,7 +1,10 @@
 /** @file release.notes
 
 @verbatim
- 15-apr-o4 v1r1p13  THB remove commented lines from requirements file that contain wrong macros
+
+13-aug-04  v1r2p1  THB add a use astro, Event that it was getting from FluxSvc 
+ ..... (unknown changes not documented here)
+15-apr-o4 v1r1p13  THB remove commented lines from requirements file that contain wrong macros
  ..... (unknown changes not documented here)
  03-oct-o3 v1r1p6  THB fix for vc 7.1
  29-aug-03 v1r1p3  THB change name of alpha to He, since that is our official name
