@@ -45,7 +45,7 @@ public:
   virtual double flux (double time) const;  // calculate the flux [c/s/m^2/sr]
 
   // Gives back the particle kind
-  virtual const char* particleName() const{ return "alpha"; }
+  virtual const char* particleName() const{ return "He"; }
 
   // Gives back the component name
   virtual std::string title() const{ return "CrAlpha"; }

@@ -447,7 +447,7 @@ G4double CrAlphaPrimary::solidAngle() const
 // Gives back particle name
 const char* CrAlphaPrimary::particleName() const
 {
-  return "alpha";
+  return "He";
 }
 
 
