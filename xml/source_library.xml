@@ -1,11 +1,25 @@
 <!-- $Header$
 -->
-<source_library title="cosmic_ray">    
+<source_library title="exgal">    
 
-    <source name="CrExample">
+    <source name="ExGalExample">
         <spectrum escale="GeV"> 
-            <SpectrumClass name="CrExample" /> 
+            <SpectrumClass name="ExGalExample" /> 
             <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="AGN">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="AGNSpectrum" params="100"/> 
+            <use_spectrum frame="galaxy"/>
+        </spectrum>
+    </source>
+
+	<source name="DiffBkg">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="ExGalDiffuse" params="0.990"/> 
+            <use_spectrum frame="galaxy"/>
         </spectrum>
     </source>
 

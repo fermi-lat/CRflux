@@ -1,0 +1,14 @@
+<!--  $Header$
+  DTD file for internal FluxSvc data and parameter definitions
+  -->
+<!ELEMENT data_library ((datatable)+ |(data_library)*) >
+
+
+<!ELEMENT datatable (( logNlogSdata )*) >
+<!ATTLIST datatable name ID #REQUIRED
+			  flux CDATA "1.0">
+
+
+<!-- for a specific direction -->
+<!ELEMENT logNlogSdata EMPTY>
+<!ATTLIST logNlogSdata logflux CDATA "0" lognumsources CDATA "0">

@@ -1,5 +1,5 @@
 /** 
-* @file CRflux_load.cpp
+* @file ExGalflux_load.cpp
 * @brief This is needed for forcing the linker to load all components
 * of the library.
 *
@@ -8,7 +8,7 @@
 
 #include "GaudiKernel/DeclareFactoryEntries.h"
 
-DECLARE_FACTORY_ENTRIES(CRflux) {
-    DECLARE_TOOL( RegisterCRflux );
+DECLARE_FACTORY_ENTRIES(ExGalflux) {
+    DECLARE_TOOL( RegisterExGalflux );
     
 } 
