@@ -14,7 +14,7 @@
 #include <string>
 
 // Activate the next line when in CRflux package
-#include "FluxSvc/ISpectrum.h"
+#include "flux/ISpectrum.h"
 // Activate the next line when in end-to-end simulation framework
 // of Tune's group
 //#include "ISpectrum.h"

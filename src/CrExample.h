@@ -11,7 +11,7 @@
 #include <vector>
 #include <utility>
 #include <string>
-#include "FluxSvc/ISpectrum.h"
+#include "flux/ISpectrum.h"
 
 class CrExample : public /*CrSpectrum*/ISpectrum
 {
