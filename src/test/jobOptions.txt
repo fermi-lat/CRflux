@@ -1,36 +1,37 @@
 //##############################################################
 //
-// Job options file for ExGalflux test program
+// Job options file for FluxSvc test program
 //
 
-ApplicationMgr.DLLs   = { "GlastSvc" , "FluxSvc", "ExGalflux"};
-ApplicationMgr.ExtSvc   = {"FluxSvc" , "GlastDetSvc", "GlastEventSelector/EventSelector" , "EventCnvSvc" };
-EventPersistencySvc.CnvServices = {"EventCnvSvc"};
-EventSelector.Input = "NONE";
+
+ApplicationMgr.ExtSvc += { "FluxSvc" };
+ApplicationMgr.DLLs   += { "FluxSvc" }; 
+ApplicationMgr.DLLs   += { "CRflux" }; 
 FluxSvc.source_lib = {"$(FLUXSVCROOT)/xml/source_library.xml"};
 ApplicationMgr.ExtSvc += { "ParticlePropertySvc" };
 
-//ApplicationMgr.TopAlg = {"ExGalTestAlg"};
-ApplicationMgr.TopAlg = {"FluxAlg/Top","ExposureAlg","ExGalTestAlg"};
-
-ApplicationMgr.Runable = "FluxSvc";
+//ApplicationMgr.TopAlg = {"CRTestAlg"};
+ApplicationMgr.TopAlg = {"FluxAlg"};
 
 // Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
 MessageSvc.OutputLevel      = 2;
 
 // Set the default for a source library document
 FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
-FluxSvc.source_lib +={"$(EXGALFLUXROOT)/xml/source_library.xml"};
+FluxSvc.source_lib ={"$(CRFLUXROOT)/xml/source_library.xml"};
 
 // ask for a source that is in the user_library
-ExGalTestAlg.source_name="DiffBkg";
+FluxAlg.source_name="CrExample";
 
 ApplicationMgr.EvtSel = "NONE";
-ApplicationMgr.EvtMax = 100;
+ApplicationMgr.EvtMax = 10;
 
 //==============================================================
 //
 // End of job options file
 //
 //##############################################################
+
+
+
 
