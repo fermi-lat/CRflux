@@ -190,7 +190,7 @@ namespace {
     G4double envelope3_area = rand_max_3 - rand_min_3;
     G4double envelope_area = envelope1_area + envelope2_area + envelope3_area;
 
-    G4double Ernd, r; 
+    G4double r; 
     G4double E; // E means energy in GeV
 
     /*****
