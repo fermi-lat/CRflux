@@ -4,3 +4,4 @@ sun4x_*
 i386_linux*
 setup.*
 *.mak*
+VC7debug
