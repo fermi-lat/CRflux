@@ -13,6 +13,8 @@
 #include "CrPositron.hh"
 #include "CrGamma.hh"
 
+#include "CrLocation.h"
+
 #include "CLHEP/Random/Random.h"
 
 /** @class RegisterCRflux
@@ -65,6 +67,11 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
 	// CRflux needs to use the same random engine as FluxSvc
 	HepRandomEngine* engine = fsvc->getRandomEngine();
 	HepRandom::setTheEngine(engine);
+
+   // Get the initial location from FluxSvc and store in the CrLocation singleton
+   CrLocation::Instance()->setLat(fsvc->location().first);
+   CrLocation::Instance()->setLon(fsvc->location().second);
+   CrLocation::Instance()->setFluxSvc(fsvc);
 
     return StatusCode::SUCCESS;
 } 

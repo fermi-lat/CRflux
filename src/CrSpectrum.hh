@@ -21,6 +21,7 @@ class CrSpectrum
 {
 public:
   CrSpectrum();
+  CrSpectrum(double lat, double lon);
   virtual ~CrSpectrum();
 
   // time is the elapsed seconds from 2000-01-01 00:00:00 UT 
