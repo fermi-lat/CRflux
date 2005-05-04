@@ -44,6 +44,7 @@
  *           energy spectrum is extrapolated down to 10 MeV
  * 2003-02 Modified by T. Mizuno to generate flux at any position in orbit.
  * 2004-04 Modified by T. Mizuno to simplify the model functions.
+ * 2005-05 Modified by T. Mizuno to calculate the flux when theta_M<0.
  **************************************************************************
  */
 
@@ -152,43 +153,43 @@ G4double CrPositronSplash::energySrc(HepRandomEngine* engine) const
 {
 
   G4double r1, r2;
-  if (m_geomagneticLatitude*M_PI/180.0<0.15){
+  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
     return crPositronSplash_0003->energy(engine);
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.15 && m_geomagneticLatitude*M_PI/180.0<0.45){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.15;
-    r2 = 0.45-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.15;
+    r2 = 0.45-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
       return crPositronSplash_0003->energy(engine);
     } else {
       return crPositronSplash_0306->energy(engine);
     }
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.45 && m_geomagneticLatitude*M_PI/180.0<0.7){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.45;
-    r2 = 0.7-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.7){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.45;
+    r2 = 0.7-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
       return crPositronSplash_0306->energy(engine);
     } else {
       return crPositronSplash_0608->energy(engine);
     }
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.7 && m_geomagneticLatitude*M_PI/180.0<0.85){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.7;
-    r2 = 0.85-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.7 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.85){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.7;
+    r2 = 0.85-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
       return crPositronSplash_0608->energy(engine);
     } else {
       return crPositronSplash_0809->energy(engine);
     }
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.85 && m_geomagneticLatitude*M_PI/180.0<0.95){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.85;
-    r2 = 0.95-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.85 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.95){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.85;
+    r2 = 0.95-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
       return crPositronSplash_0809->energy(engine);
     } else {
       return crPositronSplash_0910->energy(engine);
     }
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.95 && m_geomagneticLatitude*M_PI/180.0<1.05){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.95;
-    r2 = 1.05-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.95 && fabs(m_geomagneticLatitude)*M_PI/180.0<1.05){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.95;
+    r2 = 1.05-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
       return crPositronSplash_0910->energy(engine);
     } else {
@@ -211,31 +212,31 @@ G4double CrPositronSplash::flux() const
   // energy integrated vertically upward flux, [c/s/m^2/sr]
   G4double upwardFlux; 
   G4double r1, r2;
-  if (m_geomagneticLatitude*M_PI/180.0<0.15){
+  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
     upwardFlux = crPositronSplash_0003->upwardFlux();
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.15 && m_geomagneticLatitude*M_PI/180.0<0.45){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.15;
-    r2 = 0.45-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.15;
+    r2 = 0.45-fabs(m_geomagneticLatitude)*M_PI/180.0;
     upwardFlux = ( r2*crPositronSplash_0003->upwardFlux()
 		   +r1*crPositronSplash_0306->upwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.45 && m_geomagneticLatitude*M_PI/180.0<0.7){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.45;
-    r2 = 0.7-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.7){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.45;
+    r2 = 0.7-fabs(m_geomagneticLatitude)*M_PI/180.0;
     upwardFlux = ( r2*crPositronSplash_0306->upwardFlux()
                      +r1*crPositronSplash_0608->upwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.7 && m_geomagneticLatitude*M_PI/180.0<0.85){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.7;
-    r2 = 0.85-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.7 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.85){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.7;
+    r2 = 0.85-fabs(m_geomagneticLatitude)*M_PI/180.0;
     upwardFlux = ( r2*crPositronSplash_0608->upwardFlux()
 		   +r1*crPositronSplash_0809->upwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.85 && m_geomagneticLatitude*M_PI/180.0<0.95){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.85;
-    r2 = 0.95-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.85 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.95){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.85;
+    r2 = 0.95-fabs(m_geomagneticLatitude)*M_PI/180.0;
     upwardFlux = ( r2*crPositronSplash_0809->upwardFlux()
                      +r1*crPositronSplash_0910->upwardFlux() )/(r1+r2);
-  } else if (m_geomagneticLatitude*M_PI/180.0>=0.95 && m_geomagneticLatitude*M_PI/180.0<1.05){
-    r1 = m_geomagneticLatitude*M_PI/180.0-0.95;
-    r2 = 1.05-m_geomagneticLatitude*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.95 && fabs(m_geomagneticLatitude)*M_PI/180.0<1.05){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.95;
+    r2 = 1.05-fabs(m_geomagneticLatitude)*M_PI/180.0;
     upwardFlux = ( r2*crPositronSplash_0910->upwardFlux()
                      +r1*crPositronSplash_1011->upwardFlux() )/(r1+r2);
   } else{
