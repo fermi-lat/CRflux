@@ -12,6 +12,7 @@
 #include "CrElectron.hh"
 #include "CrPositron.hh"
 #include "CrGamma.hh"
+#include "CrHeavyIon.h"
 
 #include "CrLocation.h"
 
@@ -57,12 +58,13 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
     log << MSG::INFO << "Register CRflux Spectrum(s)..." << endreq;
 
     //declare the factories here:
-    static RemoteSpectrumFactory<CrExample> CRfactory(fsvc);
+//    static RemoteSpectrumFactory<CrExample> CRfactory(fsvc);
     static RemoteSpectrumFactory<CrProton> CRfactory2(fsvc);
     static RemoteSpectrumFactory<CrAlpha> CRfactory3(fsvc);
     static RemoteSpectrumFactory<CrElectron> CRfactory4(fsvc);
     static RemoteSpectrumFactory<CrPositron> CRfactory5(fsvc);
     static RemoteSpectrumFactory<CrGamma> CRfactory6(fsvc);
+    static RemoteSpectrumFactory<CrHeavyIon> CRfactory7(fsvc);
 
 	// CRflux needs to use the same random engine as FluxSvc
 	HepRandomEngine* engine = fsvc->getRandomEngine();
