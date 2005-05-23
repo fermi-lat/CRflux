@@ -157,6 +157,14 @@
         </spectrum>
     </source>
     
+    <source name="CrHeavyIon">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIon" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>
+
+    
     <!-- All the sources in CRflux -->
     <source name="CrTotal">
 		<nestedSource sourceRef="CrProton"/>
@@ -171,10 +179,11 @@
 		<nestedSource sourceRef="CrProtonMix"/>
 		<nestedSource sourceRef="CrElectronMix"/>
 		<nestedSource sourceRef="CrPositronMix"/>
-<!--		<nestedSource sourceRef="CrGammaMix"/> -->
 		<nestedSource sourceRef="CrAlpha"/>
+		<nestedSource sourceRef="CrHeavyIon"/>
     </source>
     
+
 
 </source_library>
 
