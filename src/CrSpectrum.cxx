@@ -316,7 +316,7 @@ int CrSpectrum::askGPS()
     GPS* gps = CrLocation::instance()->getFluxSvc()->GPSinstance();
 
     astro::EarthCoordinate m_pos = gps->earthpos();
-    setPosition(m_pos.latitude(), m_pos.longitude(), m_pos.altitude());
+    setPosition(m_pos.latitude(), m_pos.longitude(), m_time, m_pos.altitude());
     
     return 0; // can't be void in observer pattern
 }
