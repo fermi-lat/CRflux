@@ -7,6 +7,7 @@ $Id$
 
 @verbatim
 
+15-jun-05 v1r4p1  THB GPS adjustment
 25-may-05 v1r4    THB add heavy ions, from Benoit.
 27-mar-05 v1r3    THB clean up a bit; reorganize geomagnetic interface 
 20-mar-05 v1r2p5  THB disable unit test (again) since it invokes ROOT interactively. 

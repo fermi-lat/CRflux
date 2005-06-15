@@ -313,7 +313,7 @@ double CrSpectrum::solarWindPotential() const
 // call back from GPS when position changes
 int CrSpectrum::askGPS()
 {
-    GPS* gps = CrLocation::instance()->getFluxSvc()->GPSinstance();
+    astro::GPS* gps = astro::GPS::instance(); //CrLocation::instance()->getFluxSvc()->GPSinstance();
 
     astro::EarthCoordinate m_pos = gps->earthpos();
     setPosition(m_pos.latitude(), m_pos.longitude(), m_time, m_pos.altitude());
