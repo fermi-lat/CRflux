@@ -155,7 +155,11 @@ void CrSpectrum::setPosition
   // ------------------------------
 
   m_cutOffRigidity = 
+#if 1
     14.9 * pow(1+m_altitude/m_earthRadius,-2)* pow(cos(m_geomagneticLatitude*M_PI/180.0),4);
+#else
+      8.8; // fixed for testing
+#endif
   //  m_cutOffRigidity = 4.46;  // temporarily fixed to Palestine value.
 
   // magnetic cutoff rigidity is restricted in 0.5 < cor < 14.9[GV]
@@ -313,10 +317,10 @@ double CrSpectrum::solarWindPotential() const
 // call back from GPS when position changes
 int CrSpectrum::askGPS()
 {
-    astro::GPS* gps = astro::GPS::instance(); //CrLocation::instance()->getFluxSvc()->GPSinstance();
+    astro::GPS* gps=CrLocation::instance()->getFluxSvc()->GPSinstance();
 
-    astro::EarthCoordinate m_pos = gps->earthpos();
-    setPosition(m_pos.latitude(), m_pos.longitude(), m_time, m_pos.altitude());
+    astro::EarthCoordinate pos = gps->earthpos();
+    setPosition(pos.latitude(), pos.longitude(), gps->time(), pos.altitude());
     
     return 0; // can't be void in observer pattern
 }

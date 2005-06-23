@@ -10,14 +10,18 @@
  */
 
 //$Header$
-#include <iostream>
 #include "CrCoordinateTransfer.hh"
 #include "CrCoordinateTransfer.inc"
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
 
+#include <cmath>
+#include <iostream>
+
 typedef double G4double;
+
+double CrCoordinateTransfer::s_fixedCutoff=0;
 
 CrCoordinateTransfer::CrCoordinateTransfer()
 {

@@ -51,6 +51,7 @@ private:
     IParticlePropertySvc * m_partSvc;
     DoubleProperty m_latitude;
     DoubleProperty m_longitude;
+    StringArrayProperty m_rootplot;
 };
 
 
@@ -65,6 +66,7 @@ Algorithm(name, pSvcLocator){
     declareProperty("source_name", m_source_name="default");
     declareProperty("latitude", m_latitude=20); // not useable yet
     declareProperty("longitude", m_longitude=20);
+    declareProperty("rootplot", m_rootplot);
 }
 
 //------------------------------------------------------------------------------
@@ -81,6 +83,18 @@ StatusCode CRTestAlg::initialize() {
     // get the service
     StatusCode sc = service("FluxSvc", m_fsvc);
     m_fsvc->GPSinstance()->notifyObservers();
+#if 1
+    // make the root plots file here
+    std::vector<std::string> sargs;
+
+    for( std::vector<std::string>::const_iterator it = m_rootplot.value().begin(); it!=m_rootplot.value().end(); ++it){
+        std::string arg(*it);
+        sargs.push_back(arg);
+    }
+
+    m_fsvc->rootDisplay(sargs);
+
+#endif
 
     return sc;
 }
@@ -92,27 +106,28 @@ StatusCode CRTestAlg::execute() {
     StatusCode  sc = StatusCode::SUCCESS;
     MsgStream   log( msgSvc(), name() );    
 
-    std::vector<const char*> arguments;
+#if 0
+    std::vector<std::string> arguments;
     //  arguments.push_back("CrExample");
 
     // The mix sources handle solid angles better
 
-    arguments.push_back("CrProton");
+//    arguments.push_back("CrProton");
     arguments.push_back("CrProtonMix"); // new alternative for CrProton
-    arguments.push_back("CrProtonPrimary");
-    arguments.push_back("CrProtonReentrant");
-    arguments.push_back("CrProtonSplash");
+//    arguments.push_back("CrProtonPrimary");
+//    arguments.push_back("CrProtonReentrant");
+//    arguments.push_back("CrProtonSplash");
 
     //  arguments.push_back("CrAlpha");
 
     //  arguments.push_back("CrElectron");
-    //  arguments.push_back("CrElectronMix"); // alternative
+      arguments.push_back("CrElectronMix"); // alternative
     //  arguments.push_back("CrElectronPrimary");
     //  arguments.push_back("CrElectronReentrant");
     //  arguments.push_back("CrElectronSplash");
 
     //  arguments.push_back("CrPositron");
-    //  arguments.push_back("CrPositronMix"); // alternative
+      arguments.push_back("CrPositronMix"); // alternative
     //  arguments.push_back("CrPositronPrimary");
     //  arguments.push_back("CrPositronReentrant");
     //  arguments.push_back("CrPositronSplash");
@@ -126,7 +141,7 @@ StatusCode CRTestAlg::execute() {
 
     
     m_fsvc->rootDisplay(arguments);
-
+#endif
     return sc;
 }
 

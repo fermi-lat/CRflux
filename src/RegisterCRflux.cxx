@@ -6,6 +6,7 @@
 #include "FluxSvc/ISpectrumFactory.h"
 #include "FluxSvc/IFluxSvc.h"
 // CR includes
+#include "CrCoordinateTransfer.hh"
 #include "CrExample.h"
 #include "CrProton.hh"
 #include "CrAlpha.hh"
@@ -30,9 +31,12 @@ public:
     RegisterCRflux( const std::string& type, const std::string& name, const IInterface* parent);
     virtual ~RegisterCRflux() { }
     
+
     /// implement to define sources: will be called from FluxSvc
     StatusCode registerMe(IFluxSvc* );
+    StatusCode initialize(); // overload
     
+    double m_cutoff;
 };
 
 
@@ -49,6 +53,9 @@ RegisterCRflux::RegisterCRflux(const std::string& type,
     // Declare additional interface
     declareInterface<IRegisterSource>(this);
         
+    // for testing with a given cutoff
+    declareProperty("FixedCutoff", m_cutoff=0);
+
 }
 
 
@@ -72,9 +79,18 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
 
    // Get the initial location from FluxSvc and store in the CrLocation singleton
    CrLocation::instance()->setFluxSvc(fsvc);
+   initialize(); //?
 
    return StatusCode::SUCCESS;
 } 
+StatusCode RegisterCRflux::initialize()
+{
+   //Set the properties
+    setProperties();
+    if( m_cutoff != 0 ) CrCoordinateTransfer::s_fixedCutoff=0;
+
+    return StatusCode::SUCCESS;
+}
 
 
 

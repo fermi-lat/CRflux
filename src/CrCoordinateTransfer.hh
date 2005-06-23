@@ -9,7 +9,6 @@
 #ifndef CrCoordinateTransfer_H
 #define CrCoordinateTransfer_H
 
-#include "math.h"
 
 class CrCoordinateTransfer
 {
@@ -23,6 +22,9 @@ public:
   // given in degree, for consistency with a FluxSvc package.
   double geomagneticLatitude(double lat, double lon) const; // [degree]
   double geomagneticLongitude(double lat, double lon) const; // [degree]
+
+  /// set this to fix the cutoff for testing
+  static double s_fixedCutoff;
 
 private:
 
