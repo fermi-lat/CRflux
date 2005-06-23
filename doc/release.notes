@@ -7,6 +7,7 @@ $Id$
 
 @verbatim
 
+22-jun-05 v1r4p2  THB fix GPS to get correct instance. fix test program to use rootplot strings
 15-jun-05 v1r4p1  THB GPS adjustment
 25-may-05 v1r4    THB add heavy ions, from Benoit.
 27-mar-05 v1r3    THB clean up a bit; reorganize geomagnetic interface 
