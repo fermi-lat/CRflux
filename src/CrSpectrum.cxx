@@ -183,9 +183,14 @@ void CrSpectrum::setPosition
   // Typical value of solar potential is 540 MV for minimum solar activity 
   // and 1100 MV for maximum solar activity.
   // Cosine curve is used to interpolate.
-
+#if 0 // Original version for Palestine
   // elapsed seconds of 2001-11-01 from 2000-01-01
   double time_0 = (304+365)*86400; 
+#else // modified for GLAST mission start at 2001-01-01: this is 2001-11-01 - 2001-01-01
+    double time_0 = 304*86400;
+#endif
+  
+
   m_solarWindPotential = 820+280*cos(2*M_PI*(m_time-time_0)/(11*365*86400));
 
   // Solar potential is restricted in 500 < phi < 1100[MV]
