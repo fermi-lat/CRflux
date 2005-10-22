@@ -47,10 +47,10 @@ CrSpectrum::CrSpectrum()
   // and calculate the cut off rigidity and solar modulation potential
   //
 
-  // elapsed seconds of 2001-11-01 (solar maximum) from 2000-01-01
-  //  m_time = (304+365)*86400; 
-  // elapsed seconds of 2001-11-01 from 2000-01-01 + 5.5year 
-  m_time = (304+365)*86400+5.5*86400*365; // solar minimum
+  // elapsed seconds of 2001-11-01 (solar maximum) from 2001-01-01
+  //  m_time = 304*86400; 
+  // elapsed seconds of 2001-11-01 from 2001-01-01 + 5.5year 
+  m_time = 304*86400+5.5*86400*365; // solar minimum
 
   // altitude of the satellite is assumed to be 500km,
   // typical value for low earth orbit
