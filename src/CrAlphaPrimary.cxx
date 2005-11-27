@@ -251,22 +251,22 @@ namespace {
   // COR = 0.5, 1, 2, ..., 15 [GV]
   // phi = 500, 600, ..., 1100 [MV]
   G4double integral_array[16][7] = {
-    {323.1, 270.4, 230.9, 200.5, 175.8, 155.9, 139.9}, // COR = 0.5GV
-    {295.5, 251.5, 217.4, 190.3, 168.3, 150.1, 134.9}, // COR = 1 GV
-    {205.3, 182.6, 163.7, 147.6, 131.8, 121.9, 111.6}, // COR = 2 GV
-    {138.3, 126.7, 116.6, 107.6, 99.6, 92.4, 86.1}, // COR = 3 GV
-    {97.4, 91.0, 85.1, 79.7, 75.0, 70.5, 66.4}, // COR = 4 GV
-    {72.0, 68.0, 64.4, 61.0, 57.9, 55.0, 52.7}, // COR = 5 GV
-    {55.4, 52.8, 50.3, 48.1, 45.9, 43.9, 42.1}, // COR = 6 GV
-    {44.0, 42.2, 40.5, 38.8, 37.3, 35.9, 34.5}, // COR = 7 GV
-    {35.8, 34.5, 33.3, 32.1, 31.0, 29.0, 28.9}, // COR = 8 GV
-    {29.7, 28.8, 27.8, 27.0, 26.1, 25.3, 24.5}, // COR = 9 GV
-    {25.1, 24.4, 23.8, 23.0, 22.3, 21.7, 21.1}, // COR = 10 GV
-    {21.6, 21.0, 20.4, 19.9, 19.3, 18.8, 18.3}, // COR = 11 GV
-    {18.7, 18.2, 17.8, 17.3, 16.9, 16.5, 16.1}, // COR = 12 GV
-    {16.4, 16.0, 15.6, 15.3, 14.9, 14.6, 14.3}, // COR = 13 GV
-    {14.5, 14.2, 13.9, 13.6, 13.3, 13.0, 12.7}, // COR = 14 GV
-    {12.9, 12.6, 12.4, 12.1, 11.9, 11.6, 11.4} // COR = 15 GV
+    {321.61, 269.45, 230.25, 199.8, 175.5, 155.7, 139.3}, // COR = 0.5GV
+    {290.9, 247.9, 214.6, 188.1, 166.5, 148.6, 133.7}, // COR = 1 GV
+    {204.2, 181.1, 161.9, 145.8, 132.1, 120.3, 110.1}, // COR = 2 GV
+    {140.7, 128.3, 117.5, 108.0, 99.7, 92.4, 85.8}, // COR = 3 GV
+    {100.9, 93.7, 87.2, 81.4, 76.2, 71.5, 67.2}, // COR = 4 GV
+    {75.6, 71.0, 66.9, 63.1, 59.6, 56.4, 53.5}, // COR = 5 GV
+    {58.8, 55.7, 52.9, 50.3, 47.8, 45.6, 43.5}, // COR = 6 GV
+    {46.9, 44.8, 42.8, 41.0, 39.2, 37.6, 36.1}, // COR = 7 GV
+    {38.4, 36.9, 35.4, 34.0, 32.8, 31.5, 30.4}, // COR = 8 GV
+    {32.1, 31.0, 29.8, 28.8, 27.8, 26.8, 25.9}, // COR = 9 GV
+    {27.3, 26.4, 25.5, 24.7, 23.9, 23.1, 22.4}, // COR = 10 GV
+    {23.5, 22.7, 22.1, 21.4, 20.8, 20.2, 19.6}, // COR = 11 GV
+    {20.4, 19.8, 19.3, 18.7, 18.2, 17.7, 17.3}, // COR = 12 GV
+    {17.9, 17.5, 17.0, 16.6, 16.2, 15.8, 15.4}, // COR = 13 GV
+    {15.9, 15.5, 15.1, 14.8, 14.4, 14.1, 13.8}, // COR = 14 GV
+    {14.2, 13.9, 13.6, 13.2, 13.0, 12.7, 12.4} // COR = 15 GV
   };
   //============================================================
 
@@ -283,7 +283,7 @@ CrAlphaPrimary::CrAlphaPrimary()
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 400.0; // corresponds to 100 GeV/n
+  highE_primary = 4000.0; // corresponds to 100 GeV/n
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 }
@@ -304,7 +304,7 @@ void CrAlphaPrimary::setPosition(G4double latitude, G4double longitude){
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 400.0;
+  highE_primary = 4000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -320,7 +320,7 @@ void CrAlphaPrimary::setPosition
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 400.0;
+  highE_primary = 4000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
   
@@ -337,7 +337,7 @@ setPosition(G4double latitude, G4double longitude,
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 400.0;
+  highE_primary = 4000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -352,7 +352,7 @@ void CrAlphaPrimary::setCutOffRigidity(G4double cor){
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 400.0;
+  highE_primary = 4000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 

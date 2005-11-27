@@ -303,22 +303,22 @@ namespace {
   // COR = 0.5, 1, 2, ..., 15 [GV]
   // phi = 500, 600, ..., 1100 [MV]
   G4double integral_array[16][7] = {
-    {9.403, 6.87, 5.194, 4.036, 3.208, 2.6, 2.141}, // COR = 0.5GV
-    {5.211, 4.124, 3.327, 2.728, 2.268, 1.909, 1.624}, // COR = 1 GV
-    {2.125, 1.819, 1.571, 1.368, 1.199, 1.058, 0.939}, // COR = 2 GV
-    {1.109, 0.987, 0.883, 0.793, 0.716, 0.648, 0.59}, // COR = 3 GV
-    {0.667, 0.608, 0.555, 0.509, 0.468, 0.431, 0.398}, // COR = 4 GV
-    {0.44, 0.407, 0.377, 0.35, 0.326, 0.304, 0.284}, // COR = 5 GV
-    {0.309, 0.289, 0.271, 0.254, 0.239, 0.225, 0.212}, // COR = 6 GV
-    {0.228, 0.215, 0.203, 0.192, 0.181, 0.172, 0.163}, // COR = 7 GV
-    {0.174, 0.165, 0.157, 0.149, 0.142, 0.135, 0.129}, // COR = 8 GV
-    {0.136, 0.13, 0.124, 0.119, 0.113, 0.109, 0.104}, // COR = 9 GV
-    {0.11, 0.105, 0.101, 0.096, 0.093, 0.089, 0.085}, // COR = 10 GV
-    {0.09, 0.086, 0.083, 0.08, 0.077, 0.074, 0.071}, // COR = 11 GV
-    {0.075, 0.072, 0.069, 0.067, 0.065, 0.062, 0.06}, // COR = 12 GV
-    {0.063, 0.061, 0.059, 0.057, 0.055, 0.053, 0.052}, // COR = 13 GV
-    {0.054, 0.052, 0.05, 0.049, 0.047, 0.046, 0.044}, // COR = 14 GV
-    {0.046, 0.045, 0.043, 0.042, 0.041, 0.04, 0.039} // COR = 15 GV
+    {9.404, 6.871, 5.194, 4.036, 3.209, 2.6, 2.142}, // COR = 0.5GV
+    {5.212, 4.125, 3.328, 2.728, 2.269, 1.91, 1.625}, // COR = 1 GV
+    {2.126, 1.82, 1.572, 1.368, 1.2, 1.058, 0.939}, // COR = 2 GV
+    {1.109, 0.987, 0.883, 0.794, 0.716, 0.649, 0.59}, // COR = 3 GV
+    {0.668, 0.608, 0.556, 0.509, 0.468, 0.432, 0.399}, // COR = 4 GV
+    {0.441, 0.407, 0.378, 0.351, 0.327, 0.305, 0.285}, // COR = 5 GV
+    {0.31, 0.29, 0.271, 0.255, 0.239, 0.225, 0.212}, // COR = 6 GV
+    {0.228, 0.215, 0.203, 0.192, 0.182, 0.172, 0.164}, // COR = 7 GV
+    {0.174, 0.165, 0.157, 0.149, 0.142, 0.136, 0.129}, // COR = 8 GV
+    {0.137, 0.131, 0.125, 0.119, 0.114, 0.109, 0.105}, // COR = 9 GV
+    {0.11, 0.105, 0.101, 0.097, 0.093, 0.089, 0.086}, // COR = 10 GV
+    {0.09, 0.087, 0.083, 0.08, 0.077, 0.075, 0.072}, // COR = 11 GV
+    {0.075, 0.072, 0.07, 0.067, 0.065, 0.063, 0.061}, // COR = 12 GV
+    {0.063, 0.061, 0.059, 0.057, 0.055, 0.054, 0.052}, // COR = 13 GV
+    {0.054, 0.052, 0.051, 0.049, 0.048, 0.046, 0.045}, // COR = 14 GV
+    {0.047, 0.045, 0.044, 0.043, 0.042, 0.04, 0.039} // COR = 15 GV
   };
 
   //============================================================
@@ -336,7 +336,7 @@ CrPositronPrimary::CrPositronPrimary()
   // At lowE_primary, flux of primary positron can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // "cutE_primary" is the kinetic energy corresponding to 
   // cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
@@ -358,7 +358,7 @@ setPosition(double latitude, double longitude){
   // At lowE_primary, flux of primary positron can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -374,7 +374,7 @@ setPosition(double latitude, double longitude, double time){
   // At lowE_primary, flux of primary positron can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -390,7 +390,7 @@ setPosition(double latitude, double longitude, double time, double altitude){
   // At lowE_primary, flux of primary positron can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -405,7 +405,7 @@ void CrPositronPrimary::setCutOffRigidity(double cor){
   // At lowE_primary, flux of primary proton can be
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 

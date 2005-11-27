@@ -258,22 +258,22 @@ namespace {
   // COR = 0.5, 1, 2, ..., 15 [GV]
   // phi = 500, 600, ..., 1100 [MV]
   G4double integral_array[16][7] = {
-    {3817, 3083, 2549, 2147, 1836, 1589, 1390}, // COR = 0.5GV
-    {3077, 2575, 2188, 1883, 1638, 1438, 1272}, // COR = 1 GV
-    {1744, 1546, 1380, 1239, 1118, 1013, 922.2}, // COR = 2 GV
-    {1069, 978.3, 898.3, 827.4, 764.3, 707.9, 657.3}, // COR = 3 GV
-    {717.6, 669.1, 625.1, 585.2, 548.7, 515.5, 485.0}, // COR = 4 GV
-    {515.1, 486.1, 459.4, 434.8, 411.9, 390.8, 371.1}, // COR = 5 GV
-    {388.2, 369.5, 352.0, 335.7, 320.5, 306.2, 292.8}, // COR = 6 GV
-    {303.4, 290.6, 278.6, 267.3, 256.5, 246.4, 236.9}, // COR = 7 GV
-    {243.9, 234.8, 226.1, 217.9, 210.1, 202.7, 195.6}, // COR = 8 GV
-    {200.5, 193.8, 187.3, 181.2, 175.3, 169.7, 164.3}, // COR = 9 GV
-    {167.9, 162.7, 157.8, 153.1, 148.5, 144.2, 140.0}, // COR = 10 GV
-    {142.7, 138.6, 134.8, 131.1, 127.5, 124.0, 120.7}, // COR = 11 GV
-    {122.8, 119.6, 116.5, 113.5, 110.6, 107.9, 105.2}, // COR = 12 GV
-    {106.8, 104.2, 101.7, 99.3, 96.9, 94.6, 92.5}, // COR = 13 GV
-    {93.7, 91.6, 89.5, 87.5, 85.6, 83.7, 81.9}, // COR = 14 GV
-    {82.9, 81.2, 79.4, 77.8, 76.2, 74.6, 73.1} // COR = 15 GV
+    {3819, 3086, 2552, 2150, 1838, 1592, 1393}, // COR = 0.5GV
+    {3080, 2578, 2191, 1885, 1640, 1440, 1275}, // COR = 1 GV
+    {1746, 1549, 1383, 1242, 1120, 1016, 924.9}, // COR = 2 GV
+    {1072, 981.1, 901.0, 830.2, 767.1, 710.7, 660.1}, // COR = 3 GV
+    {720.4, 671.8, 627.8, 587.9, 551.5, 518.2, 487.7}, // COR = 4 GV
+    {517.8, 488.9, 462.1, 437.5, 414.6, 393.5, 373.8}, // COR = 5 GV
+    {390.9, 372.2, 354.8, 338.5, 323.2, 308.9, 295.5}, // COR = 6 GV
+    {306.2, 293.4, 281.3, 269.9, 259.3, 249.2, 239.6}, // COR = 7 GV
+    {246.7, 237.5, 228.9, 220.6, 212.8, 205.4, 198.3}, // COR = 8 GV
+    {203.3, 196.5, 190.1, 183.9, 178.0, 172.4, 167.0}, // COR = 9 GV
+    {170.6, 165.5, 160.5, 155.8, 151.3, 146.9, 142.7}, // COR = 10 GV
+    {145.4, 141.4, 137.5, 133.8, 130.2, 126.7, 123.4}, // COR = 11 GV
+    {125.5, 122.3, 119.2, 116.2, 113.7, 110.6, 107.9}, // COR = 12 GV
+    {109.5, 106.9, 104.4, 102.0, 99.7, 97.4, 95.2}, // COR = 13 GV
+    {96.5, 94.3, 92.3, 90.3, 88.3, 86.5, 84.6}, // COR = 14 GV
+    {85.7, 83.9, 82.2, 80.5, 78.9, 77.3, 75.8} // COR = 15 GV
   };
   
 
@@ -293,7 +293,7 @@ CrProtonPrimary::CrProtonPrimary()
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 }
@@ -314,7 +314,7 @@ void CrProtonPrimary::setPosition(double latitude, double longitude){
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -329,7 +329,7 @@ void CrProtonPrimary::setPosition(double latitude, double longitude, double time
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -344,7 +344,7 @@ setPosition(double latitude, double longitude, double time, double altitude){
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -359,7 +359,7 @@ void CrProtonPrimary::setCutOffRigidity(double cor){
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 100.0;
+  highE_primary = 1000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
