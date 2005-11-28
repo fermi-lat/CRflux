@@ -13,9 +13,6 @@
 #include "CrCoordinateTransfer.hh"
 #include "CrCoordinateTransfer.inc"
 
-// CLHEP
-#include <CLHEP/config/CLHEP.h>
-
 #include <cmath>
 #include <iostream>
 
