@@ -35,7 +35,9 @@
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
-#include <CLHEP/Random/JamesRandom.h>
+//#include <CLHEP/Random/JamesRandom.h>
+#include "CLHEP/Random/Random.h"
+
 
 #include "CrElectron.hh"
 #include "CrElectronPrimary.hh"
@@ -60,7 +62,7 @@ CrElectron::CrElectron(const std::string& paramstring)
   if(flag& 2) m_subComponents.push_back(new CrElectronReentrant);
   if(flag& 4) m_subComponents.push_back(new CrElectronSplash);
 
-  m_engine = new HepJamesRandom;
+  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 
 

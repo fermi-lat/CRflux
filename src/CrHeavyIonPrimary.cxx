@@ -45,7 +45,7 @@
 #include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
-#include <CLHEP/Random/JamesRandom.h>
+#include <CLHEP/Random/Random.h>
 
 #include "CrHeavyIonPrimary.hh"
 
@@ -307,7 +307,7 @@ CrHeavyIonPrimary::CrHeavyIonPrimary()
   // Set lower and higher energy limit of the primary ion (GeV).
   // At lowE_primary, flux of primary ion can be 
   // assumed to be 0, due to geomagnetic cutoff 
-  mm_engine = new HepJamesRandom();  
+  mm_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 
 
