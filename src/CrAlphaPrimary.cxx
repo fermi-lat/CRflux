@@ -201,7 +201,7 @@ namespace {
   }
 
   // The random number generator for the primary component
-  G4double primaryCRenergy(HepRandomEngine* engine, 
+  G4double primaryCRenergy(CLHEP::HepRandomEngine* engine, 
                            G4double cor, G4double solarPotential){
     G4double rand_min_1 = 
       primaryCRenvelope1_integral(lowE_primary, cor, solarPotential);
@@ -360,7 +360,7 @@ void CrAlphaPrimary::setCutOffRigidity(G4double cor){
 
 // Gives back particle direction in (cos(theta), phi)
 std::pair<G4double,G4double> CrAlphaPrimary::dir(G4double energy, 
-                                              HepRandomEngine* engine) const
+                                              CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
@@ -379,7 +379,7 @@ std::pair<G4double,G4double> CrAlphaPrimary::dir(G4double energy,
 
 
 // Gives back particle energy
-G4double CrAlphaPrimary::energySrc(HepRandomEngine* engine) const
+G4double CrAlphaPrimary::energySrc(CLHEP::HepRandomEngine* engine) const
 {
   return primaryCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
 }

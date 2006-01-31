@@ -11,7 +11,7 @@
 #include <string>
 
 // Forward declaration:
-class HepRandomEngine;
+class CLHEP::HepRandomEngine;
 
 class CrProtonSplash_0002
 {
@@ -28,7 +28,7 @@ private:
   double breakE;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -50,7 +50,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -72,7 +72,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -94,7 +94,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -116,7 +116,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -138,7 +138,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -160,7 +160,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -182,7 +182,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -204,7 +204,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 

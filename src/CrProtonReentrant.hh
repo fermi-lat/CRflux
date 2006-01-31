@@ -14,7 +14,7 @@
 #include "CrSpectrum.hh"
 
 // Forward declaration:
-class HepRandomEngine;
+class CLHEP::HepRandomEngine;
 class CrProtonReentrant_0002;
 class CrProtonReentrant_0203;
 class CrProtonReentrant_0304;
@@ -32,10 +32,10 @@ public:
   ~CrProtonReentrant();
 
   // Gives back particle direction in (cos(theta), phi)
-  std::pair<double,double> dir(double energy, HepRandomEngine* engine) const;
+  std::pair<double,double> dir(double energy, CLHEP::HepRandomEngine* engine) const;
 
   // Gives back particle energy
-  double energySrc(HepRandomEngine* engine) const;
+  double energySrc(CLHEP::HepRandomEngine* engine) const;
 
   // flux() returns the value averaged over the region from which
   // the particle is coming from and the unit is [c/s/m^2/sr]

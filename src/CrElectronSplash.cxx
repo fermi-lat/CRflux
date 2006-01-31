@@ -134,7 +134,7 @@ CrElectronSplash::~CrElectronSplash()
 
 // Gives back particle direction in (cos(theta), phi)
 std::pair<G4double,G4double> CrElectronSplash::dir(G4double energy, 
-					       HepRandomEngine* engine) const
+					       CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
@@ -149,7 +149,7 @@ std::pair<G4double,G4double> CrElectronSplash::dir(G4double energy,
 
 
 // Gives back particle energy
-G4double CrElectronSplash::energySrc(HepRandomEngine* engine) const
+G4double CrElectronSplash::energySrc(CLHEP::HepRandomEngine* engine) const
 {
 
   G4double r1, r2;

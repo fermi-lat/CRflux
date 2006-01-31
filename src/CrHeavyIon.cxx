@@ -50,7 +50,7 @@ CrHeavyIon::CrHeavyIon(const std::string& paramstring)
   // including each component (primary alphas)...
   m_subComponents.push_back(new CrHeavyIonPrimary);
   
-  m_engine = new HepJamesRandom;
+  m_engine = new CLHEP::HepJamesRandom;
 }
 
 

@@ -164,7 +164,7 @@ CrProtonSplash_0002::~CrProtonSplash_0002()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0002::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0002::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
@@ -258,7 +258,7 @@ CrProtonSplash_0203::~CrProtonSplash_0203()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0203::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0203::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A =
     powSpec_integral(A_splash, a_splash, lowE_splash);
@@ -361,7 +361,7 @@ CrProtonSplash_0304::~CrProtonSplash_0304()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0304::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0304::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A =
     powSpec_integral(A_splash, a_splash, lowE_splash);
@@ -464,7 +464,7 @@ CrProtonSplash_0405::~CrProtonSplash_0405()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0405::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0405::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
@@ -568,7 +568,7 @@ CrProtonSplash_0506::~CrProtonSplash_0506()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0506::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0506::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_splash, a_splash, lowE_splash);
@@ -672,7 +672,7 @@ CrProtonSplash_0607::~CrProtonSplash_0607()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0607::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0607::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A =
     powSpec_integral(A_splash, a_splash, lowE_splash);
@@ -776,7 +776,7 @@ CrProtonSplash_0708::~CrProtonSplash_0708()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0708::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0708::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A =
     powSpec_integral(A_splash, a_splash, lowE_splash);
@@ -880,7 +880,7 @@ CrProtonSplash_0809::~CrProtonSplash_0809()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0809::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0809::energy(CLHEP::HepRandomEngine* engine){
   G4double rand_min_A =
     powSpec_integral(A_splash, a_splash, lowE_splash);
   G4double rand_max_A =
@@ -982,7 +982,7 @@ CrProtonSplash_0910::~CrProtonSplash_0910()
 }
 
 // returns energy obeying re-entrant cosmic-ray proton spectrum
-G4double CrProtonSplash_0910::energy(HepRandomEngine* engine){
+G4double CrProtonSplash_0910::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A =
     powSpec_integral(A_splash, a_splash, lowE_splash);
