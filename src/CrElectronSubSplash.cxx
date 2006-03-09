@@ -137,21 +137,19 @@ namespace {
 CrElectronSplash_0003::CrElectronSplash_0003(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * 100 MeV -3 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.2 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.2 [c/s/m^2/sr/MeV]
    * Above 3 GeV
-   *   j(E) = 0.3*pow(30, -2.2)*(E/300MeV)^-4.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*pow(30, -2.2)*(E/300MeV)^-4.0 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index for E<lowE_break
-  A_splash = 0.3*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.3*pow(10.0, -2.0);
+  a_splash = 2.0;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_splash = 0.3*pow(10.0, -2.2);
   b_splash = 2.2;
@@ -241,19 +239,17 @@ G4double CrElectronSplash_0003::upwardFlux(){
 CrElectronSplash_0306::CrElectronSplash_0306(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.7 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.7 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index for E<breakE
-  A_splash = 0.3*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.3*pow(10.0, -2.0);
+  a_splash = 2.0;
   // Normalization and spectral index for lowE_break<E
   B_splash = 0.3*pow(10.0, -2.7);
   b_splash = 2.7;
@@ -330,20 +326,18 @@ G4double CrElectronSplash_0306::upwardFlux(){
 CrElectronSplash_0608::CrElectronSplash_0608(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
    * Above 100 MeV
    *   j(E) = 0.3*(E/100MeV)^-3.3
-   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.3GeV)^2.5) [c/s/m^2/sr]
+   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.3GeV)^2.5) [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.0.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index for E<breakE
-  A_splash = 0.3*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.3*pow(10.0, -2.5);
+  a_splash = 2.5;
   // Normalization and spectral index for breakE<E
   B1_splash = 0.3*pow(10.0, -3.3);
   b1_splash = 3.3;
@@ -436,20 +430,20 @@ G4double CrElectronSplash_0608::upwardFlux(){
 CrElectronSplash_0809::CrElectronSplash_0809(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 MeV
    *   j(E) = 0.3*(E/100MeV)^-3.5
-   *          + 1.6*10^-3*(E/GeV)^2.0*exp(-(E/2.0GeV)^3.0) [c/s/m^2/sr]
+   *          + 1.6*10^-3*(E/GeV)^2.0*exp(-(E/2.0GeV)^3.0) [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.0.
+   * extrapolated the spectrum down to 10 MeV with E^-2.0.
    */
   
   // Normalization and spectral index for E<breakE
-  A_splash = 0.3*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.3*pow(10.0, -2.0);
+  a_splash = 2.0;
   // Normalization and spectral index for breakE<E
   B1_splash = 0.3*pow(10.0, -3.5);
   b1_splash = 3.5;
@@ -542,19 +536,19 @@ G4double CrElectronSplash_0809::upwardFlux(){
 CrElectronSplash_0910::CrElectronSplash_0910(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   * extrapolated the spectrum down to 10 MeV with E^-2.
    */
   
   // Normalization and spectral index for E<breakE
-  A_splash = 0.3*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.3*pow(10.0, -2.0);
+  a_splash = 2.0;
   // Normalization and spectral index for lowE_break<E
   B_splash = 0.3*pow(10.0, -2.5);
   b_splash = 2.5;
@@ -631,9 +625,9 @@ G4double CrElectronSplash_0910::upwardFlux(){
 CrElectronSplash_1011::CrElectronSplash_1011(){
   /*
    * Below 100 MeV
-   *   j(E) = 6.6*10^-2*(E/GeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 6.6*10^-3*(E/GeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 MeV
-   *   j(E) = 9.11*10^-4*(E/GeV)^-2.86  [c/s/m^2/sr]
+   *   j(E) = 9.11*10^-4*(E/GeV)^-2.86  [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
@@ -642,8 +636,8 @@ CrElectronSplash_1011::CrElectronSplash_1011(){
    */
   
   // Normalization and spectral index for E<breakE
-  A_splash = 6.60e-2;
-  a_splash = 1.0;
+  A_splash = 6.60e-3;
+  a_splash = 2.0;
   // Normalization and spectral index for breakE<E
   B_splash = 9.11e-4;
   b_splash = 2.86;
@@ -694,7 +688,20 @@ G4double CrElectronSplash_1011::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrElectronSplash_1011::upwardFlux(){
-  return 187.45;
+  G4double rand_min_1 = 
+    powSpec_integral(A_splash, a_splash, lowE_splash);
+  G4double rand_max_1 = 
+    powSpec_integral(A_splash, a_splash, breakE);
+  G4double rand_min_2 = 
+    powSpec_integral(B_splash, b_splash, breakE);
+  G4double rand_max_2 = 
+    powSpec_integral(B_splash, b_splash, highE_splash);
+
+  // Original model function is given in "/MeV" and the energy in "GeV".
+  // This is why 1000.* is required below.
+
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+
 }
 //------------------------------------------------------------
 

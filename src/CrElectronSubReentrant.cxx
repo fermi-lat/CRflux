@@ -137,21 +137,19 @@ namespace {
 CrElectronReentrant_0003::CrElectronReentrant_0003(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * 100 MeV -3 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.2 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.2 [c/s/m^2/sr/MeV]
    * Above 3 GeV
-   *   j(E) = 0.3*pow(30, -2.2)*(E/300MeV)^-4.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*pow(30, -2.2)*(E/300MeV)^-4.0 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index E<lowE_break
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.0);
+  a_reent = 2.0;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_reent = 0.3*pow(10.0, -2.2);
   b_reent = 2.2;
@@ -241,19 +239,17 @@ G4double CrElectronReentrant_0003::downwardFlux(){
 CrElectronReentrant_0306::CrElectronReentrant_0306(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.7 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.7 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.0);
+  a_reent = 2.0;
   // Normalization and spectral index for lowE_break<E
   B_reent = 0.3*pow(10.0, -2.7);
   b_reent = 2.7;
@@ -330,20 +326,18 @@ G4double CrElectronReentrant_0306::downwardFlux(){
 CrElectronReentrant_0608::CrElectronReentrant_0608(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
    * Above 100 MeV
    *   j(E) = 0.3*(E/100MeV)^-3.3
-   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.3GeV)^2.5) [c/s/m^2/sr]
+   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.3GeV)^2.5) [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.0.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.5);
+  a_reent = 2.5;
   // Normalization and spectral index for breakE<E
   B1_reent = 0.3*pow(10.0, -3.3);
   b1_reent = 3.3;
@@ -436,20 +430,20 @@ G4double CrElectronReentrant_0608::downwardFlux(){
 CrElectronReentrant_0809::CrElectronReentrant_0809(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 MeV
    *   j(E) = 0.3*(E/100MeV)^-3.5
-   *          + 1.6*10^-3*(E/GeV)^2.0*exp(-(E/2.0GeV)^3.0) [c/s/m^2/sr]
+   *          + 1.6*10^-3*(E/GeV)^2.0*exp(-(E/2.0GeV)^3.0) [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.0.
+   * extrapolated the spectrum down to 10 MeV with E^-2.0.
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.0);
+  a_reent = 2.0;
   // Normalization and spectral index for breakE<E
   B1_reent = 0.3*pow(10.0, -3.5);
   b1_reent = 3.5;
@@ -542,20 +536,20 @@ G4double CrElectronReentrant_0809::downwardFlux(){
 CrElectronReentrant_0910::CrElectronReentrant_0910(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   * extrapolated the spectrum down to 10 MeV with E^-2.
    */
   
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.0);
+  a_reent = 2.0;
   // Normalization and spectral index for lowE_break<E
   B_reent = 0.3*pow(10.0, -2.5);
   b_reent = 2.5;
@@ -632,19 +626,19 @@ G4double CrElectronReentrant_0910::downwardFlux(){
 CrElectronReentrant_1011::CrElectronReentrant_1011(){
   /*
    * Below 100 MeV
-   *   j(E) = 6.6*10^-2*(E/GeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 6.6*10^-3*(E/GeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 MeV
-   *   j(E) = 9.11*10^-4*(E/GeV)^-2.86  [c/s/m^2/sr]
+   *   j(E) = 9.11*10^-4*(E/GeV)^-2.86  [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   * extrapolated the spectrum down to 10 MeV with E^-2.
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 6.60e-2;
-  a_reent = 1.0;
+  A_reent = 6.60e-3;
+  a_reent = 2.0;
   // Normalization and spectral index for breakE<E
   B_reent = 9.11e-4;
   b_reent = 2.86;
@@ -695,7 +689,20 @@ G4double CrElectronReentrant_1011::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrElectronReentrant_1011::downwardFlux(){
-  return 187.45;
+  G4double rand_min_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_1 = 
+    powSpec_integral(A_reent, a_reent, breakE);
+  G4double rand_min_2 = 
+    powSpec_integral(B_reent, b_reent, breakE);
+  G4double rand_max_2 = 
+    powSpec_integral(B_reent, b_reent, highE_reent);
+
+  // Original model function is given in "/MeV" and the energy in "GeV".
+  // This is why 1000.* is required below.
+
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+
 }
 //------------------------------------------------------------
 

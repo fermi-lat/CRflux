@@ -22,12 +22,15 @@ public:
 private:
   // Normalization and spectral index for E<lowE_break
   double A_splash, a_splash;
-  // Normalization and spectral index for lowE_break<E<highE_break
+  // Normalization and spectral index for lowE_break<E<middleE_break
   double B_splash, b_splash;
-  // Normalization and spectral index for highE_break<E
+  // Normalization and spectral index for middleE_break<E<highE_break
   double C_splash, c_splash;
+  // Normalization and spectral index for highE_break<E
+  double D_splash, d_splash;
   // The energies where spectrum breaks
   double lowE_break;
+  double middleE_break;
   double highE_break;
 
 public:

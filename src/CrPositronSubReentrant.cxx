@@ -136,30 +136,34 @@ namespace {
 // the energy integrated downward flux ("downwardFlux" method) 
 CrPositronReentrant_0003::CrPositronReentrant_0003(){
   /*
-   * Below 100 MeV
-   *   j(E) = 1.0*(E/100MeV)^-1.0 [c/s/m^2/sr]
-   * 100 MeV -3 GeV
-   *   j(E) = 1.0*(E/100MeV)^-2.2 [c/s/m^2/sr]
+   * 10 - 60 MeV
+   *   j(E) = 20.0*(E/10MeV)^-1.77 [c/s/m^2/sr/MeV]
+   * 60 - 178 MeV
+   *   j(E) = 0.833*(E/60MeV)^-1.0 [c/s/m^2/sr/MeV]
+   * 178 MeV -3 GeV
+   *   j(E) = 1.0*(E/100MeV)^-2.2 [c/s/m^2/sr/MeV]
    * Above 3 GeV
-   *   j(E) = 1.0*pow(30, -2.2)*(E/300MeV)^-4.0 [c/s/m^2/sr]
+   *   j(E) = 1.0*pow(30, -2.2)*(E/300MeV)^-4.0 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
-  // Normalization and spectral index E<lowE_break
-  A_reent = 1.0*pow(10.0, -1.0);
-  a_reent = 1.0;
+  // Normalization and spectral index for E<lowE_break
+  A_reent = 20.0*pow(100.0, -1.77);
+  a_reent = 1.77;
+  // Normalization and spectral index for E<lowE_break
+  B_reent = 0.833*pow(1000.0/60.0, -1.0);
+  b_reent = 1.0;
   // Normalization and spectral index for lowE_break<E<highE_break
-  B_reent = 1.0*pow(10.0, -2.2);
-  b_reent = 2.2;
+  C_reent = 1.0*pow(10.0, -2.2);
+  c_reent = 2.2;
   // Normalization and spectral index for E>highE_break
-  C_reent = 1.0*pow(30.0, -2.2)*pow(1.0/3.0, -4.0);
-  c_reent = 4.0;
+  D_reent = 1.0*pow(30.0, -2.2)*pow(1.0/3.0, -4.0);
+  d_reent = 4.0;
   // The spectrum breaks at 100MeV and 3 GeV
-  lowE_break = 0.1;
+  lowE_break = 0.06;
+  middleE_break = 0.178;
   highE_break = 3.0;
 }
     
@@ -178,16 +182,21 @@ G4double CrPositronReentrant_0003::energy(HepRandomEngine* engine){
   G4double rand_min_B = 
     powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_B = 
-    powSpec_integral(B_reent, b_reent, highE_break);
+    powSpec_integral(B_reent, b_reent, middleE_break);
   G4double rand_min_C = 
-    powSpec_integral(C_reent, c_reent, highE_break);
+    powSpec_integral(C_reent, c_reent, middleE_break);
   G4double rand_max_C = 
-    powSpec_integral(C_reent, c_reent, highE_reent);
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_D = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_D = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
 
   G4double specA_area = rand_max_A - rand_min_A;
   G4double specB_area = rand_max_B - rand_min_B;
   G4double specC_area = rand_max_C - rand_min_C;
-  G4double spec_area = specA_area + specB_area + specC_area;
+  G4double specD_area = rand_max_D - rand_min_D;
+  G4double spec_area = specA_area + specB_area + specC_area + specD_area;
 
   G4double r, E; // E means energy in GeV
   G4double rnd;
@@ -198,13 +207,17 @@ G4double CrPositronReentrant_0003::energy(HepRandomEngine* engine){
     r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
     E = powSpec_integral_inv(A_reent, a_reent, r);
   } else if (rnd <= (specA_area+specB_area) / spec_area){
-    // spectrum in lowE_break<E<highE_break
+    // spectrum in lowE_break<E<middleE_break
     r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
     E = powSpec_integral_inv(B_reent, b_reent, r);
-  } else {
-    // spectrum above highE_break
+  } else if (rnd <= (specA_area+specB_area+specC_area) / spec_area){
+    // spectrum in middleE_break<E<highE_break
     r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
     E = powSpec_integral_inv(C_reent, c_reent, r);
+  } else {
+    // spectrum above highE_break
+    r = engine->flat() * (rand_max_D - rand_min_D) + rand_min_D;
+    E = powSpec_integral_inv(D_reent, d_reent, r);
   }
   return E;
 }
@@ -218,16 +231,21 @@ G4double CrPositronReentrant_0003::downwardFlux(){
   G4double rand_min_2 = 
     powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_2 = 
-    powSpec_integral(B_reent, b_reent, highE_break);
+    powSpec_integral(B_reent, b_reent, middleE_break);
   G4double rand_min_3 = 
-    powSpec_integral(C_reent, c_reent, highE_break);
+    powSpec_integral(C_reent, c_reent, middleE_break);
   G4double rand_max_3 = 
-    powSpec_integral(C_reent, c_reent, highE_reent);
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_4 = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_4 = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
 
-  // Original model function is given in "/MeV" and the energy in "GeV".
+ // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)
+                +(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
 }
 //------------------------------------------------------------
 
@@ -241,19 +259,17 @@ G4double CrPositronReentrant_0003::downwardFlux(){
 CrPositronReentrant_0306::CrPositronReentrant_0306(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.5*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.5*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 GeV
-   *   j(E) = 0.5*(E/100MeV)^-2.7 [c/s/m^2/sr]
+   *   j(E) = 0.5*(E/100MeV)^-2.7 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.5*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.5*pow(10.0, -2.0);
+  a_reent = 2.0;
   // Normalization and spectral index for lowE_break<E
   B_reent = 0.5*pow(10.0, -2.7);
   b_reent = 2.7;
@@ -330,20 +346,18 @@ G4double CrPositronReentrant_0306::downwardFlux(){
 CrPositronReentrant_0608::CrPositronReentrant_0608(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
    * Above 100 MeV
    *   j(E) = 0.3*(E/100MeV)^-3.3
-   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.3GeV)^2.5) [c/s/m^2/sr]
+   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.3GeV)^2.5) [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.0.
+   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.5);
+  a_reent = 2.5;
   // Normalization and spectral index for breakE<E
   B1_reent = 0.3*pow(10.0, -3.3);
   b1_reent = 3.3;
@@ -436,20 +450,20 @@ G4double CrPositronReentrant_0608::downwardFlux(){
 CrPositronReentrant_0809::CrPositronReentrant_0809(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 MeV
    *   j(E) = 0.3*(E/100MeV)^-3.5
-   *          + 1.6*10^-3*(E/GeV)^2.0*exp(-(E/2.0GeV)^3.0) [c/s/m^2/sr]
+   *          + 1.6*10^-3*(E/GeV)^2.0*exp(-(E/2.0GeV)^3.0) [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.0.
+   * extrapolated the spectrum down to 10 MeV with E^-2.0.
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.0);
+  a_reent = 2.0;
   // Normalization and spectral index for breakE<E
   B1_reent = 0.3*pow(10.0, -3.5);
   b1_reent = 3.5;
@@ -542,20 +556,20 @@ G4double CrPositronReentrant_0809::downwardFlux(){
 CrPositronReentrant_0910::CrPositronReentrant_0910(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr]
+   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
    * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
+   * extrapolated the spectrum down to 10 MeV with E^-2.
    */
   
   
   // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.3*pow(10.0, -2.0);
+  a_reent = 2.0;
   // Normalization and spectral index for lowE_break<E
   B_reent = 0.3*pow(10.0, -2.5);
   b_reent = 2.5;
@@ -632,9 +646,9 @@ G4double CrPositronReentrant_0910::downwardFlux(){
 CrPositronReentrant_1011::CrPositronReentrant_1011(){
   /*
    * Below 100 MeV
-   *   j(E) = 6.6*10^-2*(E/GeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 6.6*10^-3*(E/GeV)^-2.0 [c/s/m^2/sr/MeV]
    * Above 100 MeV
-   *   j(E) = 9.11*10^-4*(E/GeV)^-2.86  [c/s/m^2/sr]
+   *   j(E) = 9.11*10^-4*(E/GeV)^-2.86  [c/s/m^2/sr/MeV]
    * reference:
    *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
    * Above 100 MeV, we modeled AMS data with analytic function.
@@ -643,8 +657,8 @@ CrPositronReentrant_1011::CrPositronReentrant_1011(){
    */
   
   // Normalization and spectral index for E<breakE
-  A_reent = 6.60e-2;
-  a_reent = 1.0;
+  A_reent = 6.60e-3;
+  a_reent = 2.0;
   // Normalization and spectral index for breakE<E
   B_reent = 9.11e-4;
   b_reent = 2.86;
@@ -695,7 +709,20 @@ G4double CrPositronReentrant_1011::energy(HepRandomEngine* engine){
 
 // returns energy integrated downward flux in c/s/m^2/sr
 G4double CrPositronReentrant_1011::downwardFlux(){
-  return 187.45;
+  G4double rand_min_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_1 = 
+    powSpec_integral(A_reent, a_reent, breakE);
+  G4double rand_min_2 = 
+    powSpec_integral(B_reent, b_reent, breakE);
+  G4double rand_max_2 = 
+    powSpec_integral(B_reent, b_reent, highE_reent);
+
+  // Original model function is given in "/MeV" and the energy in "GeV".
+  // This is why 1000.* is required below.
+
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+
 }
 //------------------------------------------------------------
 
