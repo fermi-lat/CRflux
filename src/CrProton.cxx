@@ -66,8 +66,7 @@ CrProton::CrProton(const std::string& paramstring)
   if(flag& 4) m_subComponents.push_back(new CrProtonSplash);
 
 // Not sure how to replace the following with CLHEP 1.9.2.2
-//  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
-  m_engine = new CLHEP::HepJamesRandom;
+  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 
 

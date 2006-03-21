@@ -307,7 +307,7 @@ CrHeavyIonPrimary::CrHeavyIonPrimary()
   // Set lower and higher energy limit of the primary ion (GeV).
   // At lowE_primary, flux of primary ion can be 
   // assumed to be 0, due to geomagnetic cutoff 
-  mm_engine = new CLHEP::HepJamesRandom();  
+  mm_engine = HepRandom::getTheEngine(); //new HepJamesRandom;  
 }
 
 
