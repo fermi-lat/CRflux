@@ -20,7 +20,7 @@
 //#include "ISpectrum.h"
 
 class CrSpectrum;
-class HepRandomEngine;
+class CLHEP::HepRandomEngine;
 
 class CrElectron : public ISpectrum
 {
@@ -65,6 +65,6 @@ public:
 private:
   std::vector<CrSpectrum*>  m_subComponents;
   CrSpectrum*               m_component;
-  HepRandomEngine* m_engine;
+  CLHEP::HepRandomEngine* m_engine;
 };
 #endif // CrElectron_H

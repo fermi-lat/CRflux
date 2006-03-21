@@ -167,7 +167,7 @@ CrElectronReentrant_0003::~CrElectronReentrant_0003()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-G4double CrElectronReentrant_0003::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0003::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
@@ -263,7 +263,7 @@ CrElectronReentrant_0306::~CrElectronReentrant_0306()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-G4double CrElectronReentrant_0306::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0306::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
@@ -354,7 +354,7 @@ CrElectronReentrant_0608::~CrElectronReentrant_0608()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-G4double CrElectronReentrant_0608::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0608::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
@@ -460,7 +460,7 @@ CrElectronReentrant_0809::~CrElectronReentrant_0809()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-G4double CrElectronReentrant_0809::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0809::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
@@ -563,7 +563,7 @@ CrElectronReentrant_0910::~CrElectronReentrant_0910()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-G4double CrElectronReentrant_0910::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_0910::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
@@ -652,7 +652,7 @@ CrElectronReentrant_1011::~CrElectronReentrant_1011()
 }
 
 // returns energy obeying re-entrant cosmic-ray electron spectrum
-G4double CrElectronReentrant_1011::energy(HepRandomEngine* engine){
+G4double CrElectronReentrant_1011::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);

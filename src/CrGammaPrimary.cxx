@@ -211,7 +211,7 @@ CrGammaPrimary::~CrGammaPrimary()
 
 // Gives back particle direction in (cos(theta), phi)
 std::pair<G4double,G4double> CrGammaPrimary::dir(G4double energy, 
-					     HepRandomEngine* engine) const
+					     CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
@@ -230,7 +230,7 @@ std::pair<G4double,G4double> CrGammaPrimary::dir(G4double energy,
 
 
 // Gives back particle energy
-G4double CrGammaPrimary::energySrc(HepRandomEngine* engine) const
+G4double CrGammaPrimary::energySrc(CLHEP::HepRandomEngine* engine) const
 {
 
   G4double rand_min_1 = 

@@ -62,7 +62,7 @@ CrElectron::CrElectron(const std::string& paramstring)
   if(flag& 2) m_subComponents.push_back(new CrElectronReentrant);
   if(flag& 4) m_subComponents.push_back(new CrElectronSplash);
 
-  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+  m_engine = new CLHEP::HepJamesRandom;
 }
 
 

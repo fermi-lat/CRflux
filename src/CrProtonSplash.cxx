@@ -127,7 +127,7 @@ CrProtonSplash::~CrProtonSplash()
 
 // Gives back particle direction in (cos(theta), phi)
 std::pair<double,double> CrProtonSplash::dir(double energy, 
-					     HepRandomEngine* engine) const
+					     CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),
   // and phi = 0 for particle comming along x-axis (from x>0 to x=0)
@@ -142,7 +142,7 @@ std::pair<double,double> CrProtonSplash::dir(double energy,
 
 
 // Gives back particle energy
-double CrProtonSplash::energySrc(HepRandomEngine* engine) const
+double CrProtonSplash::energySrc(CLHEP::HepRandomEngine* engine) const
 {
   double r1, r2;
   if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){

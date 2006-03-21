@@ -129,7 +129,7 @@ CrElectronReentrant::~CrElectronReentrant()
 
 // Gives back particle direction in (cos(theta), phi)
 std::pair<G4double,G4double> CrElectronReentrant::dir
-(G4double energy, HepRandomEngine* engine) const
+(G4double energy, CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
@@ -143,7 +143,7 @@ std::pair<G4double,G4double> CrElectronReentrant::dir
 
 
 // Gives back particle energy
-G4double CrElectronReentrant::energySrc(HepRandomEngine* engine) const
+G4double CrElectronReentrant::energySrc(CLHEP::HepRandomEngine* engine) const
 {
   G4double r1, r2;
   if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){

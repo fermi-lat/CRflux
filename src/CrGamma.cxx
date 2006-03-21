@@ -58,7 +58,9 @@ CrGamma::CrGamma(const std::string& paramstring)
 //  if(flag& 2) m_subComponents.push_back(new CrGammaSecondaryDownward);  // This isn't needed in orbit
   if(flag& 4) m_subComponents.push_back(new CrGammaSecondaryUpward);
 
-  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+// Not sure how to replace the following... 
+//  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+  m_engine = new CLHEP::HepJamesRandom;
 }
 
 

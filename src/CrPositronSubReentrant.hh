@@ -11,7 +11,7 @@
 #include <string>
 
 // Forward declaration:
-class HepRandomEngine;
+class CLHEP::HepRandomEngine;
 
 class CrPositronReentrant_0003
 {
@@ -34,7 +34,7 @@ private:
   double highE_break;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double downwardFlux();
 };
 
@@ -53,7 +53,7 @@ private:
   double breakE;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double downwardFlux();
 };
 
@@ -74,7 +74,7 @@ private:
   double breakE;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double downwardFlux();
 };
 
@@ -95,7 +95,7 @@ private:
   double breakE;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double downwardFlux();
 };
 
@@ -114,7 +114,7 @@ private:
   double breakE;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double downwardFlux();
 };
 
@@ -133,7 +133,7 @@ private:
   double breakE;
 
 public:
-  double energy(HepRandomEngine* engine);
+  double energy(CLHEP::HepRandomEngine* engine);
   double downwardFlux();
 };
 

@@ -15,7 +15,7 @@
 #include "facilities/Observer.h"
 #include "astro/EarthCoordinate.h"
 
-class HepRandomEngine;
+namespace CLHEP {class HepRandomEngine;}
 
 /** @class CrSpectrum 
  *  @brief base class
@@ -63,9 +63,9 @@ public:
   virtual double solarWindPotential() const; // [MV]
 
   /// Gives back the energy and direction of the particle
-  virtual double energySrc(HepRandomEngine* engine) const=0;
+  virtual double energySrc(CLHEP::HepRandomEngine* engine) const=0;
   virtual std::pair<double,double> 
-  dir(double energy, HepRandomEngine* engine) const=0;
+  dir(double energy, CLHEP::HepRandomEngine* engine) const=0;
 
   /// Gives back the flux
   virtual double flux() const=0;

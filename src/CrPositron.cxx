@@ -64,7 +64,9 @@ CrPositron::CrPositron(const std::string& paramstring)
   if(flag& 2) m_subComponents.push_back(new CrPositronReentrant);
   if(flag& 4) m_subComponents.push_back(new CrPositronSplash);
 
-  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+// Not sure how to replace this with CLHEP 1.9.2.2
+//  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+  m_engine = new CLHEP::HepJamesRandom;
 }
 
 
