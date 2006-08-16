@@ -134,8 +134,79 @@ std::pair<G4double,G4double> CrProtonReentrant::dir(G4double energy,
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
   // and phi=pi/2 for that comming along y-axis (from y>0 to y=0)
 {
-  G4double theta = acos(engine->flat());
   G4double phi = engine->flat() * 2 * M_PI;
+  G4double theta = acos(engine->flat());
+
+  G4double r1, r2;
+  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
+      theta = crProtonReentrant_0002->theta(engine);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.25){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.15;
+    r2 = 0.25-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0002->theta(engine);
+    } else {
+      theta = crProtonReentrant_0203->theta(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.25 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.35){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.25;
+    r2 = 0.35-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0203->theta(engine);
+    } else {
+      theta = crProtonReentrant_0304->theta(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.35 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.35;
+    r2 = 0.45-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0304->theta(engine);
+    } else {
+      theta = crProtonReentrant_0405->theta(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.55){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.45;
+    r2 = 0.55-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0405->theta(engine);
+    } else {
+      theta = crProtonReentrant_0506->theta(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.55 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.65){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.55;
+    r2 = 0.65-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0506->theta(engine);
+    } else {
+      theta = crProtonReentrant_0607->theta(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.65 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.75){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.65;
+    r2 = 0.75-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0607->theta(engine);
+    } else {
+      theta = crProtonReentrant_0708->theta(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.75 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.85){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.75;
+    r2 = 0.85-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0708->theta(engine);
+    } else {
+      theta = crProtonReentrant_0809->theta(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.85 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.95){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.85;
+    r2 = 0.95-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      theta = crProtonReentrant_0809->theta(engine);
+    } else {
+      theta = crProtonReentrant_0910->theta(engine);
+    }
+  } else {
+    theta = crProtonReentrant_0910->theta(engine);
+  }
 
   return std::pair<G4double,G4double>(cos(theta), phi);
 }

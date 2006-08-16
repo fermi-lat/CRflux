@@ -24,11 +24,14 @@ private:
   double A_splash, a_splash;
   // Normalization, spectral index and cutoff for E>breakE
   double B_splash, b_splash, cutOff;
+  // angular distribution constant
+  double ang_splash;
   // The energy where spectrum breaks
   double breakE;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -45,12 +48,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -67,12 +73,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -89,12 +98,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -111,12 +123,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -133,12 +148,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -155,12 +173,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -177,12 +198,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 
@@ -199,12 +223,15 @@ private:
   double B_splash, b_splash;
   // Normalization and spectral index for highE_break<E
   double C_splash, c_splash;
+  // angular distribution constant
+  double ang_splash;
   // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
+  double theta(CLHEP::HepRandomEngine* engine);
   double upwardFlux();
 };
 

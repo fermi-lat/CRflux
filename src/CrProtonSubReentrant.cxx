@@ -137,7 +137,7 @@ namespace {
 CrProtonReentrant_0002::CrProtonReentrant_0002(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.136*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.136*(E/100MeV)^0.4 [c/s/m^2/sr]
    * Above 100 MeV
    *   j(E) = 0.123*(E/GeV)^-0.155*exp(-(E/0.51GeV)^0.845) [c/s/m^2/sr]
    * reference:
@@ -148,12 +148,14 @@ CrProtonReentrant_0002::CrProtonReentrant_0002(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_reent = 0.136*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.136*pow(10.0, 0.4);
+  a_reent = -0.4;
   // Normalization and spectral index for E>breakE
   B_reent = 0.123;
   b_reent = 0.155;
   cutOff = 0.509;
+  // angular distribution constant
+  ang_reent = -0.5;
   // The spectrum breaks at 100MeV
   breakE = 0.1;
 }
@@ -212,7 +214,19 @@ G4double CrProtonReentrant_0002::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2))
+    *(1+2./3.*ang_reent);
+}
+
+// gives back theta 
+G4double CrProtonReentrant_0002::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -226,7 +240,7 @@ G4double CrProtonReentrant_0002::downwardFlux(){
 CrProtonReentrant_0203::CrProtonReentrant_0203(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.4 [c/s/m^2/sr]
    * 100-600 MeV
    *   j(E) = 0.1*(E/100MeV)^-0.87 [c/s/m^2/sr]
    * Above 600 MeV
@@ -239,14 +253,16 @@ CrProtonReentrant_0203::CrProtonReentrant_0203(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_reent = 0.1*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.1*pow(10.0, 0.4);
+  a_reent = -0.4;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_reent = 0.1*pow(10.0, -0.87);
   b_reent = 0.87;
   // Normalization and spectral index for E>highE_break
   C_reent = 0.1*pow(6.0, -0.87)*pow(1.0/0.6, -2.53);
   c_reent = 2.53;
+  // angular distribution constant
+  ang_reent = 0.0;
   // The spectrum breaks at 100MeV and 600 MeV
   lowE_break = 0.1;
   highE_break = 0.6;
@@ -315,9 +331,21 @@ G4double CrProtonReentrant_0203::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_reent is to take the angular distribution into account
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_reent);
 
+}
+
+// gives back theta 
+G4double CrProtonReentrant_0203::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -331,7 +359,7 @@ G4double CrProtonReentrant_0203::downwardFlux(){
 CrProtonReentrant_0304::CrProtonReentrant_0304(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.4 [c/s/m^2/sr]
    * 100-600 MeV
    *   j(E) = 0.1*(E/100MeV)^-1.09 [c/s/m^2/sr]
    * Above 600 MeV
@@ -344,14 +372,16 @@ CrProtonReentrant_0304::CrProtonReentrant_0304(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_reent = 0.1*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.1*pow(10.0, 0.4);
+  a_reent = -0.4;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_reent = 0.1*pow(10.0, -1.09);
   b_reent = 1.09;
   // Normalization and spectral index for E>highE_break
   C_reent = 0.1*pow(6.0, -1.09)*pow(1.0/0.6, -2.40);
   c_reent = 2.40;
+  // angular distribution constant
+  ang_reent = 1.0;
   // The spectrum breaks at 100MeV and 600 MeV
   lowE_break = 0.1;
   highE_break = 0.6;
@@ -420,8 +450,19 @@ G4double CrProtonReentrant_0304::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_reent);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta 
+G4double CrProtonReentrant_0304::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -435,7 +476,7 @@ G4double CrProtonReentrant_0304::downwardFlux(){
 CrProtonReentrant_0405::CrProtonReentrant_0405(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.4 [c/s/m^2/sr]
    * 100-600 MeV
    *   j(E) = 0.1*(E/100MeV)^-1.19 [c/s/m^2/sr]
    * Above 600 MeV
@@ -448,14 +489,16 @@ CrProtonReentrant_0405::CrProtonReentrant_0405(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_reent = 0.1*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.1*pow(10.0, 0.4);
+  a_reent = -0.4;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_reent = 0.1*pow(10.0, -1.19);
   b_reent = 1.19;
   // Normalization and spectral index for E>highE_break
   C_reent = 0.1*pow(6.0, -1.19)*pow(1.0/0.6, -2.54);
   c_reent = 2.54;
+  // angular distribution constant
+  ang_reent = 2.0;
   // The spectrum breaks at 100MeV and 600 MeV
   lowE_break = 0.1;
   highE_break = 0.6;
@@ -524,8 +567,19 @@ G4double CrProtonReentrant_0405::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_reent);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta 
+G4double CrProtonReentrant_0405::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -539,7 +593,7 @@ G4double CrProtonReentrant_0405::downwardFlux(){
 CrProtonReentrant_0506::CrProtonReentrant_0506(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-400 MeV
    *   j(E) = 0.1*(E/100MeV)^-1.18 [c/s/m^2/sr]
    * Above 400 MeV
@@ -552,14 +606,16 @@ CrProtonReentrant_0506::CrProtonReentrant_0506(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_reent = 0.1*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.1*pow(10.0, 0.0);
+  a_reent = 0.0;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_reent = 0.1*pow(10.0, -1.18);
   b_reent = 1.18;
   // Normalization and spectral index for E>highE_break
   C_reent = 0.1*pow(4.0, -1.18)*pow(1.0/0.4, -2.31);
   c_reent = 2.31;
+  // angular distribution constant
+  ang_reent = 4.0;
   // The spectrum breaks at 100MeV and 400 MeV
   lowE_break = 0.1;
   highE_break = 0.4;
@@ -628,8 +684,19 @@ G4double CrProtonReentrant_0506::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_reent);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta 
+G4double CrProtonReentrant_0506::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -643,7 +710,7 @@ G4double CrProtonReentrant_0506::downwardFlux(){
 CrProtonReentrant_0607::CrProtonReentrant_0607(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.13*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.13*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-300 MeV
    *   j(E) = 0.13*(E/100MeV)^-1.1 [c/s/m^2/sr]
    * Above 300 MeV
@@ -656,14 +723,16 @@ CrProtonReentrant_0607::CrProtonReentrant_0607(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_reent = 0.13*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.13*pow(10.0, 0.0);
+  a_reent = 0.0;
   // Normalization and spectral index for breakE<E
   B_reent = 0.13*pow(10.0, -1.1);
   b_reent = 1.1;
   // Normalization and spectral index for E>highE_break
   C_reent = 0.13*pow(3.0, -1.1)*pow(1.0/0.3, -2.25);
   c_reent = 2.25;
+  // angular distribution constant
+  ang_reent = 4.0;
   // The spectrum breaks at 100MeV and 300 MeV
   lowE_break = 0.1;
   highE_break = 0.3;
@@ -732,8 +801,19 @@ G4double CrProtonReentrant_0607::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_reent);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta 
+G4double CrProtonReentrant_0607::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -747,7 +827,7 @@ G4double CrProtonReentrant_0607::downwardFlux(){
 CrProtonReentrant_0708::CrProtonReentrant_0708(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.2*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.2*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-400 MeV
    *   j(E) = 0.2*(E/100MeV)^-1.5 [c/s/m^2/sr]
    * Above 400 MeV
@@ -760,14 +840,16 @@ CrProtonReentrant_0708::CrProtonReentrant_0708(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_reent = 0.2*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.2*pow(10.0, 0.0);
+  a_reent = 0.0;
   // Normalization and spectral index for breakE<E
   B_reent = 0.2*pow(10.0, -1.5);
   b_reent = 1.5;
   // Normalization and spectral index for E>highE_break
   C_reent = 0.2*pow(4.0, -1.5)*pow(1.0/0.4, -1.85);
   c_reent = 1.85;
+  // angular distribution constant
+  ang_reent = 4.0;
   // The spectrum breaks at 100MeV and 400 MeV
   lowE_break = 0.1;
   highE_break = 0.4;
@@ -836,8 +918,19 @@ G4double CrProtonReentrant_0708::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_reent);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta 
+G4double CrProtonReentrant_0708::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -851,7 +944,7 @@ G4double CrProtonReentrant_0708::downwardFlux(){
 CrProtonReentrant_0809::CrProtonReentrant_0809(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.23*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.23*(E/100MeV)^0.0 [c/s/m^2/sr]
    * Above 100 MeV
    *   j(E) = 0.017*(E/GeV)^-1.83*exp(-(E/0.177GeV)^-0.83) [c/s/m^2/sr]
    * reference:
@@ -862,12 +955,14 @@ CrProtonReentrant_0809::CrProtonReentrant_0809(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_reent = 0.23*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.23*pow(10.0, 0.0);
+  a_reent = 0.0;
   // Normalization and spectral index for E>breakE
   B_reent = 0.017;
   b_reent = 1.83;
   cutOff = 0.177;
+  // angular distribution constant
+  ang_reent = 4.0;
   // The spectrum breaks at 100MeV
   breakE = 0.1;
 }
@@ -926,8 +1021,19 @@ G4double CrProtonReentrant_0809::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2))
+      *(1+2./3.*ang_reent);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+// gives back theta 
+G4double CrProtonReentrant_0809::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -941,7 +1047,7 @@ G4double CrProtonReentrant_0809::downwardFlux(){
 CrProtonReentrant_0910::CrProtonReentrant_0910(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.44*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.44*(E/100MeV)^0.0 [c/s/m^2/sr]
    * Above 100 MeV
    *   j(E) = 0.037*(E/GeV)^-1.98*exp(-(E/0.21GeV)^-0.98) [c/s/m^2/sr]
    * reference:
@@ -952,12 +1058,14 @@ CrProtonReentrant_0910::CrProtonReentrant_0910(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_reent = 0.44*pow(10.0, -1.0);
-  a_reent = 1.0;
+  A_reent = 0.44*pow(10.0, 0.0);
+  a_reent = 0.0;
   // Normalization and spectral index for E>breakE
   B_reent = 0.037;
   b_reent = 1.98;
   cutOff = 0.21;
+  // angular distribution constant
+  ang_reent = 4.0;
   // The spectrum breaks at 100MeV
   breakE = 0.1;
 }
@@ -1016,7 +1124,19 @@ G4double CrProtonReentrant_0910::downwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+  // 1+2./3.*ang_reent is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2))
+      *(1+2./3.*ang_reent);
+}
+
+// gives back theta 
+G4double CrProtonReentrant_0910::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_reent))<=1+ang_reent*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 

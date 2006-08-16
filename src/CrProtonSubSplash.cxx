@@ -137,7 +137,7 @@ namespace {
 CrProtonSplash_0002::CrProtonSplash_0002(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.136*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.136*(E/100MeV)^0.4 [c/s/m^2/sr]
    * Above 100 MeV
    *   j(E) = 0.123*(E/GeV)^-0.155*exp(-(E/0.51GeV)^0.845) [c/s/m^2/sr]
    * reference:
@@ -148,12 +148,14 @@ CrProtonSplash_0002::CrProtonSplash_0002(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_splash = 0.136*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.136*pow(10.0, 0.4);
+  a_splash = -0.4;
   // Normalization and spectral index for E>breakE
   B_splash = 0.123;
   b_splash = 0.155;
   cutOff = 0.509;
+  // angular distribution constant
+  ang_splash = -0.5;
   // The spectrum breaks at 100MeV
   breakE = 0.1;
 }
@@ -212,7 +214,19 @@ G4double CrProtonSplash_0002::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2))
+      *(1+2./3.*ang_splash);
+}
+
+// gives back theta
+G4double CrProtonSplash_0002::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -226,7 +240,7 @@ G4double CrProtonSplash_0002::upwardFlux(){
 CrProtonSplash_0203::CrProtonSplash_0203(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.4 [c/s/m^2/sr]
    * 100-600 MeV
    *   j(E) = 0.1*(E/100MeV)^-0.87 [c/s/m^2/sr]
    * Above 600 MeV
@@ -239,14 +253,16 @@ CrProtonSplash_0203::CrProtonSplash_0203(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_splash = 0.1*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.1*pow(10.0, 0.4);
+  a_splash = -0.4;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_splash = 0.1*pow(10.0, -0.87);
   b_splash = 0.87;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.1*pow(6.0, -0.87)*pow(1.0/0.6, -2.53);
   c_splash = 2.53;
+  // angular distribution constant
+  ang_splash = 0.0;
   // The spectrum breaks at 100MeV and 600 MeV
   lowE_break = 0.1;
   highE_break = 0.6;
@@ -315,7 +331,19 @@ G4double CrProtonSplash_0203::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
+
+// gives back theta
+G4double CrProtonSplash_0203::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -329,7 +357,7 @@ G4double CrProtonSplash_0203::upwardFlux(){
 CrProtonSplash_0304::CrProtonSplash_0304(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.4 [c/s/m^2/sr]
    * 100-600 MeV
    *   j(E) = 0.1*(E/100MeV)^-1.09 [c/s/m^2/sr]
    * Above 600 MeV
@@ -342,14 +370,16 @@ CrProtonSplash_0304::CrProtonSplash_0304(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_splash = 0.1*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.1*pow(10.0, 0.4);
+  a_splash = -0.4;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_splash = 0.1*pow(10.0, -1.09);
   b_splash = 1.09;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.1*pow(6.0, -1.09)*pow(1.0/0.6, -2.40);
   c_splash = 2.40;
+  // angular distribution constant
+  ang_splash = 1.0;
   // The spectrum breaks at 100MeV and 600 MeV
   lowE_break = 0.1;
   highE_break = 0.6;
@@ -418,7 +448,19 @@ G4double CrProtonSplash_0304::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
+
+// gives back theta
+G4double CrProtonSplash_0304::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -432,7 +474,7 @@ G4double CrProtonSplash_0304::upwardFlux(){
 CrProtonSplash_0405::CrProtonSplash_0405(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.4 [c/s/m^2/sr]
    * 100-600 MeV
    *   j(E) = 0.1*(E/100MeV)^-1.19 [c/s/m^2/sr]
    * Above 600 MeV
@@ -445,14 +487,16 @@ CrProtonSplash_0405::CrProtonSplash_0405(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_splash = 0.1*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.1*pow(10.0, 0.4);
+  a_splash = -0.4;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_splash = 0.1*pow(10.0, -1.19);
   b_splash = 1.19;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.1*pow(6.0, -1.19)*pow(1.0/0.6, -2.54);
   c_splash = 2.54;
+  // angular distribution constant
+  ang_splash = 2.0;
   // The spectrum breaks at 100MeV and 600 MeV
   lowE_break = 0.1;
   highE_break = 0.6;
@@ -521,8 +565,19 @@ G4double CrProtonSplash_0405::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta
+G4double CrProtonSplash_0405::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -536,7 +591,7 @@ G4double CrProtonSplash_0405::upwardFlux(){
 CrProtonSplash_0506::CrProtonSplash_0506(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.1*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.1*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-400 MeV
    *   j(E) = 0.1*(E/100MeV)^-1.18 [c/s/m^2/sr]
    * Above 400 MeV
@@ -549,14 +604,16 @@ CrProtonSplash_0506::CrProtonSplash_0506(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_splash = 0.1*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.1*pow(10.0, 0.0);
+  a_splash = 0.0;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_splash = 0.1*pow(10.0, -1.18);
   b_splash = 1.18;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.1*pow(4.0, -1.18)*pow(1.0/0.4, -2.31);
   c_splash = 2.31;
+  // angular distribution constant
+  ang_splash = 4.0;
   // The spectrum breaks at 100MeV and 600 MeV
   lowE_break = 0.1;
   highE_break = 0.4;
@@ -625,8 +682,19 @@ G4double CrProtonSplash_0506::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta
+G4double CrProtonSplash_0506::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -640,7 +708,7 @@ G4double CrProtonSplash_0506::upwardFlux(){
 CrProtonSplash_0607::CrProtonSplash_0607(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.13*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.13*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-300 MeV
    *   j(E) = 0.13*(E/100MeV)^-1.1 [c/s/m^2/sr]
    * Above 300 MeV
@@ -653,14 +721,16 @@ CrProtonSplash_0607::CrProtonSplash_0607(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_splash = 0.13*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.13*pow(10.0, 0.0);
+  a_splash = 0.0;
   // Normalization and spectral index for breakE<E
   B_splash = 0.13*pow(10.0, -1.1);
   b_splash = 1.1;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.13*pow(3.0, -1.1)*pow(1.0/0.3, -2.95);
   c_splash = 2.95;
+  // angular distribution constant
+  ang_splash = 4.0;
   // The spectrum breaks at 100MeV and 300 MeV
   lowE_break = 0.1;
   highE_break = 0.3;
@@ -729,8 +799,19 @@ G4double CrProtonSplash_0607::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta
+G4double CrProtonSplash_0607::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -744,7 +825,7 @@ G4double CrProtonSplash_0607::upwardFlux(){
 CrProtonSplash_0708::CrProtonSplash_0708(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.2*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.2*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-400 MeV
    *   j(E) = 0.2*(E/100MeV)^-1.5 [c/s/m^2/sr]
    * Above 400 MeV
@@ -757,14 +838,16 @@ CrProtonSplash_0708::CrProtonSplash_0708(){
    */
   
   // Normalization, spectral index, and cutoff for E<breakE
-  A_splash = 0.2*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.2*pow(10.0, 0.0);
+  a_splash = 0.0;
   // Normalization and spectral index for breakE<E
   B_splash = 0.2*pow(10.0, -1.5);
   b_splash = 1.5;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.2*pow(4.0, -1.5)*pow(1.0/0.4, -4.16);
   c_splash = 4.16;
+  // angular distribution constant
+  ang_splash = 4.0;
   // The spectrum breaks at 100MeV and 400 MeV
   lowE_break = 0.1;
   highE_break = 0.4;
@@ -833,8 +916,19 @@ G4double CrProtonSplash_0708::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+// gives back theta
+G4double CrProtonSplash_0708::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -848,7 +942,7 @@ G4double CrProtonSplash_0708::upwardFlux(){
 CrProtonSplash_0809::CrProtonSplash_0809(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.23*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.23*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-400 MeV
    *   j(E) = 0.23*(E/100MeV)^-1.53 [c/s/m^2/sr]
    * Above 400 MeV
@@ -861,14 +955,16 @@ CrProtonSplash_0809::CrProtonSplash_0809(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_splash = 0.23*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.23*pow(10.0, 0.0);
+  a_splash = 0.0;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_splash = 0.23*pow(10.0, -1.53);
   b_splash = 1.53;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.23*pow(4.0, -1.53)*pow(1.0/0.4, -4.68);
   c_splash = 4.68;
+  // angular distribution constant
+  ang_splash = 4.0;
   // The spectrum breaks at 100MeV and 400 MeV
   lowE_break = 0.1;
   highE_break = 0.4;
@@ -936,7 +1032,19 @@ G4double CrProtonSplash_0809::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
+
+// gives back theta
+G4double CrProtonSplash_0809::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
@@ -950,7 +1058,7 @@ G4double CrProtonSplash_0809::upwardFlux(){
 CrProtonSplash_0910::CrProtonSplash_0910(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.44*(E/100MeV)^-1.0 [c/s/m^2/sr]
+   *   j(E) = 0.44*(E/100MeV)^0.0 [c/s/m^2/sr]
    * 100-400 MeV
    *   j(E) = 0.44*(E/100MeV)^-2.25 [c/s/m^2/sr]
    * Above 400 MeV
@@ -963,14 +1071,16 @@ CrProtonSplash_0910::CrProtonSplash_0910(){
    */
   
   // Normalization, spectral index, and cutoff for E<lowE_break
-  A_splash = 0.44*pow(10.0, -1.0);
-  a_splash = 1.0;
+  A_splash = 0.44*pow(10.0, 0.0);
+  a_splash = 0.0;
   // Normalization and spectral index for lowE_break<E<highE_break
   B_splash = 0.44*pow(10.0, -2.25);
   b_splash = 2.25;
   // Normalization and spectral index for E>highE_break
   C_splash = 0.44*pow(4.0, -2.25)*pow(1.0/0.4, -3.09);
   c_splash = 3.09;
+  // angular distribution constant
+  ang_splash = 4.0;
   // The spectrum breaks at 100MeV and 400 MeV
   lowE_break = 0.1;
   highE_break = 0.4;
@@ -1039,7 +1149,19 @@ G4double CrProtonSplash_0910::upwardFlux(){
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+  // 1+2./3.*ang_splash is to take the angular distribution into account
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3))
+      *(1+2./3.*ang_splash);
+}
+
+// gives back theta
+G4double CrProtonSplash_0910::theta(CLHEP::HepRandomEngine* engine){
+  G4double theta;
+  while(1){
+    theta = acos(engine->flat());
+    if ((engine->flat())*(1+abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+  }
+  return theta;
 }
 //------------------------------------------------------------
 
