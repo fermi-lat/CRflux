@@ -14,6 +14,9 @@
 #include "CrPositron.hh"
 #include "CrGamma.hh"
 #include "CrHeavyIon.h"
+#include "CrHeavyIonVertical.h"
+//#include "CrHeavyIonVertZ.h"
+//#include "CrHeavyIonZ.h"
 
 #include "CrLocation.h"
 
@@ -72,6 +75,9 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
     static RemoteSpectrumFactory<CrPositron> CRfactory5(fsvc);
     static RemoteSpectrumFactory<CrGamma> CRfactory6(fsvc);
     static RemoteSpectrumFactory<CrHeavyIon> CRfactory7(fsvc);
+    static RemoteSpectrumFactory<CrHeavyIonVertical> CRfactory8(fsvc);
+   // static RemoteSpectrumFactory<CrHeavyIonVertZ> CRfactory9(fsvc);
+    //static RemoteSpectrumFactory<CrHeavyIonZ> CRfactory10(fsvc);
 
 	// CRflux needs to use the same random engine as FluxSvc
 	CLHEP::HepRandomEngine* engine = fsvc->getRandomEngine();

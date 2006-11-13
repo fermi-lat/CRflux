@@ -1,5 +1,5 @@
 /**************************************************************************
- * CrHeavyIon.cc
+ * CrHeavyIonVertical.cc
  **************************************************************************
  * Read comments at the head of CosmicRayGeneratorAction.cc
  * and GLAST-LAT Technical Note (LAT-TD-250.1) by T. Mizuno et al. 
@@ -32,10 +32,9 @@
 #include "CLHEP/Random/Random.h"
 //#include <CLHEP/Random/JamesRandom.h>
 
-#include "CrHeavyIon.h"
-#include "CrHeavyIonPrimary.hh"
-#include "CrHeavyIonPrimaryZ.hh"
-
+#include "CrHeavyIonVertical.h"
+#include "CrHeavyIonPrimaryVertical.hh"
+#include "CrHeavyIonPrimVertZ.hh"
 
 #include "CrSpectrum.hh"
 
@@ -46,7 +45,7 @@
 typedef double G4double;
 
 // Constructor. Includes each component
-CrHeavyIon::CrHeavyIon(const std::string& paramstring)
+CrHeavyIonVertical::CrHeavyIonVertical(const std::string& paramstring)
 : m_component(0)
 {
   std::vector<float> params;
@@ -54,9 +53,9 @@ CrHeavyIon::CrHeavyIon(const std::string& paramstring)
 
   // including each component (primary alphas)...
   if(params.empty() || params[0]==0)
-    m_subComponents.push_back(new CrHeavyIonPrimary());
+    m_subComponents.push_back(new CrHeavyIonPrimaryVertical());
   else
-    m_subComponents.push_back(new CrHeavyIonPrimaryZ(params[0]));
+    m_subComponents.push_back(new CrHeavyIonPrimVertZ(params[0]));
     int z = params[0];
   
 // Not sure how to replace the following with CLHEP 1.9.2.2
@@ -65,7 +64,7 @@ CrHeavyIon::CrHeavyIon(const std::string& paramstring)
 
 
 // Destructor. Delete each component
- CrHeavyIon::~CrHeavyIon()
+ CrHeavyIonVertical::~CrHeavyIonVertical()
 {
   std::vector<CrSpectrum*>::iterator  i;
   for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
@@ -75,7 +74,7 @@ CrHeavyIon::CrHeavyIon(const std::string& paramstring)
 
 
 // Gives back component in the ratio of the flux
-CrSpectrum* CrHeavyIon::selectComponent()
+CrSpectrum* CrHeavyIonVertical::selectComponent()
 {
   std::map<CrSpectrum*,G4double> integ_flux;
   double total_flux = 0;
@@ -98,7 +97,7 @@ CrSpectrum* CrHeavyIon::selectComponent()
 }
 
 // Gives back kinetic energy 
-G4double CrHeavyIon::energy(double time)
+G4double CrHeavyIonVertical::energy(double time)
 {
   selectComponent();
   return m_component->energySrc(m_engine);
@@ -106,7 +105,7 @@ G4double CrHeavyIon::energy(double time)
 
 
 // Gives back paticle direction in cos(theta) and phi[rad]
-std::pair<G4double,G4double> CrHeavyIon::dir(G4double energy)
+std::pair<G4double,G4double> CrHeavyIonVertical::dir(G4double energy)
 {
   if (!m_component){ selectComponent(); }
 
@@ -114,7 +113,7 @@ std::pair<G4double,G4double> CrHeavyIon::dir(G4double energy)
 }
 
 // Gives back the total flux (summation of each component's flux)
-G4double CrHeavyIon::flux(G4double time) const
+G4double CrHeavyIonVertical::flux(G4double time) const
 {
   G4double total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
@@ -126,7 +125,7 @@ G4double CrHeavyIon::flux(G4double time) const
 }
 
 // Gives back solid angle from whick particles come
-G4double CrHeavyIon::solidAngle() const
+G4double CrHeavyIonVertical::solidAngle() const
 {
    if(m_subComponents.size() == 1)
    {
@@ -139,7 +138,7 @@ G4double CrHeavyIon::solidAngle() const
 }
 
 // print out the information of each component
-void CrHeavyIon::dump()
+void CrHeavyIonVertical::dump()
 {
   std::vector<CrSpectrum*>::const_iterator i;
   for (i = m_subComponents.begin(); i != m_subComponents.end(); i++){
@@ -162,15 +161,15 @@ void CrHeavyIon::dump()
 // flux(time) to determine the average flux for that time
 // and calculate the arrival time for the next particle using
 // the poission distribution.
-G4double CrHeavyIon::interval(G4double time){
+G4double CrHeavyIonVertical::interval(G4double time){
   return -1.0;
 }
 
-const char* CrHeavyIon::particleName() const {
+const char* CrHeavyIonVertical::particleName() const {
   return m_component->particleName();
 }
 
-void CrHeavyIon::parseParamList(std::string input, std::vector<float>& output)
+void CrHeavyIonVertical::parseParamList(std::string input, std::vector<float>& output)
 {  
   int i=0;
   for(;!input.empty() && i!=std::string::npos;){

@@ -5,3 +5,4 @@ i386_linux*
 setup.*
 *.mak*
 VC7debug
+rh*

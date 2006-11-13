@@ -1,8 +1,10 @@
 /****************************************************************************
- * CrHeavyIonPrimary.cc:
+ * CrHeavyIonPrimaryVertical.cc:  
+ ********************************
+ * COPIED from CrHeavyIonPrimary.cc, only defining theta=0: C.LAVALLEY
  ****************************************************************************
  * Read comments at the head of CosmicRayGeneratorAction.cc
- * and GLAST-LAT Technical Note (LAT-TD-250.1) by T. Mizuno et al. 
+ * and GLAST-LAT Technical Note (LAT-TD-250.1) by T. Mi zuno et al. 
  * for overall flow of cosmic ray generation in BalloonTestV13.
  * This program is interfaced to CosmicRayGeneratorAction.cc 
  * via CrExample, the entry-point class for the cosmic-ray ion generation.
@@ -47,7 +49,7 @@
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/Random.h>
 
-#include "CrHeavyIonPrimary.hh"
+#include "CrHeavyIonPrimaryVertical.hh"
 
 typedef double G4double;
 
@@ -80,8 +82,18 @@ namespace {
    0.968741179,1.};
    int iz=0;
    double r0=mm_engine->flat(); 
-   while (z_dist[iz] < r0) iz++; 
+   while ((z_dist[iz] < r0) ) iz++; 
+   
+   //CL: to have a flat spectrum: 
+   //double r0=mm_engine->flat(); 
+   // to have iz e [0,24]
+   //int iz = int(24*r0);
+   // to have iz e [6,24]
+   //int iz = int(r0*(24-6) + 6);
   
+   //CL: to fix a Z: 
+   //int iz=11;
+   std::cout << "IN CrHEavyIonPrimary: selected z = " << iz+3 << std::endl;
    return (G4double) iz+3;
   }
   inline G4double get_a_ion(){
@@ -302,7 +314,7 @@ namespace {
 //
 //
 
-CrHeavyIonPrimary::CrHeavyIonPrimary()
+CrHeavyIonPrimaryVertical::CrHeavyIonPrimaryVertical()
 {
   // Set lower and higher energy limit of the primary ion (GeV).
   // At lowE_primary, flux of primary ion can be 
@@ -311,7 +323,7 @@ CrHeavyIonPrimary::CrHeavyIonPrimary()
 }
 
 
-CrHeavyIonPrimary::~CrHeavyIonPrimary()
+CrHeavyIonPrimaryVertical::~CrHeavyIonPrimaryVertical()
 {
   ;
 }
@@ -319,7 +331,7 @@ CrHeavyIonPrimary::~CrHeavyIonPrimary()
 
 // Set satellite position and calculate energies related to COR.
 // These energies will be used to generate particles.
-void CrHeavyIonPrimary::setPosition(G4double latitude, G4double longitude){
+void CrHeavyIonPrimaryVertical::setPosition(G4double latitude, G4double longitude){
   CrSpectrum::setPosition(latitude, longitude);
 
   // Set lower and higher energy limit of the primary ion (GeV).
@@ -334,7 +346,7 @@ void CrHeavyIonPrimary::setPosition(G4double latitude, G4double longitude){
 
 // Set satellite position and calculate energies related to COR.
 // These energies will be used to generate particles.
-void CrHeavyIonPrimary::setPosition
+void CrHeavyIonPrimaryVertical::setPosition
 (G4double latitude, G4double longitude, G4double time){
   CrSpectrum::setPosition(latitude, longitude, time);
   // Set lower and higher energy limit of the primary ion (GeV).
@@ -349,7 +361,7 @@ void CrHeavyIonPrimary::setPosition
 
 // Set satellite position and calculate energies related to COR.
 // These energies will be used to generate particles.
-void CrHeavyIonPrimary::
+void CrHeavyIonPrimaryVertical::
 setPosition(G4double latitude, G4double longitude, 
 	    G4double time, G4double altitude){
   CrSpectrum::setPosition(latitude, longitude, time, altitude);
@@ -365,7 +377,7 @@ setPosition(G4double latitude, G4double longitude,
 
 // Set geomagnetic cutoff rigidity and calculate the energies related.
 // These energies are used to generate the particle. 
-void CrHeavyIonPrimary::setCutOffRigidity(G4double cor){
+void CrHeavyIonPrimaryVertical::setCutOffRigidity(G4double cor){
   CrSpectrum::setCutOffRigidity(cor);
   // Set lower and higher energy limit of the primary ion (GeV).
   // At lowE_primary, flux of primary ion can be 
@@ -378,7 +390,7 @@ void CrHeavyIonPrimary::setCutOffRigidity(G4double cor){
 }
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrHeavyIonPrimary::dir(G4double energy, 
+std::pair<G4double,G4double> CrHeavyIonPrimaryVertical::dir(G4double energy, 
                                               CLHEP::HepRandomEngine* engine) const
  // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),
@@ -389,10 +401,9 @@ std::pair<G4double,G4double> CrHeavyIonPrimary::dir(G4double energy,
   // After integration over the azimuth angle (phi), 
   // the theta distribution should be sin(theta) for a constant theta width.
   /// Cos(theta) ranges from 1 to -0.4
+  //G4double theta = acos(1.4*engine->flat()-0.4);
   //CL: to define Vertical CrHeavyIon, we set theta=0;
-  //G4double theta = 0;
-  
-  G4double theta = acos(1.4*engine->flat()-0.4);
+  G4double theta = 0;
   G4double phi   = engine->flat() * 2 * M_PI;
 
   return std::pair<G4double,G4double>(cos(theta), phi);
@@ -400,7 +411,7 @@ std::pair<G4double,G4double> CrHeavyIonPrimary::dir(G4double energy,
 
 
 // Gives back particle energy
-G4double CrHeavyIonPrimary::energySrc(CLHEP::HepRandomEngine* engine) const
+G4double CrHeavyIonPrimaryVertical::energySrc(CLHEP::HepRandomEngine* engine) const
 { 
   return primaryCRenergy(engine, m_cutOffRigidity, m_solarWindPotential);
 }
@@ -411,7 +422,7 @@ G4double CrHeavyIonPrimary::energySrc(CLHEP::HepRandomEngine* engine) const
 // and the unit is [c/s/m^2/sr].
 // flux()*solidAngle() is used as relative normalization among
 // "primary", "reentrant" and "splash".
-G4double CrHeavyIonPrimary::flux() const
+G4double CrHeavyIonPrimaryVertical::flux() const
 {
   // Straight downward (theta=0) flux integrated over energy,
   // given by integral_array[16][7]
@@ -458,7 +469,7 @@ G4double CrHeavyIonPrimary::flux() const
 }
 
 // Gives back solid angle from which particle comes
-G4double CrHeavyIonPrimary::solidAngle() const
+G4double CrHeavyIonPrimaryVertical::solidAngle() const
 {
   // * 1.4 since Cos(theta) ranges from 1 to -0.4 
   z_ion=get_z_ion();
@@ -472,7 +483,7 @@ G4double CrHeavyIonPrimary::solidAngle() const
 }
 
 // Gives back particle name
-const  char* CrHeavyIonPrimary::particleName() const 
+const  char* CrHeavyIonPrimaryVertical::particleName() const 
 {
   char* nameIon[24]={"Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe"};
   
@@ -484,7 +495,7 @@ const  char* CrHeavyIonPrimary::particleName() const
 
 
 // Gives back the name of the component
-std::string CrHeavyIonPrimary::title() const
+std::string CrHeavyIonPrimaryVertical::title() const
 {
   return "CrHeavyIonPrimary";
 }

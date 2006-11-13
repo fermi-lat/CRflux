@@ -1,8 +1,8 @@
 //$Header$
 
 
-#ifndef CrHeavyIon_H
-#define CrHeavyIon_H
+#ifndef CrHeavyIonVertical_H
+#define CrHeavyIonVertical_H
 
 
 //!  The class that calls each cosmic-ray Example components based on
@@ -16,7 +16,7 @@
 class CrSpectrum;
 class CLHEP::HepRandomEngine;
 
-class CrHeavyIon : public ISpectrum
+class CrHeavyIonVertical : public ISpectrum
 {
 public:
     // params[0] is bit flag for determining which to include (default 7)
@@ -24,8 +24,8 @@ public:
     // 2: reentrant
     // 4: splash
     
-    CrHeavyIon(const std::string& params);
-    virtual ~CrHeavyIon();
+    CrHeavyIonVertical(const std::string& params);
+    virtual ~CrHeavyIonVertical();
 
    // Gives back component in the ratio of the flux
   CrSpectrum* selectComponent();
@@ -37,7 +37,7 @@ public:
     virtual double    flux (double time ) const;
     
     virtual const char * particleName()const; // BL{ return "p";}
-    virtual std::string title()const{return "CrHeavyIon";}
+    virtual std::string title()const{return "CrHeavyIonVertical";}
     virtual double solidAngle( )const;
     
     virtual double energy(double time);
