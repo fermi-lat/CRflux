@@ -377,10 +377,32 @@ std::pair<double,double> CrProtonPrimary::dir(double energy,
   // After integration over the azimuth angle (phi), 
   // the theta distribution should be sin(theta) for a constant theta width.
 
+/***
   /// Cos(theta) ranges from 1 to -0.4
   double theta = acos(1.4*engine->flat()-0.4);
   double phi   = engine->flat() * 2 * M_PI;
+***/
 
+  double theta, phi;
+  double cor, cor_west;
+  double flux, flux_west;
+  double rig = rigidity(energy);
+  while(1){
+      /// Cos(theta) ranges from 1 to -0.4
+      theta = acos(1.4*engine->flat()-0.4);
+      phi   = engine->flat() * 2 * M_PI;
+      cor = CrSpectrum::cutOffRigidityThisDirection(theta, phi);
+      cor_west = CrSpectrum::cutOffRigidityThisDirection(theta, 270.0/180.0*M_PI);
+      flux = 1./(1+pow(rig/cor,-12.0));
+      flux_west = 1./(1+pow(rig/cor_west,-12.0));
+/***
+      std::cout << energy << " " << rig << " " << cor << " " << cor_west << std::endl;
+      std::cout << "flux= " << flux << " flux_west= " << flux_west << std::endl;
+***/
+      if (engine->flat()<=flux/flux_west){
+	  break;
+      }
+  }
   return std::pair<double,double>(cos(theta), phi);
 }
 

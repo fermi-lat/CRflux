@@ -10,6 +10,8 @@
 #include <utility>
 #include <string>
 
+#include "CrSpectrum.hh"
+
 // Forward declaration:
 class CLHEP::HepRandomEngine;
 

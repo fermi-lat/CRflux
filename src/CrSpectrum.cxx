@@ -312,6 +312,33 @@ double CrSpectrum::cutOffRigidity() const
   return m_cutOffRigidity;
 }
 
+// Gives back cutoff rigidity of particular direction in[GV]
+double CrSpectrum::cutOffRigidityThisDirection(double theta, double phi) const
+{
+// The complete formula for the Stoermer cutoff rigidity is given as
+//   Rc = (M/2r^2) *
+//     ( cos(theta_M)^4/(1+(1-cos(theta_M)^3*sin(theta)*sin(phi))^0.5)^2 )
+// where theta and phi are zenith angle and azimuth angle, respectively.
+// (theta=0 for vertical downward, phi=0 for particles from north and
+//  phi=90deg for particles from east)
+// (e.g., p. 100 of "High Energy Cosmic Rays" by Todor Stanev)
+//
+// Thus, the ratio of cor of particular direction to the vertical cor
+// is 4/(1+(1-cos(theta_M)^3*sin(theta)*sin(phi))^0.5)^2
+
+    // convert from degree to radian 
+    double magLat = m_geomagneticLatitude/180.0*M_PI;
+    // calculate geomagnetic cutoff of particle from (theta, phi)
+    double cor = m_cutOffRigidity;
+    double tmp = 1+pow(1-pow(cos(magLat),3)*sin(theta)*sin(phi),0.5);
+    cor = cor*4.0/pow(tmp,2);
+/***
+    std::cout << "cor= " << cor << " tmp= " << tmp 
+              << " theta= " << theta << " phi= " << phi << std::endl;
+***/
+    return cor;
+}
+
 
 // Gives back solar modulation potential in [MV]
 double CrSpectrum::solarWindPotential() const
