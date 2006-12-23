@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+23-dec-06 v1r10   THB Implement E-W effect from  Mizuno
 24-mar-06 v1r9    THB New Heavy Ion stuff for Claudia
 24-mar-06 v1r7    HMK Update for CLEHP 1.9.2.2
 17-jan-06 v1r6    THB (for Mizuno) new e+/e- functions below 120 MeV
