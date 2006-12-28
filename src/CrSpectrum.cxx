@@ -32,6 +32,10 @@
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
+#include <CLHEP/Random/RandomEngine.h>
+#include <CLHEP/Random/RandGeneral.h>
+#include <CLHEP/Random/JamesRandom.h>
+
 #include "CrLocation.h"
 #include "CrCoordinateTransfer.hh"
 
@@ -337,6 +341,33 @@ double CrSpectrum::cutOffRigidityThisDirection(double theta, double phi) const
               << " theta= " << theta << " phi= " << phi << std::endl;
 ***/
     return cor;
+}
+
+
+// Gives back particle direction with EW effect 
+std::pair<double,double> CrSpectrum::EW_dir(double rig, double coeff, double polarity,
+			  CLHEP::HepRandomEngine* engine)
+{
+
+  double theta, phi;
+  double cor, cor_west;
+  double flux, flux_west;
+  theta = acos(1.4*engine->flat()-0.4);
+  while(1){
+    phi   = engine->flat() * 2 * M_PI;
+    cor = CrSpectrum::cutOffRigidityThisDirection(theta, phi);
+    cor_west = CrSpectrum::cutOffRigidityThisDirection(theta, 270.0/180.0*M_PI);
+    flux = 1./(1+pow(rig/cor, coeff));
+    flux_west = 1./(1+pow(rig/cor_west, coeff));
+    if (engine->flat()<=flux/flux_west){
+      break;
+    }
+  }
+  if (polarity<0){
+    phi = phi+M_PI;
+  }
+  return std::pair<double,double>(cos(theta), phi);
+  
 }
 
 

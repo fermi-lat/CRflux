@@ -415,41 +415,38 @@ void CrPositronPrimary::setCutOffRigidity(double cor){
 std::pair<double,double> CrPositronPrimary::dir(double energy, 
 						CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
-  // The downward has plus sign in cos(theta),
-  // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
-  // and phi=pi/2 for that comming along y-axis (from y>0 to y=0).
+  // The downward direction has plus sign in cos(theta),
+  // and phi = 0 for the particle comming from north
+  // and phi=pi/2 for that comming from east (smallest flux for positively charged particle)
 {
-  // Assuming isotropic from the upper (i.e. sky side) hemisphere.
-  // After integration over the phi, the theta distribution should
-  // be sin(theta) for a constant theta width.
 
-/***
+  /***
+  // old code: calculate direction in this class
+  double theta, phi;
+  double cor, cor_west;
+  double flux, flux_west;
+  double rig = rigidity(energy*0.001);
   /// Cos(theta) ranges from 1 to -0.4
-  double theta = acos(1.4*engine->flat()-0.4);
-  double phi   = engine->flat() * 2 * M_PI;
-***/
-
-    double theta, phi;
-    double cor, cor_west;
-    double flux, flux_west;
-    double rig = rigidity(energy);
-    while(1){
-	/// Cos(theta) ranges from 1 to -0.4
-	theta = acos(1.4*engine->flat()-0.4);
-	phi   = engine->flat() * 2 * M_PI;
-	cor = CrSpectrum::cutOffRigidityThisDirection(theta, phi);
-	cor_west = CrSpectrum::cutOffRigidityThisDirection(theta, 270.0/180.0*M_PI);
-	flux = 1./(1+pow(rig/cor,-6.0));
-	flux_west = 1./(1+pow(rig/cor_west,-6.0));
-/***
-      std::cout << energy << " " << rig << " " << cor << " " << cor_west << std::endl;
-      std::cout << "flux= " << flux << " flux_west= " << flux_west << std::endl;
-***/
-	if (engine->flat()<=flux/flux_west){
-	    break;
-	}
-    }
+  theta = acos(1.4*engine->flat()-0.4);
+  while(1){
+      phi   = engine->flat() * 2 * M_PI;
+      cor = CrSpectrum::cutOffRigidityThisDirection(theta, phi);
+      cor_west = CrSpectrum::cutOffRigidityThisDirection(theta, 270.0/180.0*M_PI);
+      flux = 1./(1+pow(rig/cor,-6.0));
+      flux_west = 1./(1+pow(rig/cor_west,-6.0));
+      if (engine->flat()<=flux/flux_west){
+      break;
+      }
+  }
   return std::pair<double,double>(cos(theta), phi);
+  ***/
+
+  // new code: CrSpectrum class takes care of direction generation
+  double rig = rigidity(energy*0.001);
+  double coeff = -6.0;
+  double polarity = 1.0; // positively charged particle
+  return CrSpectrum::EW_dir(rig, coeff, polarity, engine);
+
 }
 
 

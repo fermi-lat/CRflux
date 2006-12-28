@@ -61,13 +61,15 @@ public:
   virtual double geomagneticLongitude() const; // [deg]
   virtual double cutOffRigidity() const; // [GV]
   virtual double solarWindPotential() const; // [MV]
-    virtual double cutOffRigidityThisDirection(double theta, double phi) const;// [GV]  
+  virtual double cutOffRigidityThisDirection(double theta, double phi) const;// [GV]  
 
   /// Gives back the energy and direction of the particle
   virtual double energySrc(CLHEP::HepRandomEngine* engine) const=0;
   virtual std::pair<double,double> 
   dir(double energy, CLHEP::HepRandomEngine* engine) const=0;
-
+  /// Gives back the direction of the particle with EW effect
+  std::pair<double, double> EW_dir(double rigidity, double coeff, double polarity, 
+				   CLHEP::HepRandomEngine* engine);
   /// Gives back the flux
   virtual double flux() const=0;
   /// Gives back the solid angle from which particle comes
