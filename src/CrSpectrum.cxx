@@ -346,7 +346,7 @@ double CrSpectrum::cutOffRigidityThisDirection(double theta, double phi) const
 
 // Gives back particle direction with EW effect 
 std::pair<double,double> CrSpectrum::EW_dir(double rig, double coeff, double polarity,
-			  CLHEP::HepRandomEngine* engine)
+			  CLHEP::HepRandomEngine* engine)const
 {
 
   double theta, phi;

@@ -69,7 +69,7 @@ public:
   dir(double energy, CLHEP::HepRandomEngine* engine) const=0;
   /// Gives back the direction of the particle with EW effect
   std::pair<double, double> EW_dir(double rigidity, double coeff, double polarity, 
-				   CLHEP::HepRandomEngine* engine);
+				   CLHEP::HepRandomEngine* engine)const;
   /// Gives back the flux
   virtual double flux() const=0;
   /// Gives back the solid angle from which particle comes
