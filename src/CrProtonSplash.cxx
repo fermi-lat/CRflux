@@ -97,7 +97,7 @@ namespace {
 //
 //
 
-CrProtonSplash::CrProtonSplash()
+CrProtonSplash::CrProtonSplash():CrSpectrum()
 {
   crProtonSplash_0002 = new CrProtonSplash_0002();
   crProtonSplash_0203 = new CrProtonSplash_0203();
@@ -346,7 +346,7 @@ double CrProtonSplash::flux() const
     upwardFlux = crProtonSplash_0910->upwardFlux();
   }
 
-  return upwardFlux; // [c/s/m^2/sr]
+  return m_normalization*upwardFlux; // [c/s/m^2/sr]
 
 }
 

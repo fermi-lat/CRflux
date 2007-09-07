@@ -332,7 +332,7 @@ namespace {
 //
 //
 
-CrElectronPrimary::CrElectronPrimary()
+CrElectronPrimary::CrElectronPrimary():CrSpectrum()
 {
   // Set lower and higher energy limits of primary electron.
   // At lowE_primary, flux of primary electron can be 

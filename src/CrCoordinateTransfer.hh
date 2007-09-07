@@ -40,4 +40,4 @@ private:
 
 };
 
-#endif CrCoordinateTransfer_H
+#endif // CrCoordinateTransfer_H

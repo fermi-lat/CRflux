@@ -89,6 +89,9 @@ public:
   /// this one asks the GPS for position
   int askGPS();
 
+  /// 
+  void setNormalization(float norm);
+  
 protected:
   // Following member variables defines satellite position 
   // in geographic/geomagnetic coordinate, altitude, time of observation, 
@@ -99,6 +102,8 @@ protected:
   double m_longitude; ///< [deg]
   double m_geomagneticLatitude; ///< [deg]
   double m_geomagneticLongitude; ///< [deg]
+  double m_geomagneticLambda; ///< [rad]
+  double m_geomagneticR; ///< [R_earth]
   double m_cutOffRigidity; ///< [GV]
   double m_solarWindPotential; ///< [MV]
 
@@ -107,6 +112,9 @@ protected:
   double m_gammaHighEnergy; ///< [GeV]
 
   double m_earthRadius; ///< earth radius in km
+  
+  double m_normalization; ///< normalization factor for flux
+
 private:
    ObserverAdapter< CrSpectrum > m_observer; ///< obsever tag
 

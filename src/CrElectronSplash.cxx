@@ -110,7 +110,7 @@ namespace {
 //
 //
 
-CrElectronSplash::CrElectronSplash()
+CrElectronSplash::CrElectronSplash():CrSpectrum()
 {
   crElectronSplash_0003 = new CrElectronSplash_0003();
   crElectronSplash_0306 = new CrElectronSplash_0306();
@@ -243,7 +243,7 @@ G4double CrElectronSplash::flux() const
     upwardFlux = crElectronSplash_1011->upwardFlux();
   }
 
-  return upwardFlux; // [c/s/m^2/sr]
+  return m_normalization*upwardFlux; // [c/s/m^2/sr]
 
 }
 

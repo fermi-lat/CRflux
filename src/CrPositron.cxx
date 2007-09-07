@@ -64,6 +64,13 @@ CrPositron::CrPositron(const std::string& paramstring)
   if(flag& 2) m_subComponents.push_back(new CrPositronReentrant);
   if(flag& 4) m_subComponents.push_back(new CrPositronSplash);
 
+  if(params.size()>1 && params[1]>0) {   
+     std::vector<CrSpectrum*>::iterator i;
+     for (i=m_subComponents.begin() ; i != m_subComponents.end(); i++){
+	(*i)->setNormalization(params[1]);
+     };
+  };	   
+
 // Not sure how to replace this with CLHEP 1.9.2.2
   m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
 }

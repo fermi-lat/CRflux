@@ -287,7 +287,7 @@ namespace {
 //
 //
 
-CrProtonPrimary::CrProtonPrimary()
+CrProtonPrimary::CrProtonPrimary():CrSpectrum()
 {
   // Set lower and higher energy limit of the primary proton (GeV).
   // At lowE_primary, flux of primary proton can be 

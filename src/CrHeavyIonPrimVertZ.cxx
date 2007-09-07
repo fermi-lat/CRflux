@@ -465,7 +465,7 @@ G4double CrHeavyIonPrimVertZ::solidAngle() const
   //z_ion=get_z_ion();
   //C.L: to fix z:
   //z_ion = z;
-  std::cout << "CrHeavyIonPrimVertZ::solidAngle(), z_ion=" << z_ion << std::endl;  
+  // std::cout << "CrHeavyIonPrimVertZ::solidAngle(), z_ion=" << z_ion << std::endl;  
   A_ion= get_a_ion();
   // std::cout << z_ion << " " << A_ion << std::endl;  
   lowE_primary = energy(m_cutOffRigidity/2.5);

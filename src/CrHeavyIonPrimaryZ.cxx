@@ -451,7 +451,7 @@ G4double CrHeavyIonPrimaryZ::flux() const
 G4double CrHeavyIonPrimaryZ::solidAngle() const
 {
   // * 1.4 since Cos(theta) ranges from 1 to -0.4 
- std::cout << "CrHeavyIonPrimaryZ::solidAngle(), z_ion=" << z_ion << std::endl;  
+  // std::cout << "CrHeavyIonPrimaryZ::solidAngle(), z_ion=" << z_ion << std::endl;  
 
   A_ion= get_a_ion();
   // std::cout << z_ion << " " << A_ion << std::endl;  

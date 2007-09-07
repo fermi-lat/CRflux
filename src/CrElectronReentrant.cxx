@@ -105,7 +105,7 @@ namespace {
 //
 //
 
-CrElectronReentrant::CrElectronReentrant()
+CrElectronReentrant::CrElectronReentrant():CrSpectrum()
 {
   crElectronReentrant_0003 = new CrElectronReentrant_0003();
   crElectronReentrant_0306 = new CrElectronReentrant_0306();
@@ -236,7 +236,7 @@ G4double CrElectronReentrant::flux() const
     downwardFlux = crElectronReentrant_1011->downwardFlux();
   }
 
-  return downwardFlux; // [c/s/m^2/sr]
+  return m_normalization*downwardFlux; // [c/s/m^2/sr]
 
 
 }

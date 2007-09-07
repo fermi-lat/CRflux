@@ -44,6 +44,13 @@
         </spectrum>
     </source>
 
+	<source name="CrTrappedProton">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton"  params="8,psb97"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
     <source name="CrAlpha">
         <spectrum escale="GeV"> 
             <SpectrumClass name="CrAlpha" /> 

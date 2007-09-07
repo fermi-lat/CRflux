@@ -22,6 +22,9 @@
  *           and solar potential
  * 2003-12 Modified by T. Mizuno
  *           user can set lower and upper energy to generate gammas.
+ * 2007-07 Modified by M. Ackermann
+ *           use r,lambda coordinates for rigidity cutoffs and geomagnetic latitude
+ *           instead of inaccurate geo_cgm based ones
  ****************************************************************************
  */
 
@@ -35,6 +38,8 @@
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
+
+#include "astro/IGRField.h"
 
 #include "CrLocation.h"
 #include "CrCoordinateTransfer.hh"
@@ -73,6 +78,10 @@ CrSpectrum::CrSpectrum()
   // set lower and upper energy to generate gammas
   m_gammaLowEnergy = 1.0e-3; // 1 MeV
   m_gammaHighEnergy = 100.0; // 100 GeV
+  
+  // flux normalization relative to nominal flux 
+  // to be adjustable by xml config file
+  m_normalization = 1.0; 
 }
 
 CrSpectrum::~CrSpectrum()
@@ -144,6 +153,23 @@ void CrSpectrum::setPosition
   m_geomagneticLongitude = 
     transfer.geomagneticLongitude(m_latitude, m_longitude);
 
+ // year based on time in s after 11-01-2001
+  float year = (time+304.*86400.)/(365.*86400.)+2001. ;
+  astro::IGRField::Model().compute(m_latitude,m_longitude,m_altitude,year);
+  
+ // the relation between r and lambda and the McIlwain L is 
+ // cos(lambda)^2 = R/L  
+  m_geomagneticLambda = astro::IGRField::Model().lambda();
+  m_geomagneticR = astro::IGRField::Model().R();
+  m_cutOffRigidity = astro::IGRField::Model().verticalRigidityCutoff();
+  
+// set effective geomagnetic latitude to the lambda value  
+  m_geomagneticLatitude = m_geomagneticLambda*180./M_PI;
+  
+//  cout<<"DEBUG CrSpectrum: lat="<<m_latitude<<" lon="<<m_longitude<<" alt="<<m_altitude
+//      <<" lambda="<<m_geomagneticLambda<<" R="<<m_geomagneticR<<" rigidity="<<m_cutOffRigidity
+//      <<" geolat="<<m_geomagneticLatitude<<endl;
+      
   // compute the Cut-Off-Rigidity (GV)
   // ------------------------------
   // For particles incoming vertically to the magnetic field,
@@ -157,7 +183,7 @@ void CrSpectrum::setPosition
   // "High Energy Astrophysics" 2nd edition, p325-330
   //   M. S. Longair, 1992, Cambridge University Press
   // ------------------------------
-
+/*
   m_cutOffRigidity = 
 #if 1
     14.9 * pow(1+m_altitude/m_earthRadius,-2)* pow(cos(m_geomagneticLatitude*M_PI/180.0),4);
@@ -165,6 +191,7 @@ void CrSpectrum::setPosition
       8.8; // fixed for testing
 #endif
   //  m_cutOffRigidity = 4.46;  // temporarily fixed to Palestine value.
+*/
 
   // magnetic cutoff rigidity is restricted in 0.5 < cor < 14.9[GV]
   if (m_cutOffRigidity < 0.5){
@@ -238,6 +265,10 @@ void CrSpectrum::setSolarWindPotential(double phi)
 }
 
 // set cutoff rigidity
+// this function is not consistent now any more
+// it is impossible to calculate from a rigidity the geomagnetic latitude and stay consistent
+// with the geographical coordinates currently valid 
+// it is not used anyhow. so remove it ?
 void CrSpectrum::setCutOffRigidity(double cor)
 {
   using std::cout;
@@ -259,6 +290,7 @@ void CrSpectrum::setCutOffRigidity(double cor)
   }
 
   // calculate geomagnetic latitude
+
   double tmp;
   tmp = pow(m_cutOffRigidity/14.9*pow(1+m_altitude/m_earthRadius,2), 0.25);
   if (tmp>1.0){tmp=1.0;} // when m_altitude>0 and m_cutOffRigidity~14.9
@@ -387,3 +419,15 @@ int CrSpectrum::askGPS()
     
     return 0; // can't be void in observer pattern
 }
+
+
+void CrSpectrum::setNormalization(float norm){
+      using std::cout;
+      using std::endl;
+
+      cout<<"CrSpectrum::setNormalization: "<<norm<<endl;
+      if(norm!=1.0) cout<<"CrSpectrum Warning: Setting normalization of flux to a value different from 1. "
+                        <<"Please check if that is what you intent to do."<<endl; 
+      
+      m_normalization=norm;
+   };

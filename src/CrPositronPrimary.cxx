@@ -330,7 +330,7 @@ namespace {
 //
 //
 
-CrPositronPrimary::CrPositronPrimary()
+CrPositronPrimary::CrPositronPrimary():CrSpectrum()
 {
   // Set lower and higher energy limits of primary positron.
   // At lowE_primary, flux of primary positron can be 

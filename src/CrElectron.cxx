@@ -62,6 +62,13 @@ CrElectron::CrElectron(const std::string& paramstring)
   if(flag& 2) m_subComponents.push_back(new CrElectronReentrant);
   if(flag& 4) m_subComponents.push_back(new CrElectronSplash);
 
+  if(params.size()>1 && params[1]>0) {   
+     std::vector<CrSpectrum*>::iterator i;
+     for (i=m_subComponents.begin() ; i != m_subComponents.end(); i++){
+	(*i)->setNormalization(params[1]);
+     };
+  };	   
+
   m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 

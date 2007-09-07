@@ -110,7 +110,7 @@ namespace {
 //
 //
 
-CrPositronSplash::CrPositronSplash()
+CrPositronSplash::CrPositronSplash():CrSpectrum()
 {
   crPositronSplash_0003 = new CrPositronSplash_0003();
   crPositronSplash_0306 = new CrPositronSplash_0306();
@@ -243,7 +243,7 @@ G4double CrPositronSplash::flux() const
     upwardFlux = crPositronSplash_1011->upwardFlux();
   }
 
-  return upwardFlux; // [c/s/m^2/sr]
+  return m_normalization*upwardFlux; // [c/s/m^2/sr]
 
 }
 

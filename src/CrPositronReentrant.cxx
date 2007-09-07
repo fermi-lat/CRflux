@@ -105,7 +105,7 @@ namespace {
 //
 //
 
-CrPositronReentrant::CrPositronReentrant()
+CrPositronReentrant::CrPositronReentrant():CrSpectrum()
 {
   crPositronReentrant_0003 = new CrPositronReentrant_0003();
   crPositronReentrant_0306 = new CrPositronReentrant_0306();
@@ -236,7 +236,7 @@ G4double CrPositronReentrant::flux() const
     downwardFlux = crPositronReentrant_1011->downwardFlux();
   }
 
-  return downwardFlux; // [c/s/m^2/sr]
+  return m_normalization*downwardFlux; // [c/s/m^2/sr]
 
 
 }

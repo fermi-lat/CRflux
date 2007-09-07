@@ -42,6 +42,8 @@
 #include "CrProtonPrimary.hh"
 #include "CrProtonSplash.hh"
 #include "CrProtonReentrant.hh"
+// code for trapped particles not yet committed
+// #include "CrTrappedParticle.hh"
 
 #include "CrSpectrum.hh"
 
@@ -59,11 +61,21 @@ CrProton::CrProton(const std::string& paramstring)
   //use parseParamList to parse out the input string
   parseParamList(paramstring,params);
   //the first element in the string is the bit field.(defaults to "all on")
-  int flag = params.empty() || params[0]==0 ? 7 : params[0];
+  int flag = (int)(params.empty() || params[0]==0 ? 7 : params[0]);
   // including each component if it is present in the bit field...
   if(flag& 1) m_subComponents.push_back(new CrProtonPrimary);
   if(flag& 2) m_subComponents.push_back(new CrProtonReentrant);
   if(flag& 4) m_subComponents.push_back(new CrProtonSplash);
+// code for trapped particles not yet committed
+//  if(flag& 8) m_subComponents.push_back(new CrTrappedProton(paramstring));
+
+  if(params.size()>1 && params[1]>0) {   
+     std::vector<CrSpectrum*>::iterator i;
+     for (i=m_subComponents.begin() ; i != m_subComponents.end(); i++){
+	(*i)->setNormalization(params[1]);
+     };
+  };	   
+	
 
 // Not sure how to replace the following with CLHEP 1.9.2.2
   m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
