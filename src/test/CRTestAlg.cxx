@@ -139,6 +139,7 @@ StatusCode CRTestAlg::execute() {
     //  arguments.push_back("CrGammaSecondaryUpward");
     //  arguments.push_back("-no_integrate");
 
+      arguments.push_back("CrNeutron");
     
     m_fsvc->rootDisplay(arguments);
 #endif

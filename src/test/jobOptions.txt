@@ -20,7 +20,8 @@ MessageSvc.OutputLevel      = 2;
 FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
 FluxSvc.source_lib ={"$(CRFLUXROOT)/xml/source_library.xml"};
 
-CRTestAlg.rootplot={"CrProtonMix", "CrElectronMix", "CrPositronMix"};
+//CRTestAlg.rootplot={"CrProtonMix", "CrElectronMix", "CrPositronMix"};
+CRTestAlg.rootplot={"CrProtonMix", "CrElectronMix", "CrPositronMix", "CrNeutron"};
 CRTestAlg.latitude=30;
 
 FluxSvc.FixedCutoff = 2.0;

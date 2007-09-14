@@ -15,6 +15,7 @@
 #include "CrGamma.hh"
 #include "CrHeavyIon.h"
 #include "CrHeavyIonVertical.h"
+#include "CrNeutron.hh"
 //#include "CrHeavyIonVertZ.h"
 //#include "CrHeavyIonZ.h"
 
@@ -76,6 +77,7 @@ StatusCode RegisterCRflux::registerMe(IFluxSvc* fsvc)
     static RemoteSpectrumFactory<CrGamma> CRfactory6(fsvc);
     static RemoteSpectrumFactory<CrHeavyIon> CRfactory7(fsvc);
     static RemoteSpectrumFactory<CrHeavyIonVertical> CRfactory8(fsvc);
+    static RemoteSpectrumFactory<CrNeutron> CRfactory9(fsvc);
    // static RemoteSpectrumFactory<CrHeavyIonVertZ> CRfactory9(fsvc);
     //static RemoteSpectrumFactory<CrHeavyIonZ> CRfactory10(fsvc);
 
