@@ -2,6 +2,9 @@
  * CrTrappedParticle.cxx:
  ****************************************************************************/
 
+#define MODEL_SAA_FLUX
+#undef ALLOW_SAA_SERVER
+
 
 #include <cmath>
 #include <string>
@@ -13,9 +16,9 @@
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
-
 #include "CrTrappedParticle.hh"
 
+#ifdef ALLOW_SAA_SERVER
 #include <sys/types.h>  /* basic system data types */
 #include <sys/socket.h> /* basic socket definitions */
 #include <sys/time.h>   /* timeval{} for select() */
@@ -23,8 +26,8 @@
 #include <netinet/in.h> /* sockaddr_in{} and other Internet defns */
 #include <netdb.h>      /* needed by gethostbyname */
 #include <arpa/inet.h>  /* needed by inet_ntoa */
-
-#define MODEL_SAA_FLUX
+#include <unistd.h>
+#endif
 
 #ifdef MODEL_SAA_FLUX
 #include "astro/IGRField.h"
@@ -275,6 +278,7 @@ bool CrTrappedParticle::requestNewSpectrum(G4double minE,G4double maxE,const G4d
 // avoid requiring an extra library 
 // smart way would be to use XML-RPC libraries instead at the cost of an extra dependence....  
 
+#ifdef ALLOW_SAA_SERVER
     std::stringstream xmlRequestStr;
     G4double year= m_time/86400./365. + 2000.;
     char buffer[65536];
@@ -392,6 +396,9 @@ bool CrTrappedParticle::requestNewSpectrum(G4double minE,G4double maxE,const G4d
     m_spectrumAltitude=m_altitude;
     
     return true;
+#else
+    return false;
+#endif    
      
 }
 
@@ -415,6 +422,7 @@ bool CrTrappedParticle::checkModelCompatibility(const std::string& model,const s
 
 // open a socket to the server telling us the fluxes within the saa
 void CrTrappedParticle::connectToServer(){
+#ifdef ALLOW_SAA_SERVER
   unsigned int colon_pos=m_serverAddress.find(":",0);
   std::string server_port_str="";
   std::string server_name="";
@@ -453,12 +461,15 @@ void CrTrappedParticle::connectToServer(){
   if (connect(m_socketHandle, (const sockaddr*)(&server_c_address), sizeof(server_c_address)) < 0) {
      std::cout<<"FATAL error encountered in connecting to socket. Exit."<<std::endl;  exit(1);
   }
+#endif
 };
 
 //#######################################################################################
 
 
 void CrTrappedParticle::disconnectFromServer(){
+#ifdef ALLOW_SAA_SERVER
    close(m_socketHandle) ;
+#endif
 };
 
