@@ -43,7 +43,7 @@
 #include "CrProtonSplash.hh"
 #include "CrProtonReentrant.hh"
 // code for trapped particles not yet committed
-// #include "CrTrappedParticle.hh"
+#include "CrTrappedParticle.hh"
 
 #include "CrSpectrum.hh"
 
@@ -67,7 +67,7 @@ CrProton::CrProton(const std::string& paramstring)
   if(flag& 2) m_subComponents.push_back(new CrProtonReentrant);
   if(flag& 4) m_subComponents.push_back(new CrProtonSplash);
 // code for trapped particles not yet committed
-//  if(flag& 8) m_subComponents.push_back(new CrTrappedProton(paramstring));
+  if(flag& 8) m_subComponents.push_back(new CrTrappedProton(paramstring));
 
   if(params.size()>1 && params[1]>0) {   
      std::vector<CrSpectrum*>::iterator i;

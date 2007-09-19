@@ -1,0 +1,384 @@
+<!-- $Header$
+-->
+<source_library title="cosmic_ray">    
+
+    <source name="CrExample">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrExample" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrProton">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+    
+    <!-- an alternative for CrProton.  Solid angles are handled consistently -->
+    <source name="CrProtonMix">
+       <nestedSource sourceRef="CrProtonPrimary"/>
+       <nestedSource sourceRef="CrProtonReentrant"/>
+       <nestedSource sourceRef="CrProtonSplash"/>
+    <nestedSource sourceRef="CrTrappedProton"/>
+    </source>
+
+	<source name="CrProtonPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrProtonReentrant">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrProtonSplash">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton"  params="4"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrTrappedProton">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrProton" params="8,psb97,$(CRFLUXROOT)/xml/psb97"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrAlpha">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrAlpha" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrElectron">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+    
+	<!-- an alternative for CrElectron.  Solid angles are handled consistently -->    
+    <source name="CrElectronMix">
+       <nestedSource sourceRef="CrElectronPrimary"/>
+       <nestedSource sourceRef="CrElectronReentrant"/>
+       <nestedSource sourceRef="CrElectronSplash"/>
+    </source>
+
+	<source name="CrElectronPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrElectronReentrant">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrElectronSplash">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrElectron"  params="4"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+    <source name="CrPositron">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+    
+    <!-- an alternative for CrPositron.  Solid angles are handled consistently -->
+    <source name="CrPositronMix">
+       <nestedSource sourceRef="CrPositronPrimary"/>
+       <nestedSource sourceRef="CrPositronReentrant"/>
+       <nestedSource sourceRef="CrPositronSplash"/>
+    </source>
+
+	<source name="CrPositronPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrPositronReentrant">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrPositronSplash">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrPositron"  params="4"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+
+
+    <source name="CrGamma">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma" /> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+    
+    <!-- an alternative for CrGamma.  Solid angles are handled consistently -->
+    <source name="CrGammaMix">
+       <nestedSource sourceRef="CrGammaPrimary"/>
+       <nestedSource sourceRef="CrGammaSecondaryUpward"/>
+    </source>
+
+    <source name="CrGammaPrimary">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma"  params="1"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrGammaSecondaryDownward">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma"  params="2"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+
+	<source name="CrGammaSecondaryUpward">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrGamma"  params="4"/> 
+            <use_spectrum/>
+        </spectrum>
+    </source>
+    
+    <source name="CrHeavyIon">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIon" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>
+    
+    <source name="CrHeavyIonVertical">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>
+
+
+    <source name="CrHeavyIonZ6">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIon" params="6" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>
+
+    <source name="CrHeavyIonZ14">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIon" params="14" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>
+
+    <source name="CrHeavyIonZ15">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIon" params="15" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>
+
+    <source name="CrHeavyIonZ26">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIon" params="26" /> 
+            <use_spectrum/> 
+        </spectrum>  
+    </source>
+
+    <source name="CrHeavyIonVert6">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="6" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source> 
+     
+    <source name="CrHeavyIonVert7">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="7" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert8">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="8" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert9">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="9" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert10">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="10" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert11">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="11" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert12">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="12" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert13">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="13" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert14">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="14" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+    
+    <source name="CrHeavyIonVert15">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="15" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+
+    <source name="CrHeavyIonVert16">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="16" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+
+    <source name="CrHeavyIonVert17">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="17" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+  
+    <source name="CrHeavyIonVert18">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="18" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+
+    <source name="CrHeavyIonVert19">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="19" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>  
+      
+
+    <source name="CrHeavyIonVert20">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="20" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source> 
+  
+    <source name="CrHeavyIonVert21">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="21" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source> 
+    
+    <source name="CrHeavyIonVert22">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="22" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source> 
+    
+    <source name="CrHeavyIonVert23">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="23" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source> 
+    
+    <source name="CrHeavyIonVert24">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="24" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source> 
+
+    <source name="CrHeavyIonVert25">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="25" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source> 
+
+    <source name="CrHeavyIonVert26">
+        <spectrum escale="GeV"> 
+            <SpectrumClass name="CrHeavyIonVertical" params="26" /> 
+            <use_spectrum/> 
+        </spectrum>
+    </source>
+
+
+
+    
+    <!-- All the sources in CRflux -->
+    <source name="CrTotal">
+		<nestedSource sourceRef="CrProton"/>
+		<nestedSource sourceRef="CrElectron"/>
+		<nestedSource sourceRef="CrPositron"/>
+		<nestedSource sourceRef="CrGamma"/>
+		<nestedSource sourceRef="CrAlpha"/>
+    </source>
+    
+    <!-- All the sources in CRflux using the Mix sources instead of the default -->
+    <source name="CrTotalMix">
+		<nestedSource sourceRef="CrProtonMix"/>
+		<nestedSource sourceRef="CrElectronMix"/>
+		<nestedSource sourceRef="CrPositronMix"/>
+		<nestedSource sourceRef="CrAlpha"/>
+		<nestedSource sourceRef="CrHeavyIon"/>
+    </source>
+    
+
+
+</source_library>
+
+
