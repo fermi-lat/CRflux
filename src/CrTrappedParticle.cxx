@@ -72,7 +72,7 @@ CrTrappedParticle::CrTrappedParticle(const std::string& paramstring="8,psb97,.",
   
   
    
-   if(tokens.size()!=3 or facilities::Util::stringToInt(tokens[0])!=8){
+   if(tokens.size()!=3 || facilities::Util::stringToInt(tokens[0])!=8){
         std::cerr<<"Found illegal parameter string in CrTrappedParticle: "<<paramstring<<std::endl;
         std::cerr<<"param for CrTrappedParticle must be of the form \"8,<model>,<dir/serveraddress>\"."<<std::endl;
         std::cerr<<"NO TRAPPED PARTICLE FLUX IS GENERATED."<<std::endl;
