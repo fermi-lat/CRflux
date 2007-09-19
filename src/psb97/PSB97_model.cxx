@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#include <cfloat>
 #include <xmlBase/XmlParser.h>
 #include <xmlBase/Dom.h>
 
@@ -11,6 +12,12 @@
 #include <xercesc/dom/DOMDocument.hpp>
 
 #include <facilities/Util.h>
+
+#ifdef WIN32
+#define isnan(x) _isnan(x)
+#endif
+
+
 
 namespace TrappedParticleModels {
 

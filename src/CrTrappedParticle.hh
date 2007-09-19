@@ -67,11 +67,14 @@ public:
 protected:
    bool checkModelCompatibility(const std::string& model,const std::string& particle);
    bool coordinatesChanged() const;
-   bool requestNewSpectrum(const G4double minE,G4double maxE,G4double stepE);
-   bool psb97UpdateSpectrum(const G4double minE,G4double maxE,G4double stepE);
+   bool requestNewSpectrum(const G4double minE,const G4double maxE,const G4double stepE);
+   bool psb97UpdateSpectrum(const G4double minE,const G4double maxE,const G4double stepE);
    void connectToServer();
    void disconnectFromServer();
 
+   ObserverAdapter< CrTrappedParticle > m_updater; ///< obsever tag
+   int update();
+    
 };
 
 // convenience classes .....

@@ -1,9 +1,20 @@
 /****************************************************************************
  * CrTrappedParticle.cxx:
  ****************************************************************************/
+// Author: Markus Ackermann (markusa@slac.stanford.edu)
 
-#define MODEL_SAA_FLUX
+
+// *****************************************************************************
+// if this switch is turned on you can use a small proprietary server which connects to the 
+// ESA SPENVIS space model web interface to download the trapped particle spectra for 
+// a given L,B coordinate during run time. This is quite slow, not suitable for farm computing and 
+// might not work on all platforms.
+// Use it only for systematic studies of the SAA particle fluxes and if you know what you are doing. 
+// In all other cases leave the switch off and use only the internally (xml-file) available model(s).
+
 #undef ALLOW_SAA_SERVER
+
+// *****************************************************************************
 
 
 #include <cmath>
@@ -17,32 +28,30 @@
 #include <CLHEP/Random/JamesRandom.h>
 
 #include "CrTrappedParticle.hh"
+#include "CrLocation.h"
 
-#ifdef ALLOW_SAA_SERVER
-#include <sys/types.h>  /* basic system data types */
-#include <sys/socket.h> /* basic socket definitions */
-#include <sys/time.h>   /* timeval{} for select() */
-#include <time.h>       /* timespec{} for pselect() */
-#include <netinet/in.h> /* sockaddr_in{} and other Internet defns */
-#include <netdb.h>      /* needed by gethostbyname */
-#include <arpa/inet.h>  /* needed by inet_ntoa */
-#include <unistd.h>
-#endif
+#include <facilities/Observer.h>
 
-#ifdef MODEL_SAA_FLUX
 #include "astro/IGRField.h"
 #include "facilities/Util.h"
 #include "psb97/PSB97_model.h"
+
+
+#ifdef ALLOW_SAA_SERVER
+  #include <sys/types.h>  /* basic system data types */
+  #include <sys/socket.h> /* basic socket definitions */
+  #include <sys/time.h>   /* timeval{} for select() */
+  #include <time.h>       /* timespec{} for pselect() */
+  #include <netinet/in.h> /* sockaddr_in{} and other Internet defns */
+  #include <netdb.h>      /* needed by gethostbyname */
+  #include <arpa/inet.h>  /* needed by inet_ntoa */
+  #include <unistd.h>
+  #define M_LAT_TOLERANCE 0.1
+  #define M_LON_TOLERANCE 0.1
+  #define M_ALT_TOLERANCE 1.0
 #endif
-// private function definitions.
 
-//
-//
-//
 
-#define M_LAT_TOLERANCE 0.1
-#define M_LON_TOLERANCE 0.1
-#define M_ALT_TOLERANCE 1.0
 
 //#######################################################################################
 
@@ -59,6 +68,8 @@ CrTrappedParticle::CrTrappedParticle(const std::string& paramstring="8,psb97,.",
 
    m_particleType=invalid;
    m_thresholdEnergy=0.;
+  
+  
   
    
    if(tokens.size()!=3 or facilities::Util::stringToInt(tokens[0])!=8){
@@ -108,6 +119,15 @@ CrTrappedParticle::CrTrappedParticle(const std::string& paramstring="8,psb97,.",
         std::cerr<<m_model<<" is not a model for "<<ptype<<". Check configuration. Exit."<<std::endl;
 	exit(1);
    };
+
+/// "overload" the askGPS call-back, so we can also update the spectrum when the coordinates change
+   m_updater.setAdapter( new ActionAdapter<CrTrappedParticle>(this,&CrTrappedParticle::update) );
+   CrLocation::instance()->getFluxSvc()->GPSinstance()->notification().attach( &m_updater);
+
+// next line can be used to test the notification adapter with small statistics
+//   CrLocation::instance()->getFluxSvc()->GPSinstance()->sampleintvl(0.002);
+   
+   update(); //initial setup
          
 }
 
@@ -141,13 +161,7 @@ std::pair<double,double> CrTrappedParticle::dir(double energy,
 // Gives back particle energy (obviously in GeV)
 double CrTrappedParticle::energySrc(CLHEP::HepRandomEngine* engine) const						
 {
-  
-//do we need a new spectrum ? if yes, request it from the server....
-//...or get it from the PSB97 tables
- 
-  if(m_serverAddress!="") requestNewSpectrum(m_thresholdEnergy,m_eMax,m_eStep);  
-  else  psb97UpdateSpectrum(m_thresholdEnergy,m_eMax,m_eStep);
-  
+   
   if(m_maxNonzeroFluxEnergy==0) return 0;
 
   G4double random = engine->flat();
@@ -180,10 +194,6 @@ double CrTrappedParticle::energySrc(CLHEP::HepRandomEngine* engine) const
 
 double CrTrappedParticle::flux() const
 {
-  if(m_serverAddress!="") requestNewSpectrum(m_thresholdEnergy,m_eMax,m_eStep);  
-  else  psb97UpdateSpectrum(m_thresholdEnergy,m_eMax,m_eStep);
-  
-
   G4double flux=m_integralFlux*10000./(4.*M_PI);  // [c/s/m^2/sr]
   if(m_particleType==electron) flux*=0.5; // flux from tables is electrons+positrons;
   return flux; 
@@ -221,33 +231,29 @@ std::string CrTrappedParticle::title() const
 //#######################################################################################
 
 
-bool CrTrappedParticle::coordinatesChanged() const
-{
-    bool changed=false;
-    if(fabs(m_latitude-m_spectrumLatitude)>M_LAT_TOLERANCE) changed=true;
-    if(fabs(m_longitude-m_spectrumLongitude)>M_LON_TOLERANCE) changed=true;
-    if(fabs(m_altitude-m_spectrumAltitude)>M_ALT_TOLERANCE) changed=true;
-    return changed;
-}
+int CrTrappedParticle::update() {
+  //do we need a new spectrum ? if yes, request it from the server....
+  //...or get it from the PSB97 tables
 
-
-
-
+  if(m_serverAddress!="") requestNewSpectrum(m_thresholdEnergy,m_eMax,m_eStep);  
+  else  psb97UpdateSpectrum(m_thresholdEnergy,m_eMax,m_eStep);
+  askGPS();
+  return 0;
+};
 
 //#######################################################################################
 
-bool CrTrappedParticle::psb97UpdateSpectrum(G4double minE,G4double maxE,const G4double stepE) {
-#ifdef MODEL_SAA_FLUX
+bool CrTrappedParticle::psb97UpdateSpectrum(const G4double minE,const G4double maxE,const G4double stepE) {
     static TrappedParticleModels::PSB97Model psb97(m_xmlDirectory);
 
-// values computed by askGPS implemented in CRSpectrum. We just get them now from the IGRField
+// values computed by askGPS. We just get them now from the IGRField.
     double ll = astro::IGRField::Model().L();
     double bb = astro::IGRField::Model().B();
     
-    std::cout<<"update spectrum: "<<m_latitude<<","<<m_longitude;
+//    std::cout<<"CrTrappedParticle: Update spectrum: lat="<<m_latitude<<", lon="<<m_longitude<<", ll="<<ll<<", bb="<<bb;
     m_integralFlux=psb97(ll,bb,minE);
     m_intSpectrum[0.]=minE;
-    std::cout<<"integral flux: "<<m_integralFlux<<std::endl;
+//    std::cout<<" <--> integral flux="<<m_integralFlux<<std::endl;
 
     if(m_integralFlux>0){
        for(G4double e=minE+stepE;e<=maxE;e+=stepE) {
@@ -262,17 +268,49 @@ bool CrTrappedParticle::psb97UpdateSpectrum(G4double minE,G4double maxE,const G4
        m_maxNonzeroFluxEnergy=0;   
        m_integralFlux=0;
     };
-#else
-    m_maxNonzeroFluxEnergy=0;   
-    m_integralFlux=0;
-#endif    
+
    return true;
 };
 
 //#######################################################################################
 
 
-bool CrTrappedParticle::requestNewSpectrum(G4double minE,G4double maxE,const G4double stepE) 
+
+bool CrTrappedParticle::coordinatesChanged() const
+{
+    bool changed=false;
+#ifdef ALLOW_SAA_SERVER
+    if(fabs(m_latitude-m_spectrumLatitude)>M_LAT_TOLERANCE) changed=true;
+    if(fabs(m_longitude-m_spectrumLongitude)>M_LON_TOLERANCE) changed=true;
+    if(fabs(m_altitude-m_spectrumAltitude)>M_ALT_TOLERANCE) changed=true;
+#endif
+    return changed;
+}
+
+
+
+
+
+//#######################################################################################
+
+
+bool CrTrappedParticle::checkModelCompatibility(const std::string& model,const std::string& particle){
+     if(particle.find("e")!=std::string::npos){
+       if(model.find("ap8") != std::string::npos) return false;
+       if(model.find("crrespro") != std::string::npos) return false;
+       if(model.find("psb97") != std::string::npos) return false;
+     };
+     if(particle.find("p")!= std::string::npos){
+       if(model.find("ae8") != std::string::npos) return false;
+       if(model.find("crresle") != std::string::npos) return false;
+     };
+     return true;
+};
+
+//#######################################################################################
+
+
+bool CrTrappedParticle::requestNewSpectrum(const G4double minE,const G4double maxE,const G4double stepE) 
 {
 // communication with the flux server. all the annoying xml parsing is done by hand to 
 // avoid requiring an extra library 
@@ -401,21 +439,6 @@ bool CrTrappedParticle::requestNewSpectrum(G4double minE,G4double maxE,const G4d
 #endif    
      
 }
-
-bool CrTrappedParticle::checkModelCompatibility(const std::string& model,const std::string& particle){
-     if(particle.find("e")!=std::string::npos){
-       if(model.find("ap8") != std::string::npos) return false;
-       if(model.find("crrespro") != std::string::npos) return false;
-       if(model.find("psb97") != std::string::npos) return false;
-     };
-     if(particle.find("p")!= std::string::npos){
-       if(model.find("ae8") != std::string::npos) return false;
-       if(model.find("crresle") != std::string::npos) return false;
-     };
-     return true;
-};
-
-
 
 
 //#######################################################################################
