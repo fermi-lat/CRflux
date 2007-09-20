@@ -48,43 +48,54 @@ namespace TrappedParticleModels {
        try {
 	    XmlParser *parser = new XmlParser;
 
-            std::cout<<"Parsing XML file "<<xmlfile<<std::endl; 
+        std::cout<<"Parsing XML file "<<xmlfile<<std::endl; 
   
 	    DOMDocument * document = parser->parse(xmlfile.c_str());    
-            DOMElement* xmlRootElement = document->getDocumentElement();
+        DOMElement* xmlRootElement = document->getDocumentElement();
 	    
-            if(string(XMLString::transcode(xmlRootElement->getTagName()))!="PSB97ModelData"){
-	       std::cerr << "Could not find root element PSB97ModelData " <<XMLString::transcode(xmlRootElement->getTagName())<<std::endl;
+        if(string(XMLString::transcode(xmlRootElement->getTagName()))!="PSB97ModelData"){
+ 	       std::cerr << "Could not find root element PSB97ModelData " <<XMLString::transcode(xmlRootElement->getTagName())<<std::endl;
 	       throw ;
 	    };
 	    
-	    std::cout<<"Trying to find tags in "<<xmlfile<<std::endl;
+//	    std::cout<<"Trying to find tags in "<<xmlfile<<std::endl;
 	    DOMNodeList * headerList = xmlRootElement->getElementsByTagName(XMLString::transcode("header"));
 	    DOMNodeList * indexList  = xmlRootElement->getElementsByTagName(XMLString::transcode("index"));
 	    DOMNodeList * dataList   = xmlRootElement->getElementsByTagName(XMLString::transcode("data"));
 	     
-	    std::cout<<"Checking number of tags. "<<std::endl;
+//	    std::cout<<"Checking number of tags. "<<headerList->getLength()<<" "<<indexList->getLength()<<" "<<dataList->getLength()<<std::endl;
 	    if(headerList->getLength()!=1 || indexList->getLength()!=1 || dataList->getLength()!=1){
 	       std::cerr << "XML file must contain exactly one header, index and data element." << std::endl;
 	       throw ;	    
 	    } 
        
-	    std::cout<<"Extracting elements. "<<std::endl;
-            DOMElement* header = dynamic_cast<DOMElement*>(headerList->item(0));
-            DOMElement* index = dynamic_cast<DOMElement*>(indexList->item(0));
-            DOMElement* data = dynamic_cast<DOMElement*>(dataList->item(0));
-	    unsigned int header_len = Dom::getIntAttribute(header,"len");
+//	    std::cout<<"Extracting elements. "<<std::endl;
+        DOMElement *header=0; 
+		DOMElement *index=0;
+		DOMElement *data=0;
+		DOMNode* headerNode = headerList->item(0);
+        DOMNode* indexNode = indexList->item(0);
+        DOMNode* dataNode = dataList->item(0);
+		
+		if(headerNode->getNodeType()==DOMNode::ELEMENT_NODE) header = static_cast<DOMElement*>(headerNode);
+		if(indexNode->getNodeType()==DOMNode::ELEMENT_NODE) index = static_cast<DOMElement*>(indexNode);
+		if(dataNode->getNodeType()==DOMNode::ELEMENT_NODE) data = static_cast<DOMElement*>(dataNode);
+		if(!header || !index || !data) {
+	       std::cerr << "Error parsing header. Node type wrong." << std::endl;
+		   throw;
+		};
+		unsigned int header_len = Dom::getIntAttribute(header,"len");
 	    unsigned int index_len  = Dom::getIntAttribute(index,"len");
 	    unsigned int data_len   = Dom::getIntAttribute(data,"len");
 	    
-	    std::cout<<"Extracting element content. "<<std::endl;
+//	    std::cout<<"Extracting element content. "<<std::endl;
 	    string header_string= Dom::getTextContent(header);
 	    string index_string = Dom::getTextContent(index);
 	    string data_string  = Dom::getTextContent(data);
 	    
-            stringstream header_stream(header_string);
+        stringstream header_stream(header_string);
 
-	    std::cout<<"Filling header. "<<std::endl;
+//	    std::cout<<"Filling header. "<<std::endl;
 
 	    vector<float>::iterator h_it=m_Header.begin();
 	    m_Header.resize(header_len);
@@ -94,18 +105,18 @@ namespace TrappedParticleModels {
 //	      std::cout<< *h_it <<endl ;	      
 	    };
 	    
-            stringstream index_stream(index_string);
+        stringstream index_stream(index_string);
 	    stringstream data_stream(data_string);	        
 	    
-	    std::cout<<"Filling data. "<<std::endl;
+//	    std::cout<<"Filling data. "<<std::endl;
 
 	    m_Data.resize(index_len);
 	    vector< vector<float> >::iterator  d_it=m_Data.begin();
-	    
-            unsigned int data_size=0;
-            unsigned int index1,index2;
 
-            index_stream>>index1;
+		unsigned int data_size=0;
+        unsigned int index1,index2;
+
+        index_stream>>index1;
 	    for (unsigned int i=0;i<index_len; i++,d_it++)  {
 	       vector<float>& data_vector = *d_it;
 	       if (index_stream.eof()) throw;
@@ -113,7 +124,6 @@ namespace TrappedParticleModels {
 	       
 	       index_stream>>index2;
 	       unsigned int length = index2 - index1;
-	       	       
 	       
 	       data_vector.resize(length);
 	       vector<float>::iterator dv_it = data_vector.begin();
@@ -121,31 +131,30 @@ namespace TrappedParticleModels {
 //	       std::cout<<"  --> adding vector with length l="<<length<<" "<<index1<<" "<<index2<<std::endl; 
 
 	       for (unsigned int j=0; j<length; j++,dv_it++) {
-                   data_stream >> *dv_it ; 	
-//		   std::cout<<"  "<<*dv_it<<endl;	 	           
-		   data_size++;
-	       };
-              index1=index2; 	   
+              data_stream >> *dv_it ; 	
+		      data_size++;
+	        };
+            index1=index2; 	   
 	    };    
 	    
-            if(data_size!=data_len) {
-               std::cerr<<"Data length wrong in XML file. "<<data_size<<" <--> "<<data_len<<std::endl;
-               throw;
-            };
+        if(data_size!=data_len) {
+          std::cerr<<"Data length wrong in XML file. "<<data_size<<" <--> "<<data_len<<std::endl;
+          throw;
+        };
 	    
 	    tokens.clear(); tokens.resize(1);
 	    data_tokens.clear(); data_tokens.resize(1);
 
-            std::cout<<"Done parsing "<<xmlfile<<std::endl; 
+        std::cout<<"Done parsing "<<xmlfile<<std::endl; 
 	    
-            delete parser;
+        delete parser;
        
-       } catch(...) {     
-         std::cerr << "An error occurred during parsing psb97 model data xml file "<<xmlfile<<std::endl;
-         exit(1);
-       };
+      } catch(...) {     
+        std::cerr << "An error occurred during parsing psb97 model data xml file "<<xmlfile<<std::endl;
+        exit(1);
+      };
  
-    };   
+   };   
  
  
 
@@ -153,6 +162,8 @@ namespace TrappedParticleModels {
     
     
     float PSB97Model::operator()(float ll,float bb,float ee) const {
+
+// using namespace std;
 
        vector<FluxTable*>::const_iterator ft_it = m_Flux.begin();
        FluxTable* fluxTabLow;
@@ -170,8 +181,7 @@ namespace TrappedParticleModels {
 
 //       cout<<"ee="<<ee<<", fluxtab_elow="<<fluxTabLow->Energy()<<", fluxtab_ehigh="<<fluxTabHigh->Energy()<<endl;
          	
-// all headers should be the same except for the energy in header[0]
-//	cout<<"ll,bb="<<ll<<", "<<bb<<endl;
+//   	cout<<"ll,bb="<<ll<<", "<<bb<<endl;
 	
 	if( (!fluxTabLow->isInLRange(ll)) || (!fluxTabLow->isInBRange(bb)) ) return 0.;
 
@@ -190,9 +200,9 @@ namespace TrappedParticleModels {
 	float flux12=  fluxTabLow->Flux(lindex,bindex+1);
 	float flux22=  fluxTabLow->Flux(lindex+1,bindex+1);
 
-        if((flux11+flux21+flux12+flux22)<=1.e-5) return 0.;
+    if((flux11+flux21+flux12+flux22)<=1.e-5) return 0.;
 	
-        float log_flux_low = log(linear_interpolation(dll,dbb,flux11,flux21,flux12,flux22));
+    float log_flux_low = log(linear_interpolation(dll,dbb,flux11,flux21,flux12,flux22));
 	
 	
 //        cout << "fluxes_low="<<flux11<<", "<<flux21<<", "<<flux12<<", "<<flux22
@@ -203,16 +213,16 @@ namespace TrappedParticleModels {
 	flux12=  fluxTabHigh->Flux(lindex,bindex+1);
 	flux22=  fluxTabHigh->Flux(lindex+1,bindex+1);
 
-        if((flux11+flux21+flux12+flux22)<=1.e-5) return 0.;
+    if((flux11+flux21+flux12+flux22)<=1.e-5) return 0.;
         
 	float log_flux_high = log(linear_interpolation(dll,dbb,flux11,flux21,flux12,flux22));
  
-        if(log_flux_high>=log_flux_low) return 0.;
+    if(log_flux_high>=log_flux_low) return 0.;
  
 //         cout << "fluxes_high="<<flux11<<", "<<flux21<<", "<<flux12<<", "<<flux22
 //	     << " log_flux_high="<<log_flux_high<<endl;
         
-        float flux = exp( log_flux_low+ (ee-fluxTabLow->Energy())/(fluxTabHigh->Energy()-fluxTabLow->Energy())*(log_flux_high-log_flux_low) );
+    float flux = exp( log_flux_low+ (ee-fluxTabLow->Energy())/(fluxTabHigh->Energy()-fluxTabLow->Energy())*(log_flux_high-log_flux_low) );
 	if (flux<0.01 || isnan(flux)) return 0.;
 
 //	cout<<"flux="<<flux<<endl;
