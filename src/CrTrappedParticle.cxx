@@ -81,11 +81,13 @@ CrTrappedParticle::CrTrappedParticle(const std::string& paramstring="8,psb97,.",
   
    m_model=tokens[1];
 
+#ifdef ALLOW_SAA_SERVER
    if(tokens[2].find(":") != std::string::npos) {
 // we use an external server to retreive SAA particle fluxes.....   
       m_serverAddress=tokens[2];
       m_xmlDirectory="";
    } else {
+#endif   
 // we use internal psb97 model to generate fluxes  
       m_serverAddress="";
       m_xmlDirectory=tokens[2];
@@ -98,8 +100,10 @@ CrTrappedParticle::CrTrappedParticle(const std::string& paramstring="8,psb97,.",
          m_eStep=2.;
          m_eMax=1000.;
 	 return;
-      };	 
+      };	
+#ifdef ALLOW_SAA_SERVER       
    };
+#endif   
 
    if (ptype.find("e")!=std::string::npos) {
      m_particleType = electron;
