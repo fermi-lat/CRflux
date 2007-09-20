@@ -6,6 +6,8 @@
 $Id$
 
 @verbatim
+20-sep-07 v1r14 MA Implemented Trapped Particle background class
+??-sep-07 v1r13 MZT Implemented Neutron background class 
 09-sep-07 v1r12 MA Changed rigidity cutoff calculation to IGRF based magnetic coordinates
 29-dec-06 v1r11p1 THB Implement E-W effect from  Mizuno
 24-mar-06 v1r9    THB New Heavy Ion stuff for Claudia
