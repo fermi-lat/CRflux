@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+24-sep-07 v1r14p1 MA Bug fix for Trapped Particle background class
 20-sep-07 v1r14 MA Implemented Trapped Particle background class
 ??-sep-07 v1r13 MZT Implemented Neutron background class 
 09-sep-07 v1r12 MA Changed rigidity cutoff calculation to IGRF based magnetic coordinates
