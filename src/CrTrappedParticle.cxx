@@ -200,7 +200,8 @@ double CrTrappedParticle::flux() const
 {
   G4double flux=m_integralFlux*10000./(4.*M_PI);  // [c/s/m^2/sr]
   if(m_particleType==electron) flux*=0.5; // flux from tables is electrons+positrons;
-  return flux; 
+  if(flux>1.e-10) return flux;
+  else return 1.e-10;
 }
 
 
@@ -253,7 +254,13 @@ bool CrTrappedParticle::psb97UpdateSpectrum(const G4double minE,const G4double m
 // values computed by askGPS. We just get them now from the IGRField.
     double ll = astro::IGRField::Model().L();
     double bb = astro::IGRField::Model().B();
-    
+
+// catch rounding/accuracy errors in the field model because
+// tables are not defined at ll,bb<1
+
+    if(ll<1.) ll=1.;
+    if(bb<1.) bb=1.;    
+
 //    std::cout<<"CrTrappedParticle: Update spectrum: lat="<<m_latitude<<", lon="<<m_longitude<<", ll="<<ll<<", bb="<<bb;
     m_integralFlux=psb97(ll,bb,minE);
     m_intSpectrum[0.]=minE;
