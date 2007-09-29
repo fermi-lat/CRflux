@@ -28,7 +28,8 @@ namespace {
   const G4double lowE_neutron  = 0.01; // 10 MeV
   const G4double highE_neutron = 1000.0; // 1 TeV
   // energy of spectral break in units of GeV
-  const G4double lowE_break  = 0.1; // 100 MeV
+  const G4double lowE_break  = 0.07; // 70 MeV
+  const G4double highE_break  = 0.5; // 500 MeV
  
   // The constant defined below ("ENERGY_INTEGRAL_neutron") is the straight 
   // downward (theta=0) flux integrated between 
@@ -43,18 +44,22 @@ namespace {
   /**
    * We represent the spactral shape of CR neutrons
    * with two power-law functions as
-   *  1.e3/(2pi)*(E/1MeV)^-1.05 (1MeV-100MeV)   [c/s/m^2/sr/MeV]
-   *    = 159.1*(E/MeV)^-1.05
-   *  8/(2pi)*(E/100MeV)^-1.9 (100MeV-1TeV)     [c/s/m^2/sr/MeV]
-   *    = 8033*(E/MeV)^-1.9
+   *  24/(2pi)*(E/70MeV)^-1.05 (1MeV-70MeV)   [c/s/m^2/sr/MeV]
+   *    = 330.6*(E/MeV)^-1.05
+   *  24/(2pi)*(E/70MeV)^-2.25 (70MeV-500MeV)   [c/s/m^2/sr/MeV]
+   *    = 54137*(E/MeV)^-1.05
+   *  0.286/(2pi)*(E/500MeV)^-3.15 (100MeV-1TeV)     [c/s/m^2/sr/MeV]
+   *    = 1.44e7*(E/MeV)^-3.15
    */
 
   // normalization of incident spectrum
-  const G4double A0_neutron = 159.1;
-  const G4double A1_neutron = 8033;
+  const G4double A0_neutron = 330.6;
+  const G4double A1_neutron = 54137;
+  const G4double A2_neutron = 1.44e7;
   // differential spectral index 
   const G4double a0_neutron = 1.05; 
-  const G4double a1_neutron = 1.9; 
+  const G4double a1_neutron = 2.25; 
+  const G4double a2_neutron = 3.15; 
 
   const G4double MeVtoGeV = 1e-3;
 
@@ -133,6 +138,28 @@ namespace {
     return pow((-a1_neutron+1)/ A1_neutron * value
 	       , 1./(-a1_neutron+1)) * MeVtoGeV;
    }
+
+  // envelope function in lower energy
+  inline G4double primaryCRenvelope2
+  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+    G4double EMeV = E*1e3;
+    return A2_neutron * pow(EMeV, -a2_neutron);
+  }
+
+  // integral of envelope function in lower energy
+  inline G4double primaryCRenvelope2_integral
+  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+    G4double EMeV = E*1e3;
+    return A2_neutron/(-a2_neutron+1) * pow(EMeV, -a2_neutron+1);
+  }
+
+  // inverse function of integral of envelope function in lower energy 
+  // this function returns energy obeying envelope function
+  inline G4double primaryCRenvelope2_integral_inv
+  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+    return pow((-a2_neutron+1)/ A2_neutron * value
+	       , 1./(-a2_neutron+1)) * MeVtoGeV;
+   }
  
 
   //============================================================
@@ -186,18 +213,25 @@ G4double CrNeutronSplash::energySrc(CLHEP::HepRandomEngine* engine) const
     primaryCRenvelope0_integral(min(lowE_break, lowE_neutron), 
 				m_cutOffRigidity, m_solarWindPotential);
   G4double rand_max_0 = 
-    primaryCRenvelope0_integral(max(lowE_neutron, lowE_break), 
+    primaryCRenvelope0_integral(max(lowE_break, lowE_neutron), 
 				m_cutOffRigidity, m_solarWindPotential);
   G4double rand_min_1 = 
-    primaryCRenvelope1_integral(min(highE_neutron, lowE_break), 
+    primaryCRenvelope1_integral(min(highE_break, lowE_break), 
 				m_cutOffRigidity, m_solarWindPotential);
   G4double rand_max_1 = 
-    primaryCRenvelope1_integral(max(lowE_break, highE_neutron), 
+    primaryCRenvelope1_integral(max(highE_break, lowE_break), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_2 = 
+    primaryCRenvelope2_integral(min(highE_neutron, highE_break), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_2 = 
+    primaryCRenvelope2_integral(max(highE_neutron, highE_break), 
 				m_cutOffRigidity, m_solarWindPotential);
   
   G4double envelope0_area = rand_max_0 - rand_min_0;
   G4double envelope1_area = rand_max_1 - rand_min_1;
-  G4double envelope_area = envelope0_area + envelope1_area;
+  G4double envelope2_area = rand_max_2 - rand_min_2;
+  G4double envelope_area = envelope0_area + envelope1_area + envelope2_area;
   
   G4double Ernd,r;
   G4double E; // E means energy in GeV
@@ -208,10 +242,14 @@ G4double CrNeutronSplash::energySrc(CLHEP::HepRandomEngine* engine) const
       // use the envelope function in the lowest energy range
       r = engine->flat() * (rand_max_0 - rand_min_0) + rand_min_0;
       E = primaryCRenvelope0_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
-    } else {
-      // use the envelope function in the lower energy range
+    } else if (Ernd <= (envelope0_area+envelope1_area)/envelope_area){
+      // use the envelope function in the middle energy range
       r = engine->flat() * (rand_max_1 - rand_min_1) + rand_min_1;
       E = primaryCRenvelope1_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
+    } else{
+      // use the envelope function in the highest energy range
+      r = engine->flat() * (rand_max_2 - rand_min_2) + rand_min_2;
+      E = primaryCRenvelope2_integral_inv(r, m_cutOffRigidity, m_solarWindPotential);
     }
     break;
   }
@@ -231,18 +269,25 @@ G4double CrNeutronSplash::flux() const
     primaryCRenvelope0_integral(min(lowE_break, lowE_neutron), 
 				m_cutOffRigidity, m_solarWindPotential);
   G4double rand_max_0 = 
-    primaryCRenvelope0_integral(max(lowE_neutron, lowE_break), 
+    primaryCRenvelope0_integral(max(lowE_break, lowE_neutron), 
 				m_cutOffRigidity, m_solarWindPotential);
   G4double rand_min_1 = 
-    primaryCRenvelope1_integral(min(highE_neutron, lowE_break), 
+    primaryCRenvelope1_integral(min(highE_break, lowE_break), 
 				m_cutOffRigidity, m_solarWindPotential);
   G4double rand_max_1 = 
-    primaryCRenvelope1_integral(max(lowE_break, highE_neutron), 
+    primaryCRenvelope1_integral(max(highE_break, lowE_break), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_min_2 = 
+    primaryCRenvelope2_integral(min(highE_neutron, highE_break), 
+				m_cutOffRigidity, m_solarWindPotential);
+  G4double rand_max_2 = 
+    primaryCRenvelope2_integral(max(highE_neutron, highE_break), 
 				m_cutOffRigidity, m_solarWindPotential);
   
   G4double envelope0_area = rand_max_0 - rand_min_0;
   G4double envelope1_area = rand_max_1 - rand_min_1;
-  G4double envelope_area = envelope0_area + envelope1_area;
+  G4double envelope2_area = rand_max_2 - rand_min_2;
+  G4double envelope_area = envelope0_area + envelope1_area + envelope2_area;
   
   ENERGY_INTEGRAL_neutron = envelope_area;
 
