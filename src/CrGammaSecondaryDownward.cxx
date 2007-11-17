@@ -65,7 +65,7 @@
 // $Header$
 
 
-#include <math.h>
+#include <cmath>
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
@@ -155,14 +155,16 @@ namespace {
 
   // envelope function in lower energy
   inline G4double downwardCRenvelope1
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A1_downward * pow(EMeV, -a1_downward);
   }
 
   // integral of envelope function in lower energy
   inline G4double downwardCRenvelope1_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A1_downward/(-a1_downward+1) * pow(EMeV, -a1_downward+1);
   }
@@ -170,7 +172,7 @@ namespace {
   // inverse function of integral of envelope function in lower energy 
   // this function returns energy obeying envelope function
   inline G4double downwardCRenvelope1_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, G4double /* phi */ /* MV */){
     return pow((-a1_downward+1)/ A1_downward * value, 
 	       1./(-a1_downward+1)) * MeVtoGeV;
   }
@@ -183,14 +185,16 @@ namespace {
 
   // envelope function in higher energy
   inline G4double downwardCRenvelope2
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A2_downward * pow(EMeV, -a2_downward);
   }
 
   // integral of envelope function in higher energy
   inline G4double downwardCRenvelope2_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */  /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A2_downward/(-a2_downward+1) * 
       pow(EMeV, -a2_downward+1);
@@ -199,7 +203,7 @@ namespace {
   // inverse function of integral of envelope function in higher energy 
   // this function returns energy obeying envelope function
   inline G4double downwardCRenvelope2_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, G4double /* phi */ /* MV */){
     return pow((-a2_downward+1)/ A2_downward * value,
 	       1./(-a2_downward+1)) * MeVtoGeV;
   }
@@ -213,7 +217,8 @@ namespace {
 
   // envelope function in higher energy
   inline G4double downwardCRenvelope3
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A3_downward * pow(EMeV, -a3_downward) *
       exp(-pow(EMeV/Cutoff, -a3_downward+1));
@@ -221,7 +226,8 @@ namespace {
 
   // integral of envelope function in higher energy
   inline G4double downwardCRenvelope3_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A3_downward * pow(Cutoff, -a3_downward+1) / (a3_downward-1) *
       exp(-pow(EMeV/Cutoff, -a3_downward+1));
@@ -230,7 +236,7 @@ namespace {
   // inverse function of integral of envelope function in higher energy 
   // this function returns energy obeying envelope function
   inline G4double downwardCRenvelope3_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, G4double /* phi */ /* MV */){
     return Cutoff * pow( -log((a3_downward-1) * value
 			      / (A3_downward * pow(Cutoff, -a3_downward+1))),
 			 1./(-a3_downward+1)) * MeVtoGeV;
@@ -244,14 +250,16 @@ namespace {
 
   // envelope function in the highest energy
   inline G4double downwardCRenvelope4
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A4_downward * pow(EMeV, -a4_downward);
   }
 
   // integral of envelope function in the highest energy
   inline G4double downwardCRenvelope4_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A4_downward/(-a4_downward+1) * pow(EMeV, -a4_downward+1);
   }
@@ -259,7 +267,7 @@ namespace {
   // inverse function of integral of envelope function in the highest energy 
   // this function returns energy obeying envelope function
   inline G4double downwardCRenvelope4_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, G4double /* phi */ /* MV */){
     return pow((-a4_downward+1)/ A4_downward * value, 
 	       1./(-a4_downward+1)) * MeVtoGeV;
   }
@@ -285,7 +293,7 @@ CrGammaSecondaryDownward::~CrGammaSecondaryDownward()
 }
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double energy, 
+std::pair<G4double,G4double> CrGammaSecondaryDownward::dir(G4double /* energy */, 
 					       CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),

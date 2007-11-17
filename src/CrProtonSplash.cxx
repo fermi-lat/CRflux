@@ -126,7 +126,7 @@ CrProtonSplash::~CrProtonSplash()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<double,double> CrProtonSplash::dir(double energy, 
+std::pair<double,double> CrProtonSplash::dir(double /* energy */, 
 					     CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),

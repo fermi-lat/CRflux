@@ -29,7 +29,7 @@
 
 //$Header$
 
-#include <math.h>
+#include <cmath>
 #include <map>
 #include <vector>
 
@@ -118,7 +118,7 @@ CrSpectrum* CrElectron::selectComponent()
 
 
 // Gives back energy
-G4double CrElectron::energy(G4double time)
+G4double CrElectron::energy(G4double /* time */)
 {
   selectComponent();
   return m_component->energySrc(m_engine);
@@ -135,7 +135,7 @@ std::pair<G4double,G4double> CrElectron::dir(G4double energy)
 
 
 // Gives back the total flux (summation of each component's flux)
-G4double CrElectron::flux(G4double time) const
+G4double CrElectron::flux(G4double /* time */) const
 {
   G4double          total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
@@ -194,7 +194,7 @@ void CrElectron::dump()
 // flux(time) to determine the average flux for that time
 // and calculate the arrival time for the next particle using
 // the poission distribution.
-G4double CrElectron::interval(G4double time){
+G4double CrElectron::interval(G4double /* time */){
   return -1.0;
 }
 

@@ -127,7 +127,7 @@ CrProtonReentrant::~CrProtonReentrant()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrProtonReentrant::dir(G4double energy, 
+std::pair<G4double,G4double> CrProtonReentrant::dir(G4double /* energy */, 
 						CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),

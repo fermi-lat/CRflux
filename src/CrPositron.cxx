@@ -27,7 +27,7 @@
 
 //$Header$
 
-#include <math.h>
+#include <cmath>
 #include <map>
 #include <vector>
 
@@ -121,7 +121,7 @@ CrSpectrum* CrPositron::selectComponent()
 
 
 // Gives back energy
-G4double CrPositron::energy(G4double time)
+G4double CrPositron::energy(G4double /* time */)
 {
   selectComponent();
   return m_component->energySrc(m_engine);
@@ -138,7 +138,7 @@ std::pair<G4double,G4double> CrPositron::dir(G4double energy)
 
 
 // Gives back the total flux (summation of each component's flux)
-G4double CrPositron::flux(G4double time) const
+G4double CrPositron::flux(G4double /* time */) const
 {
   G4double          total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
@@ -198,7 +198,7 @@ void CrPositron::dump()
 // flux(time) to determine the average flux for that time
 // and calculate the arrival time for the next particle using
 // the poission distribution.
-G4double CrPositron::interval(G4double time){
+G4double CrPositron::interval(G4double /* time */){
   return -1.0;
 }
 

@@ -9,7 +9,7 @@
 
 // $Header$
 
-#include <math.h>
+#include <cmath>
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
@@ -83,7 +83,8 @@ namespace {
 
   // The model function of CR primary gamma
   inline G4double primaryCRspec
-  (G4double E /* GeV */, G4double cor /* GV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* GV */, 
+   G4double /* phi */ /* MV */){
     G4double Aflux,EMeV;
     EMeV = E*1e3;
     if ( E < lowE_break ) {
@@ -97,14 +98,16 @@ namespace {
 
   // envelope function in the lowest energy
   inline G4double primaryCRenvelope0
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1.e3;
     return A0_neutron * pow(EMeV, -a0_neutron);
   }
 
   // integral of envelope function in the lowest
   inline G4double primaryCRenvelope0_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A0_neutron/(-a0_neutron+1) * pow(EMeV, -a0_neutron+1);
   }
@@ -112,21 +115,24 @@ namespace {
   // inverse function of integral of envelope function in the lowest energy 
   // this function returns energy obeying envelope function
   inline G4double primaryCRenvelope0_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     return pow((-a0_neutron+1)/ A0_neutron * value
 	       , 1./(-a0_neutron+1)) * MeVtoGeV;
    }
  
   // envelope function in lower energy
   inline G4double primaryCRenvelope1
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A1_neutron * pow(EMeV, -a1_neutron);
   }
 
   // integral of envelope function in lower energy
   inline G4double primaryCRenvelope1_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A1_neutron/(-a1_neutron+1) * pow(EMeV, -a1_neutron+1);
   }
@@ -134,21 +140,23 @@ namespace {
   // inverse function of integral of envelope function in lower energy 
   // this function returns energy obeying envelope function
   inline G4double primaryCRenvelope1_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, G4double /* phi */ /* MV */){
     return pow((-a1_neutron+1)/ A1_neutron * value
 	       , 1./(-a1_neutron+1)) * MeVtoGeV;
    }
 
   // envelope function in lower energy
   inline G4double primaryCRenvelope2
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A2_neutron * pow(EMeV, -a2_neutron);
   }
 
   // integral of envelope function in lower energy
   inline G4double primaryCRenvelope2_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     G4double EMeV = E*1e3;
     return A2_neutron/(-a2_neutron+1) * pow(EMeV, -a2_neutron+1);
   }
@@ -156,7 +164,7 @@ namespace {
   // inverse function of integral of envelope function in lower energy 
   // this function returns energy obeying envelope function
   inline G4double primaryCRenvelope2_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, G4double /* phi */ /* MV */){
     return pow((-a2_neutron+1)/ A2_neutron * value
 	       , 1./(-a2_neutron+1)) * MeVtoGeV;
    }
@@ -184,7 +192,7 @@ CrNeutronSplash::~CrNeutronSplash()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrNeutronSplash::dir(G4double energy, 
+std::pair<G4double,G4double> CrNeutronSplash::dir(G4double /* energy */, 
 					     CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),

@@ -69,7 +69,7 @@ namespace {
   G4double cutE_primary;
 
   // Gives back v/c as a function of kinetic Energy
-  inline G4double beta(G4double E /* GeV */)
+  inline G4double beta(G4double /* E */  /* in GeV */)
   {
 #if 0	// if E ~ restE
     return sqrt(1 - pow(E/restE+1, -2));
@@ -228,7 +228,8 @@ namespace {
   // Primary spectrum of cosmic-ray positron is enveloped by power-law function
   // between cutE_primary and highE_primary
   inline G4double primaryCRenvelope2
-  (G4double E /* GeV */, G4double cor /* GV */, G4double phi /* MV */)
+  (G4double E /* GeV */, G4double /* cor */  /* in GV */, 
+   G4double /* phi */  /* MV */)
   {
     return A_primary * pow(E, -a_primary);
   }
@@ -236,7 +237,8 @@ namespace {
 
   // Integrated envelope function in the higher energy range.
   inline G4double primaryCRenvelope2_integral
-  (G4double E /* GeV */, G4double cor /* GV */, G4double phi /* MV */)
+  (G4double E  /* in GeV */, 
+   G4double /* cor */  /* GV */, G4double /* phi */ /* MV */)
   {
     return A_primary * pow(E, -a_primary+1) / (-a_primary+1);
   }
@@ -245,7 +247,7 @@ namespace {
   // Inverse function of the integrated envelope function
   // in the higher energy range.
   inline G4double primaryCRenvelope2_integral_rev
-  (G4double value, G4double cor /* GV */, G4double phi /* MV */)
+  (G4double value, G4double /* cor */ /* GV */, G4double /* phi */ /* MV */)
   {
     return pow(value * (-a_primary+1) / A_primary, 1./(-a_primary+1));
   }

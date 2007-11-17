@@ -145,7 +145,7 @@ CrTrappedParticle::~CrTrappedParticle()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<double,double> CrTrappedParticle::dir(double energy, 
+std::pair<double,double> CrTrappedParticle::dir(double /* energy */, 
 					      CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),
@@ -321,7 +321,9 @@ bool CrTrappedParticle::checkModelCompatibility(const std::string& model,const s
 //#######################################################################################
 
 
-bool CrTrappedParticle::requestNewSpectrum(const G4double minE,const G4double maxE,const G4double stepE) 
+bool CrTrappedParticle::requestNewSpectrum(const G4double minE,
+                                           const G4double maxE ,
+                                           const G4double stepE) 
 {
 // communication with the flux server. all the annoying xml parsing is done by hand to 
 // avoid requiring an extra library 

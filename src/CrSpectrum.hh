@@ -11,7 +11,7 @@
 
 #include <string>
 #include <utility>
-#include "math.h"
+#include <cmath>
 #include "facilities/Observer.h"
 #include "astro/EarthCoordinate.h"
 

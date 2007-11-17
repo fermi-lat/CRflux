@@ -145,7 +145,7 @@ double CrCoordinateTransfer::interpolate(double lat, double lon, const double * 
     a = fmod(lat+30., 5.)/5.;
     b = fmod(lon, 5.)/5.;
 
-	if(abs(lat) > 30)
+	if(std::abs(lat) > 30)
 	{
 		std::cout << "Warning -- CrCoordinateTransfer::interpolate -- Latitude is out of range."  << std::endl;
 	}

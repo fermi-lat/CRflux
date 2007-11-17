@@ -22,7 +22,7 @@ public:
     // 4: splash
     
     CrExample(const std::string& params);
-    ~CrExample();
+    virtual ~CrExample();
     
     virtual double energy();
     std::pair<double,double> dir(double energy);

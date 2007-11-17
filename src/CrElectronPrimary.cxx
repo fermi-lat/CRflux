@@ -44,7 +44,7 @@
 
 // $Header$
 
-#include <math.h>
+#include <cmath>
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
@@ -230,7 +230,8 @@ namespace {
   // Primary spectrum of cosmic-ray electron is enveloped by power-law function
   // between cutE_primary and highE_primary
   inline G4double primaryCRenvelope2
-  (G4double E /* GeV */, G4double cor /* GV */, G4double phi /* MV */)
+  (G4double E /* GeV */, G4double /* cor */ /* GV */, 
+   G4double /* phi */ /* MV */)
   {
     return A_primary * pow(E, -a_primary);
   }
@@ -238,7 +239,8 @@ namespace {
 
   // Integrated envelope function in the higher energy range.
   inline G4double primaryCRenvelope2_integral
-  (G4double E /* GeV */, G4double cor /* GV */, G4double phi /* MV */)
+  (G4double E /* GeV */, G4double /* cor */ /* GV */, 
+   G4double /* phi */ /* MV */)
   {
     return A_primary * pow(E, -a_primary+1) / (-a_primary+1);
   }
@@ -247,7 +249,7 @@ namespace {
   // Inverse function of the integrated envelope function
   // in the higher energy range.
   inline G4double primaryCRenvelope2_integral_rev
-  (G4double value, G4double cor /* GV */, G4double phi /* MV */)
+  (G4double value, G4double /* cor */ /* GV */, G4double /* phi */ /* MV */)
   {
     return pow(value * (-a_primary+1) / A_primary, 1./(-a_primary+1));
   }

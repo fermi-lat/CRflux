@@ -70,7 +70,7 @@ namespace {
   const G4double restE = 5.11e-4; // rest energy of electron in [GeV]
 
   // gives back v/c as a function of kinetic Energy
-  inline G4double beta(G4double E /* GeV */)
+  inline G4double beta(G4double /* E */ /* GeV */)
   {
 #if 0	// if E ~ restE
     return sqrt(1 - pow(E/restE+1, -2));
@@ -133,7 +133,7 @@ CrElectronSplash::~CrElectronSplash()
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrElectronSplash::dir(G4double energy, 
+std::pair<G4double,G4double> CrElectronSplash::dir(G4double /* energy */, 
 					       CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),

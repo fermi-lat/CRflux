@@ -39,7 +39,7 @@
 
 //$Header: 
 
-#include <math.h>
+#include <cmath>
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
@@ -206,13 +206,15 @@ namespace {
   // Primary spectrum of cosmic-ray ion is enveloped by power-law function
   // between cutE_primary and highE_primary
   inline G4double primaryCRenvelope2
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     return A_primary * pow(E/z_ion, -a_primary);
   }
 
   // The integral of the envelope function in the higher energy range
   inline G4double primaryCRenvelope2_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     return A_primary*z_ion/(-a_primary+1) * pow(E/z_ion, -a_primary+1);
   }
 
@@ -220,7 +222,7 @@ namespace {
   // in the higher energy range.
   // This function returns energy obeying envelope function.
   inline G4double primaryCRenvelope2_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /* cor */ /* MV */, G4double /* phi */ /* MV */){
     return z_ion*pow((-a_primary+1)/ (A_primary*z_ion) * value , 
 		       1./(-a_primary+1));
   }
@@ -378,7 +380,7 @@ void CrHeavyIonPrimary::setCutOffRigidity(G4double cor){
 }
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrHeavyIonPrimary::dir(G4double energy, 
+std::pair<G4double,G4double> CrHeavyIonPrimary::dir(G4double /* energy */, 
                                               CLHEP::HepRandomEngine* engine) const
  // return: cos(theta) and phi [rad]
   // The downward direction has plus sign in cos(theta),

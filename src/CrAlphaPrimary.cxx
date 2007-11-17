@@ -36,7 +36,7 @@
 
 //$Header$
 
-#include <math.h>
+#include <cmath>
 
 // CLHEP
 #include <CLHEP/config/CLHEP.h>
@@ -181,13 +181,15 @@ namespace {
   // Primary spectrum of cosmic-ray alpha is enveloped by power-law function
   // between cutE_primary and highE_primary
   inline G4double primaryCRenvelope2
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     return A_primary * pow(E/z_alpha, -a_primary);
   }
 
   // The integral of the envelope function in the higher energy range
   inline G4double primaryCRenvelope2_integral
-  (G4double E /* GeV */, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double E /* GeV */, G4double /* cor */ /* MV */, 
+   G4double /* phi */ /* MV */){
     return A_primary*z_alpha/(-a_primary+1) * pow(E/z_alpha, -a_primary+1);
   }
 
@@ -195,7 +197,7 @@ namespace {
   // in the higher energy range.
   // This function returns energy obeying envelope function.
   inline G4double primaryCRenvelope2_integral_inv
-  (G4double value, G4double cor /* MV */, G4double phi /* MV */){
+  (G4double value, G4double /*cor */ /* MV */, G4double /* phi */ /* MV */){
     return z_alpha*pow((-a_primary+1)/ (A_primary*z_alpha) * value , 
 		       1./(-a_primary+1));
   }

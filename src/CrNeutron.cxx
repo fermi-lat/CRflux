@@ -26,7 +26,7 @@
 typedef double G4double;
 
 // Constructor. Includes each component
-CrNeutron::CrNeutron(const std::string& paramstring)
+CrNeutron::CrNeutron(const std::string& /* paramstring */)
 : m_component(0)
 {
   std::vector<float> params;
@@ -71,7 +71,7 @@ CrSpectrum* CrNeutron::selectComponent()
 }
 
 // Gives back kinetic energy 
-G4double CrNeutron::energy(double time)
+G4double CrNeutron::energy(double /* time */)
 {
   selectComponent();
   return m_component->energySrc(m_engine);
@@ -87,7 +87,7 @@ std::pair<G4double,G4double> CrNeutron::dir(G4double energy)
 }
 
 // Gives back the total flux (summation of each component's flux)
-G4double CrNeutron::flux(G4double time) const
+G4double CrNeutron::flux(G4double /* time */ ) const
 {
   G4double total_flux = 0;
   std::vector<CrSpectrum*>::const_iterator i;
@@ -135,7 +135,7 @@ void CrNeutron::dump()
 // flux(time) to determine the average flux for that time
 // and calculate the arrival time for the next particle using
 // the poission distribution.
-G4double CrNeutron::interval(G4double time){
+G4double CrNeutron::interval(G4double /* time */){
   return -1.0;
 }
 

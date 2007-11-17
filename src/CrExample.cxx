@@ -4,7 +4,7 @@
 //   An example flux.
 //
 
-#include <math.h>
+#include <cmath>
 #include <map>
 #include <vector>
 
@@ -17,7 +17,7 @@
 // define a factory for anonomous instantiation
 #include "FluxSvc/ISpectrumFactory.h"
 
-CrExample::CrExample(const std::string& paramstring)
+CrExample::CrExample(const std::string& /* paramstring */)
 {
    std::vector<float> params;
 }
@@ -32,13 +32,13 @@ double CrExample::energy()
 }
 
 
-std::pair<double,double> CrExample::dir(double energy)
+std::pair<double,double> CrExample::dir(double /* energy */)
 // return: cos(zenith_angle) and azimuth [rad]
 {
     return std::make_pair<double,double>(0.0,1.0);
 }
 
-double CrExample::flux (double time ) const
+double CrExample::flux (double /* time */ ) const
 {
   double          total_flux = 0.;
   return total_flux;
@@ -50,12 +50,12 @@ double CrExample::solidAngle( )const
 }
 
 
-double CrExample::energy(double time)
+double CrExample::energy(double /* time */)
 {
     return energy();
 }
 
-double CrExample::interval (double time)
+double CrExample::interval (double /* time */)
 {      
         return 1.0;
 }
