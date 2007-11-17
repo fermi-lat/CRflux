@@ -224,7 +224,7 @@ G4double CrProtonSplash_0002::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -341,7 +341,7 @@ G4double CrProtonSplash_0203::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -458,7 +458,7 @@ G4double CrProtonSplash_0304::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -575,7 +575,7 @@ G4double CrProtonSplash_0405::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -692,7 +692,7 @@ G4double CrProtonSplash_0506::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -809,7 +809,7 @@ G4double CrProtonSplash_0607::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -926,7 +926,7 @@ G4double CrProtonSplash_0708::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -1042,7 +1042,7 @@ G4double CrProtonSplash_0809::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }
@@ -1159,7 +1159,7 @@ G4double CrProtonSplash_0910::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
+    if ((engine->flat())*(1+fabs(ang_splash))<=1+ang_splash*sin(theta)*sin(theta)){break;}
   }
   return theta;
 }

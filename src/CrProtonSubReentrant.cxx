@@ -224,7 +224,7 @@ G4double CrProtonReentrant_0002::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
@@ -344,7 +344,7 @@ G4double CrProtonReentrant_0203::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
@@ -462,7 +462,7 @@ G4double CrProtonReentrant_0304::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
@@ -580,7 +580,7 @@ G4double CrProtonReentrant_0405::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
@@ -698,7 +698,7 @@ G4double CrProtonReentrant_0506::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
@@ -816,7 +816,7 @@ G4double CrProtonReentrant_0607::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta))       {break;}
   }
   return theta;
@@ -934,7 +934,7 @@ G4double CrProtonReentrant_0708::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
@@ -1038,7 +1038,7 @@ G4double CrProtonReentrant_0809::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
@@ -1142,7 +1142,7 @@ G4double CrProtonReentrant_0910::theta(CLHEP::HepRandomEngine* engine){
   G4double theta;
   while(1){
     theta = acos(engine->flat());
-    if ((engine->flat())*(1+std::abs(ang_reent))
+    if ((engine->flat())*(1+fabs(ang_reent))
         <=1+ang_reent*sin(theta)*sin(theta)){break;}
   }
   return theta;
