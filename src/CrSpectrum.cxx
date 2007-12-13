@@ -353,20 +353,21 @@ double CrSpectrum::cutOffRigidityThisDirection(double theta, double phi) const
 {
 // The complete formula for the Stoermer cutoff rigidity is given as
 //   Rc = (M/2r^2) *
-//     ( cos(theta_M)^4/(1+(1-cos(theta_M)^3*sin(theta)*sin(phi))^0.5)^2 )
+//     ( cos(theta_M)^4/(1+(1-cos(theta_M)^3*sin(theta)*cos(phi))^0.5)^2 )
 // where theta and phi are zenith angle and azimuth angle, respectively.
-// (theta=0 for vertical downward, phi=0 for particles from north and
-//  phi=90deg for particles from east)
-// (e.g., p. 100 of "High Energy Cosmic Rays" by Todor Stanev)
+// (theta=0 for vertical downward, phi=0 for particles from east and
+//  phi=90deg for particles from north)
+// (e.g., p. 100 of "High Energy Cosmic Rays" by Todor Stanev. Note his
+//  definition of phi is different from that in this formula)
 //
 // Thus, the ratio of cor of particular direction to the vertical cor
-// is 4/(1+(1-cos(theta_M)^3*sin(theta)*sin(phi))^0.5)^2
+// is 4/(1+(1-cos(theta_M)^3*sin(theta)*cos(phi))^0.5)^2
 
     // convert from degree to radian 
     double magLat = m_geomagneticLatitude/180.0*M_PI;
     // calculate geomagnetic cutoff of particle from (theta, phi)
     double cor = m_cutOffRigidity;
-    double tmp = 1+pow(1-pow(cos(magLat),3)*sin(theta)*sin(phi),0.5);
+    double tmp = 1+pow(1-pow(cos(magLat),3)*sin(theta)*cos(phi),0.5);
     cor = cor*4.0/pow(tmp,2);
 /***
     std::cout << "cor= " << cor << " tmp= " << tmp 
@@ -388,7 +389,7 @@ std::pair<double,double> CrSpectrum::EW_dir(double rig, double coeff, double pol
   while(1){
     phi   = engine->flat() * 2 * M_PI;
     cor = CrSpectrum::cutOffRigidityThisDirection(theta, phi);
-    cor_west = CrSpectrum::cutOffRigidityThisDirection(theta, 270.0/180.0*M_PI);
+    cor_west = CrSpectrum::cutOffRigidityThisDirection(theta, 180.0/180.0*M_PI);
     flux = 1./(1+pow(rig/cor, coeff));
     flux_west = 1./(1+pow(rig/cor_west, coeff));
     if (engine->flat()<=flux/flux_west){
