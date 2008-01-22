@@ -11,12 +11,12 @@
 #include <vector>
 #include <utility>
 #include <string>
-#include "flux/ISpectrum.h"
+#include "flux/Spectrum.h"
 
 class CrSpectrum;
 class CLHEP::HepRandomEngine;
 
-class CrHeavyIonVertical : public ISpectrum
+class CrHeavyIonVertical : public Spectrum
 {
 public:
     // params[0] is bit flag for determining which to include (default 7)

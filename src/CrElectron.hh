@@ -14,7 +14,7 @@
 #include <string>
 
 // Activate the next line when in CRflux package
-#include "flux/ISpectrum.h"
+#include "flux/Spectrum.h"
 // Activate the next line when in end-to-end simulation framework
 // of Tune's group
 //#include "ISpectrum.h"
@@ -22,7 +22,7 @@
 class CrSpectrum;
 class CLHEP::HepRandomEngine;
 
-class CrElectron : public ISpectrum
+class CrElectron : public Spectrum
 {
 public:
   // params[0] is bit flag for determining which to include (default 7)
