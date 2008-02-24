@@ -389,7 +389,7 @@ std::pair<double,double> CrSpectrum::EW_dir(double rig, double coeff, double pol
   while(1){
     phi   = engine->flat() * 2 * M_PI;
     cor = CrSpectrum::cutOffRigidityThisDirection(theta, phi);
-    cor_west = CrSpectrum::cutOffRigidityThisDirection(theta, 180.0/180.0*M_PI);
+    cor_west = CrSpectrum::cutOffRigidityThisDirection(M_PI/2., 180.0/180.0*M_PI);
     flux = 1./(1+pow(rig/cor, coeff));
     flux_west = 1./(1+pow(rig/cor_west, coeff));
     if (engine->flat()<=flux/flux_west){
