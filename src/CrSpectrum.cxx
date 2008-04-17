@@ -39,7 +39,11 @@
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
 
+#ifndef WIN32
 #include "astro/IGRField.h"
+#else // this design is not compatible with Windows, so in this case use an identical copy of this ugly code here
+#include "IGRField.h"
+#endif
 
 #include "CrLocation.h"
 #include "CrCoordinateTransfer.hh"
@@ -155,6 +159,15 @@ void CrSpectrum::setPosition
 
  // year based on time in s after 11-01-2001
   float year = (time+304.*86400.)/(365.*86400.)+2001. ;
+#ifdef WIN32
+  IGRField::Model().compute(m_latitude,m_longitude,m_altitude,year);
+  
+ // the relation between r and lambda and the McIlwain L is 
+ // cos(lambda)^2 = R/L  
+  m_geomagneticLambda = IGRField::Model().lambda();
+  m_geomagneticR = IGRField::Model().R();
+  m_cutOffRigidity = IGRField::Model().verticalRigidityCutoff();
+#else
   astro::IGRField::Model().compute(m_latitude,m_longitude,m_altitude,year);
   
  // the relation between r and lambda and the McIlwain L is 
@@ -162,7 +175,7 @@ void CrSpectrum::setPosition
   m_geomagneticLambda = astro::IGRField::Model().lambda();
   m_geomagneticR = astro::IGRField::Model().R();
   m_cutOffRigidity = astro::IGRField::Model().verticalRigidityCutoff();
-  
+#endif
 // set effective geomagnetic latitude to the lambda value  
   m_geomagneticLatitude = m_geomagneticLambda*180./M_PI;
   
