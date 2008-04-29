@@ -7,28 +7,29 @@
 ApplicationMgr.ExtSvc += { "FluxSvc" };
 ApplicationMgr.DLLs   += { "FluxSvc" }; 
 ApplicationMgr.DLLs   += { "CRflux" }; 
-FluxSvc.source_lib = {"$(FLUXSVCROOT)/xml/source_library.xml"};
 ApplicationMgr.ExtSvc += { "ParticlePropertySvc" };
 
 ApplicationMgr.TopAlg = {"CRTestAlg"};
-//ApplicationMgr.TopAlg = {"FluxAlg"};
 
-// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
-MessageSvc.OutputLevel      = 2;
+FluxSvc.source_lib = {"$(FLUX_XML)/source_library.xml"};
+FluxSvc.source_lib +={"$(CRFLUXROOT)/xml/source_library.xml"};
 
-// Set the default for a source library document
-FluxSvc.source_lib ={"$(FLUXSVCROOT)/xml/source_library.xml"};
-FluxSvc.source_lib ={"$(CRFLUXROOT)/xml/source_library.xml"};
-
-//CRTestAlg.rootplot={"CrProtonMix", "CrElectronMix", "CrPositronMix"};
-CRTestAlg.rootplot={"CrProtonMix", "CrElectronMix", "CrPositronMix", "CrNeutron"};
-CRTestAlg.latitude=30;
-
-FluxSvc.FixedCutoff = 2.0;
+CRTestAlg.rootplot={
+   "CrProtonMix:protons", 
+   "CrElectronMix:electrons", "CrPositronMix:positrons", "CrNeutron:neutrons","CrAlpha:alphas",
+   "Earth10:gammas",
+   "-events","10000",  // short just for testing set to 1000000 for nice plot
+   "-min", "10", "-max","1000000", "-bins", "50", // 10 bins per decade
+   "-time", "2.15e8",
+   "-file", "time2.txt"
+}; 
 
 ApplicationMgr.EvtSel = "NONE";
 
 ApplicationMgr.EvtMax = 1;
+// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
+MessageSvc.OutputLevel      = 2;
+FluxSvc.OutputLevel = 4; // suppress INFO
 
 //==============================================================
 //

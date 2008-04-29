@@ -51,6 +51,7 @@ private:
     IParticlePropertySvc * m_partSvc;
     DoubleProperty m_latitude;
     DoubleProperty m_longitude;
+    DoubleProperty m_time;
     StringArrayProperty m_rootplot;
 };
 
@@ -67,6 +68,7 @@ Algorithm(name, pSvcLocator){
     declareProperty("latitude", m_latitude=20); // not useable yet
     declareProperty("longitude", m_longitude=20);
     declareProperty("rootplot", m_rootplot);
+    declareProperty("time", m_time=0);
 }
 
 //------------------------------------------------------------------------------
@@ -82,6 +84,7 @@ StatusCode CRTestAlg::initialize() {
 
     // get the service
     StatusCode sc = service("FluxSvc", m_fsvc);
+    m_fsvc->GPSinstance()->time(m_time); //try somethin
     m_fsvc->GPSinstance()->notifyObservers();
 #if 1
     // make the root plots file here
@@ -92,7 +95,11 @@ StatusCode CRTestAlg::initialize() {
         sargs.push_back(arg);
     }
 
-    m_fsvc->rootDisplay(sargs);
+    try {
+        m_fsvc->rootDisplay(sargs);
+    }catch (const std::exception& e) {
+        std::cout << "Exception: " << e.what() << std::endl;; 
+    }
 
 #endif
 

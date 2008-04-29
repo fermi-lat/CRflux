@@ -6,6 +6,7 @@
 $Id$
 
 @verbatim
+29-apr-08 v1r17p3 THB Change to allow Windows tests; have test program make complete spectrum
 21-jan-08 v1r17p1 THB change ISpectrum to Spectrum
 [...] ??
 16-nov-07 v1r16p2 JRB replace std::abs (possibly still wrong on Windows) with fabs 

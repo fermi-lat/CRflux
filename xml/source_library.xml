@@ -355,6 +355,13 @@
             <use_spectrum/> 
         </spectrum>
     </source>
+    <!-- as above, but extrapolated to 10 MeV -->
+    <source name="EarthAlbedo">
+      <spectrum escale="MeV">
+         <SpectrumClass name="Earth" params="565.,10.,350000."/>
+         <use_spectrum frame="zenith"/>
+      </spectrum>
+    </source>
 
 
 
