@@ -295,7 +295,7 @@ CrProtonPrimary::CrProtonPrimary():CrSpectrum()
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 1000.0;
+  highE_primary = 10000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 }
@@ -316,7 +316,7 @@ void CrProtonPrimary::setPosition(double latitude, double longitude){
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 1000.0;
+  highE_primary = 10000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -331,7 +331,7 @@ void CrProtonPrimary::setPosition(double latitude, double longitude, double time
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 1000.0;
+  highE_primary = 10000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -346,7 +346,7 @@ setPosition(double latitude, double longitude, double time, double altitude){
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 1000.0;
+  highE_primary = 10000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -361,7 +361,7 @@ void CrProtonPrimary::setCutOffRigidity(double cor){
   // At lowE_primary, flux of primary proton can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 1000.0;
+  highE_primary = 10000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 

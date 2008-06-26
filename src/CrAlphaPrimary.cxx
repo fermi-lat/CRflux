@@ -285,7 +285,7 @@ CrAlphaPrimary::CrAlphaPrimary()
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 4000.0; // corresponds to 100 GeV/n
+  highE_primary = 40000.0; // corresponds to 100 GeV/n
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 }
@@ -306,7 +306,7 @@ void CrAlphaPrimary::setPosition(G4double latitude, G4double longitude){
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 4000.0;
+  highE_primary = 40000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -322,7 +322,7 @@ void CrAlphaPrimary::setPosition
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 4000.0;
+  highE_primary = 40000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
   
@@ -339,7 +339,7 @@ setPosition(G4double latitude, G4double longitude,
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 4000.0;
+  highE_primary = 40000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
@@ -354,7 +354,7 @@ void CrAlphaPrimary::setCutOffRigidity(G4double cor){
   // At lowE_primary, flux of primary alpha can be 
   // assumed to be 0, due to geomagnetic cutoff
   lowE_primary = energy(m_cutOffRigidity/2.5);
-  highE_primary = 4000.0;
+  highE_primary = 40000.0;
   // energy(GeV) corresponds to cutoff-rigidity(GV)
   cutE_primary = energy(m_cutOffRigidity);
 
