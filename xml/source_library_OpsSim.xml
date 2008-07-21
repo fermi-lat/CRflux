@@ -47,7 +47,7 @@
 
     <source name="CrTrappedProton">
         <spectrum escale="GeV"> 
-            <SpectrumClass name="CrProton" params="8,psb97,$(CRFLUXROOT)/xml/psb97"/> 
+            <SpectrumClass name="CrProton" params="8,psb97,$(CRFLUXXMLPATH)/xml/psb97"/> 
             <use_spectrum/>
         </spectrum>
     </source>

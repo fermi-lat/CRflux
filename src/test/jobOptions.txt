@@ -11,8 +11,8 @@ ApplicationMgr.ExtSvc += { "ParticlePropertySvc" };
 
 ApplicationMgr.TopAlg = {"CRTestAlg"};
 
-FluxSvc.source_lib = {"$(FLUX_XML)/source_library.xml"};
-FluxSvc.source_lib +={"$(CRFLUXROOT)/xml/source_library.xml"};
+FluxSvc.source_lib = {"$(FLUXXMLPATH)/source_library.xml"};
+FluxSvc.source_lib +={"$(CRFLUXXMLPATH)/source_library.xml"};
 
 CRTestAlg.rootplot={
    "CrProtonMix:protons", 
