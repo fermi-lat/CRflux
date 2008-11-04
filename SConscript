@@ -12,7 +12,7 @@ libEnv.Tool('CRfluxLib', depsOnly = 1)
 CRflux = libEnv.SharedLibrary('CRflux', listFiles(['src/*.cxx','src/psb97/*.cxx', 'src/Dll/*.cxx']))
 
 progEnv.Tool('CRfluxLib')
-test_CRflux = progEnv.GaudiProgram('test_CRflux',['src/test/testMain.cxx'], test = 1)
+test_CRflux = progEnv.GaudiProgram('test_CRflux',listFiles(['src/test/*.cxx']), test = 1)
 
 if baseEnv['PLATFORM'] != 'win32':
 	progEnv.Tool('registerObjects', package = 'CRflux', libraries = [CRflux], testApps = [test_CRflux],
