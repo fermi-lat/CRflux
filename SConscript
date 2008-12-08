@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Header$
 # Authors: Tsunefumi Mizuno <suhonen@slac.stanford.edu>
-# Version: CRflux-01-17-04
+# Version: CRflux-01-17-01
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -18,4 +18,7 @@ if baseEnv['PLATFORM'] != 'win32':
 	progEnv.Tool('registerObjects', package = 'CRflux', libraries = [CRflux], testApps = [test_CRflux],
         includes = listFiles(['CRflux/*.h']))
 	
+
+
+
 
