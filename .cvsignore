@@ -6,3 +6,5 @@ setup.*
 *.mak*
 VC7debug
 rh*
+build
+*.pyc
