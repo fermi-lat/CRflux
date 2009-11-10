@@ -8,6 +8,7 @@ $Id$
 @verbatim
   * EOH *
 
+ CRflux-01-17-03 09-Nov-2009    jrb Updates for SCons
 29-apr-08 v1r17p3 THB Change to allow Windows tests; have test program make complete spectrum
 21-jan-08 v1r17p1 THB change ISpectrum to Spectrum
 [...] ??
