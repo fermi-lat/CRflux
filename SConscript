@@ -22,6 +22,7 @@ progEnv.Tool('registerTargets', package = 'CRflux',
              libraryCxts = [[CRflux, libEnv]],
              testAppCxts = [[test_CRflux, progEnv]],
              includes = listFiles(['CRflux/*.h']),
+             xml = ['xml/source_library.xml', 'xml/source_library_OpsSim.xml'],
              jo=['src/test/jobOptions.txt'])
 	
 
