@@ -45,8 +45,9 @@ public:
 
 
 // Static factory for instantiation of algtool objects
-static ToolFactory<RegisterCRflux> s_factory;
-const IToolFactory& RegisterCRfluxFactory = s_factory;
+//static ToolFactory<RegisterCRflux> s_factory;
+//const IToolFactory& RegisterCRfluxFactory = s_factory;
+DECLARE_TOOL_FACTORY(RegisterCRflux);
 
 // Standard Constructor
 RegisterCRflux::RegisterCRflux(const std::string& type, 
