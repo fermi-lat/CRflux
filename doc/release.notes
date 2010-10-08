@@ -8,6 +8,7 @@ $Id$
 @verbatim
   * EOH *
 
+ CRflux-01-17-06-gr01 06-Oct-2010 hmk upgrade Gaudi v21r7 along branch
  CRflux-01-17-06 14-Jun-2010    jrb for SCons builds
  CRflux-01-17-05 12-Jun-2010    jrb upgrades for SCons builds
  CRflux-01-17-04 10-Nov-2009    jrb Tags for CRflux somehow got out of sync

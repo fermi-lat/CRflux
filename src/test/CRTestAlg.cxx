@@ -56,8 +56,9 @@ private:
 };
 
 
-static const AlgFactory<CRTestAlg>  Factory;
-const IAlgFactory& CRTestAlgFactory = Factory;
+//static const AlgFactory<CRTestAlg>  Factory;
+//const IAlgFactory& CRTestAlgFactory = Factory;
+DECLARE_ALGORITHM_FACTORY(CRTestAlg);
 
 //------------------------------------------------------------------------------
 //
