@@ -5,23 +5,22 @@
  * and GLAST-LAT Technical Note (LAT-TD-250.1) by T. Mizuno et al. 
  * for overall flow of cosmic ray generation in BalloonTestV13.
  * This program is interfaced to CosmicRayGeneratorAction.cc 
- * via CrElectron, the entry-point class for the cosmic-ray electron
+ * via CrElectron, the entry-point class for the cosmic-ray electron 
  * generation.
  **************************************************************************
- * This program generates the cosmic-ray secondary electron upward flux 
+ * This program generates the cosmic-ray secondary electron downward flux 
  * at satellite altitude with proper angular distribution and energy spectrum.
- * The absolute flux and spectrum of upward electrons are assumed 
+ * The absolute flux and spectrum of downward electrons are assumed 
  * to depend on the geomagnetic cutoff energy.
  * The flux is assumed not to depend on the zenith angle since AMS
- * didn't detect significant difference between downward and upward
- * flux in theta_M<0.6.
+ * didn't detect significant difference between downward and upward flux.
  * The energy spectrum above 100 MeV is represented by simple analytic
  * functions such as a power-low referring to AMS data.
  * Below 100 MeV, the spectrum is extrapolated down to 10 MeV
  * assuming that the flux is proportional to E^-1.
- * A method reentrantCRenergy returns an energy and CrElectronReentrant::dir 
+ * A method splashCRenergy returns an energy and CrElectronSplash::dir 
  * returns a direction in cos(theta) and phi (azimuth angle). 
- * Please note that we don't have splash nor reentrant component at
+ * Please note that we don't have splash nor splash component at
  * satellite altitude. The class is named "**Splash" due to the
  * historical reason.
  **************************************************************************
@@ -35,20 +34,20 @@
  * 5) Magnetic latitude theta_M is in radian.
  * 6) Particle direction is defined by cos(theta) and phi (in radian).
  **************************************************************************
- * 2001-04 Written by M. Ozaki (ISAS) and T. Mizuno (Hiroshima Univ.) 
- * 2001-05 Modified by T. Mizuno (Hiroshima Univ.)
- * 2001-05 Comments added and unused codes removed by T. Kamae (SLAC)
- * 2001-05 Program checked by T. Kamae and H. Mizushima (Hiroshima)
- * 2001-11 Modified by T. Mizuno
+ * 2001-11 Modified by T. Mizuno.
  *           angular distribution is changed to be uniform
  *           energy spectrum is extrapolated down to 10 MeV
+ * 2001-12 Modified by T. Mizuno to construct a `stand-alone' module
  * 2003-02 Modified by T. Mizuno to generate flux at any position in orbit.
  * 2004-04 Modified by T. Mizuno to simplify the model functions.
  * 2005-05 Modified by T. Mizuno to calculate the flux when theta_M<0.
+ * 2010-10 Modified by T. Mizuno to adjust the flux to that measured by LAT.
+ *   (analysis by Melissa).
  **************************************************************************
  */
 
 //$Header$
+
 
 #include <cmath>
 
@@ -64,13 +63,12 @@
 
 typedef double G4double;
 
-
 // private function definitions.
 namespace {
   const G4double restE = 5.11e-4; // rest energy of electron in [GeV]
 
   // gives back v/c as a function of kinetic Energy
-  inline G4double beta(G4double /* E */ /* GeV */)
+  inline G4double beta(G4double E /* GeV */)
   {
 #if 0	// if E ~ restE
     return sqrt(1 - pow(E/restE+1, -2));
@@ -80,9 +78,9 @@ namespace {
   }
 
 
-  // gives back the rigidity (p/Ze where p is the momentum, e means
-  // electron charge magnitude, and Z is the atomic number) in units of [GV],
-  // as a function of kinetic Energy [GeV].
+  // gives back the rigidity (p/Ze where p is the momentum and e is
+  // the unit charge and Z the atomic number) in units of [GV],
+  // as a function of kinetic energy [GeV].
   inline G4double rigidity(G4double E /* GeV */)
   {
 #if 0	// if E ~ restE
@@ -105,36 +103,37 @@ namespace {
 
 } // End of noname-namespace: private function definitions.
 
-
 //
 //
 //
 
 CrElectronSplash::CrElectronSplash():CrSpectrum()
 {
-  crElectronSplash_0003 = new CrElectronSplash_0003();
-  crElectronSplash_0306 = new CrElectronSplash_0306();
-  crElectronSplash_0608 = new CrElectronSplash_0608();
-  crElectronSplash_0809 = new CrElectronSplash_0809();
-  crElectronSplash_0910 = new CrElectronSplash_0910();
-  crElectronSplash_1011 = new CrElectronSplash_1011();
+  crElectronSplash_0001 = new CrElectronSplash_0001();
+  crElectronSplash_0102 = new CrElectronSplash_0102();
+  crElectronSplash_0203 = new CrElectronSplash_0203();
+  crElectronSplash_0304 = new CrElectronSplash_0304();
+  crElectronSplash_0405 = new CrElectronSplash_0405();
+  crElectronSplash_0506 = new CrElectronSplash_0506();
+  crElectronSplash_0611 = new CrElectronSplash_0611();
 }
 
 
 CrElectronSplash::~CrElectronSplash()
 {
-  delete crElectronSplash_0003;
-  delete crElectronSplash_0306;
-  delete crElectronSplash_0608;
-  delete crElectronSplash_0809;
-  delete crElectronSplash_0910;
-  delete crElectronSplash_1011;
+  delete crElectronSplash_0001;
+  delete crElectronSplash_0102;
+  delete crElectronSplash_0203;
+  delete crElectronSplash_0304;
+  delete crElectronSplash_0405;
+  delete crElectronSplash_0506;
+  delete crElectronSplash_0611;
 }
 
 
 // Gives back particle direction in (cos(theta), phi)
-std::pair<G4double,G4double> CrElectronSplash::dir(G4double /* energy */, 
-					       CLHEP::HepRandomEngine* engine) const
+std::pair<G4double,G4double> CrElectronSplash::dir
+(G4double energy, CLHEP::HepRandomEngine* engine) const
   // return: cos(theta) and phi [rad]
   // The downward has plus sign in cos(theta),
   // and phi = 0 for the particle comming along x-axis (from x>0 to x=0)
@@ -142,61 +141,68 @@ std::pair<G4double,G4double> CrElectronSplash::dir(G4double /* energy */,
 {
   double theta = acos(engine->flat()); // theta is from 0 to pi/2
   theta = M_PI - theta;
-  double phi = engine->flat() * 2 * M_PI;
+  G4double phi = engine->flat() * 2 * M_PI;
 
-  return  std::pair<G4double,G4double>(cos(theta), phi);
+  return std::pair<G4double,G4double>(cos(theta), phi);
 }
 
 
 // Gives back particle energy
 G4double CrElectronSplash::energySrc(CLHEP::HepRandomEngine* engine) const
 {
-
   G4double r1, r2;
-  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
-    return crElectronSplash_0003->energy(engine);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.05){
+    return crElectronSplash_0001->energy(engine);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.05 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.05;
+    r2 = 0.15-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      return crElectronSplash_0001->energy(engine);
+    } else {
+      return crElectronSplash_0102->energy(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.25){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.15;
+    r2 = 0.25-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      return crElectronSplash_0102->energy(engine);
+    } else {
+      return crElectronSplash_0203->energy(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.25 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.35){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.25;
+    r2 = 0.35-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      return crElectronSplash_0203->energy(engine);
+    } else {
+      return crElectronSplash_0304->energy(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.35 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.35;
     r2 = 0.45-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
-      return crElectronSplash_0003->energy(engine);
+      return crElectronSplash_0304->energy(engine);
     } else {
-      return crElectronSplash_0306->energy(engine);
+      return crElectronSplash_0405->energy(engine);
     }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.7){
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.55){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.45;
-    r2 = 0.7-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    r2 = 0.55-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
-      return crElectronSplash_0306->energy(engine);
+      return crElectronSplash_0405->energy(engine);
     } else {
-      return crElectronSplash_0608->energy(engine);
+      return crElectronSplash_0506->energy(engine);
     }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.7 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.85){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.7;
-    r2 = 0.85-fabs(m_geomagneticLatitude)*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.55 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.65){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.55;
+    r2 = 0.65-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
-      return crElectronSplash_0608->energy(engine);
+      return crElectronSplash_0506->energy(engine);
     } else {
-      return crElectronSplash_0809->energy(engine);
-    }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.85 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.95){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.85;
-    r2 = 0.95-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    if (engine->flat()*(r1+r2)<r2){
-      return crElectronSplash_0809->energy(engine);
-    } else {
-      return crElectronSplash_0910->energy(engine);
-    }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.95 && fabs(m_geomagneticLatitude)*M_PI/180.0<1.05){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.95;
-    r2 = 1.05-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    if (engine->flat()*(r1+r2)<r2){
-      return crElectronSplash_0910->energy(engine);
-    } else {
-      return crElectronSplash_1011->energy(engine);
+      return crElectronSplash_0611->energy(engine);
     }
   } else{
-    return crElectronSplash_1011->energy(engine);
+      return crElectronSplash_0611->energy(engine);
   }
 
 }
@@ -206,44 +212,50 @@ G4double CrElectronSplash::energySrc(CLHEP::HepRandomEngine* engine) const
 // the region from which particle is coming from 
 // and the unit is [c/s/m^2/sr].
 // flux()*solidAngle() is used as relative normalization among
-// "primary", "reentrant" and "splash".
+// "primary", "splash" and "splash".
 G4double CrElectronSplash::flux() const
 {
-  // energy integrated vertically upward flux, [c/s/m^2/sr]
-  G4double upwardFlux; 
+  // energy integrated vertically downward flux, [c/s/m^2/sr]
+  G4double downwardFlux; 
   G4double r1, r2;
-  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
-    upwardFlux = crElectronSplash_0003->upwardFlux();
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.05){
+    downwardFlux = crElectronSplash_0001->downwardFlux();
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.05 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.05;
+    r2 = 0.15-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crElectronSplash_0001->downwardFlux()
+             +r1*crElectronSplash_0102->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.25){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.15;
+    r2 = 0.25-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crElectronSplash_0102->downwardFlux()
+             +r1*crElectronSplash_0203->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.25 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.35){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.25;
+    r2 = 0.35-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crElectronSplash_0203->downwardFlux()
+             +r1*crElectronSplash_0304->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.35 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.35;
     r2 = 0.45-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    upwardFlux = ( r2*crElectronSplash_0003->upwardFlux()
-		   +r1*crElectronSplash_0306->upwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.7){
+    downwardFlux = ( r2*crElectronSplash_0304->downwardFlux()
+             +r1*crElectronSplash_0405->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.55){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.45;
-    r2 = 0.7-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    upwardFlux = ( r2*crElectronSplash_0306->upwardFlux()
-                     +r1*crElectronSplash_0608->upwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.7 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.85){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.7;
-    r2 = 0.85-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    upwardFlux = ( r2*crElectronSplash_0608->upwardFlux()
-		   +r1*crElectronSplash_0809->upwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.85 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.95){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.85;
-    r2 = 0.95-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    upwardFlux = ( r2*crElectronSplash_0809->upwardFlux()
-                     +r1*crElectronSplash_0910->upwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.95 && fabs(m_geomagneticLatitude)*M_PI/180.0<1.05){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.95;
-    r2 = 1.05-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    upwardFlux = ( r2*crElectronSplash_0910->upwardFlux()
-                     +r1*crElectronSplash_1011->upwardFlux() )/(r1+r2);
+    r2 = 0.55-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crElectronSplash_0405->downwardFlux()
+             +r1*crElectronSplash_0506->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.55 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.65){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.55;
+    r2 = 0.65-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crElectronSplash_0506->downwardFlux()
+             +r1*crElectronSplash_0611->downwardFlux() )/(r1+r2);
   } else{
-    upwardFlux = crElectronSplash_1011->upwardFlux();
+    downwardFlux = crElectronSplash_0611->downwardFlux();
   }
 
-  return m_normalization*upwardFlux; // [c/s/m^2/sr]
+  return m_normalization*downwardFlux; // [c/s/m^2/sr]
+
 
 }
 
@@ -262,7 +274,7 @@ const char* CrElectronSplash::particleName() const
 }
 
 
-// Gives back the title of the component
+// Gives back the name of the component
 std::string CrElectronSplash::title() const
 {
   return  "CrElectronSplash";
