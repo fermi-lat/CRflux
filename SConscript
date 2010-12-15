@@ -21,7 +21,7 @@ test_CRflux = progEnv.GaudiProgram('test_CRflux',listFiles(['src/test/*.cxx']),
 progEnv.Tool('registerTargets', package = 'CRflux',
              libraryCxts = [[CRflux, libEnv]],
              testAppCxts = [[test_CRflux, progEnv]],
-             includes = listFiles(['CRflux/*.h']),
+             includes = listFiles(['src/*.h', 'src/*.hh']),
              xml = ['xml/source_library.xml', 'xml/source_library_OpsSim.xml'],
              jo=['src/test/jobOptions.txt'])
 	
