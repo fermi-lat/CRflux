@@ -15,12 +15,13 @@
 
 // Forward declaration:
 class CLHEP::HepRandomEngine;
-class CrElectronReentrant_0003;
-class CrElectronReentrant_0306;
-class CrElectronReentrant_0608;
-class CrElectronReentrant_0809;
-class CrElectronReentrant_0910;
-class CrElectronReentrant_1011;
+class CrElectronReentrant_0001;
+class CrElectronReentrant_0102;
+class CrElectronReentrant_0203;
+class CrElectronReentrant_0304;
+class CrElectronReentrant_0405;
+class CrElectronReentrant_0506;
+class CrElectronReentrant_0611;
 
 class CrElectronReentrant : public CrSpectrum
 {
@@ -49,12 +50,13 @@ public:
 
   // cr particle generator sorted in theta_M
 private:
-  CrElectronReentrant_0003* crElectronReentrant_0003;
-  CrElectronReentrant_0306* crElectronReentrant_0306;
-  CrElectronReentrant_0608* crElectronReentrant_0608;
-  CrElectronReentrant_0809* crElectronReentrant_0809;
-  CrElectronReentrant_0910* crElectronReentrant_0910;
-  CrElectronReentrant_1011* crElectronReentrant_1011;
+  CrElectronReentrant_0001* crElectronReentrant_0001;
+  CrElectronReentrant_0102* crElectronReentrant_0102;
+  CrElectronReentrant_0203* crElectronReentrant_0203;
+  CrElectronReentrant_0304* crElectronReentrant_0304;
+  CrElectronReentrant_0405* crElectronReentrant_0405;
+  CrElectronReentrant_0506* crElectronReentrant_0506;
+  CrElectronReentrant_0611* crElectronReentrant_0611;
 
 
 };
