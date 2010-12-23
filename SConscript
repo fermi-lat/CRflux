@@ -1,7 +1,7 @@
 # -*- python -*-
 # $Header$
 # Authors: Tsunefumi Mizuno <suhonen@slac.stanford.edu>
-# Version: CRflux-01-17-07
+# Version: CRflux-01-17-08
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
