@@ -33,7 +33,7 @@
 #include <vector>
 
 // CLHEP
-#include <CLHEP/config/CLHEP.h>
+//#include <CLHEP/config/CLHEP.h>
 //#include <CLHEP/Random/JamesRandom.h>
 #include "CLHEP/Random/Random.h"
 
@@ -78,7 +78,7 @@ CrProton::CrProton(const std::string& paramstring)
 	
 
 // Not sure how to replace the following with CLHEP 1.9.2.2
-  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+  m_engine = CLHEP::HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 
 

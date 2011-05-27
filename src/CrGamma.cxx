@@ -31,7 +31,7 @@
 #include <vector>
 
 // CLHEP
-#include <CLHEP/config/CLHEP.h>
+//#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/Random.h>
 
 #include "CrGamma.hh"
@@ -59,7 +59,7 @@ CrGamma::CrGamma(const std::string& paramstring)
   if(flag& 4) m_subComponents.push_back(new CrGammaSecondaryUpward);
 
 // Not sure how to replace the following... 
-  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+  m_engine = CLHEP::HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 
 

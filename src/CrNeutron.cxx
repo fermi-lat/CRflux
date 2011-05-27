@@ -14,7 +14,7 @@
 #include <vector>
 
 // CLHEP
-#include <CLHEP/config/CLHEP.h>
+//#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/Random.h>
 
 #include "CrNeutron.hh"
@@ -33,7 +33,7 @@ CrNeutron::CrNeutron(const std::string& /* paramstring */)
   // including each component (splash alphas)...
   m_subComponents.push_back(new CrNeutronSplash);
   
-   m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+  m_engine = CLHEP::HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 
 

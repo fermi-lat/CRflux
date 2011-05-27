@@ -34,7 +34,7 @@
 #include <vector>
 
 // CLHEP
-#include <CLHEP/config/CLHEP.h>
+//#include <CLHEP/config/CLHEP.h>
 //#include <CLHEP/Random/JamesRandom.h>
 #include "CLHEP/Random/Random.h"
 
@@ -69,7 +69,7 @@ CrElectron::CrElectron(const std::string& paramstring)
      };
   };	   
 
-  m_engine = HepRandom::getTheEngine(); //new HepJamesRandom;
+  m_engine = CLHEP::HepRandom::getTheEngine(); //new HepJamesRandom;
 }
 
 
