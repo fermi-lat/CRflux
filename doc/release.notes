@@ -8,10 +8,12 @@ $Id$
 @verbatim
   * EOH *
 
+ CRflux-01-18-00 05-Dec-2011 hmk    Merge in Gaudi  v21r7 upgrade
  CRflux-01-17-10 26-May-2011 hmk    use CLHEP namespace for HepRandom
  CRflux-01-17-09 21-May-2011 hmk    fix use of CLHEP to be generic
  CRflux-01-17-08 22-Dec-2010 mizuno fix *.hh files for 2ndary lepton model
  CRflux-01-17-07 27-Oct-2010    jrb update 2ndary lepton model
+ CRflux-01-17-06-gr01 06-Oct-2010 hmk upgrade Gaudi v21r7 along branch
  CRflux-01-17-06 14-Jun-2010    jrb for SCons builds
  CRflux-01-17-05 12-Jun-2010    jrb upgrades for SCons builds
  CRflux-01-17-04 10-Nov-2009    jrb Tags for CRflux somehow got out of sync

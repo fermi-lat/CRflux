@@ -1,7 +1,8 @@
 # -*- python -*-
 # $Header$
 # Authors: Tsunefumi Mizuno <suhonen@slac.stanford.edu>
-# Version: CRflux-01-17-10
+# Version: CRflux-01-18-00
+
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -9,8 +10,8 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
 libEnv.Tool('addLinkDeps', package='CRflux', toBuild='component')
-CRflux=libEnv.SharedLibrary('CRflux', listFiles(['src/*.cxx','src/psb97/*.cxx',
-                                                 'src/Dll/*.cxx']))
+CRflux=libEnv.ComponentLibrary('CRflux',
+                               listFiles(['src/*.cxx','src/psb97/*.cxx']))
 
 progEnv.Tool('CRfluxLib')
 

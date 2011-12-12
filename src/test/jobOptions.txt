@@ -4,7 +4,7 @@
 //
 
 
-ApplicationMgr.ExtSvc += { "FluxSvc" };
+ApplicationMgr.ExtSvc += { "CRfluxSvc","FluxSvc" };
 ApplicationMgr.DLLs   += { "FluxSvc" }; 
 ApplicationMgr.DLLs   += { "CRflux" }; 
 ApplicationMgr.ExtSvc += { "ParticlePropertySvc" };
@@ -28,8 +28,8 @@ ApplicationMgr.EvtSel = "NONE";
 
 ApplicationMgr.EvtMax = 1;
 // Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
-MessageSvc.OutputLevel      = 2;
-FluxSvc.OutputLevel = 4; // suppress INFO
+MessageSvc.OutputLevel      = 1;
+FluxSvc.OutputLevel = 1; // suppress INFO
 
 //==============================================================
 //
