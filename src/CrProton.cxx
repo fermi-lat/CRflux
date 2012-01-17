@@ -28,6 +28,7 @@
 
 //$Header$
 
+#include <cstdlib>
 #include <cmath>
 #include <map>
 #include <vector>
