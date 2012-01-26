@@ -1,7 +1,8 @@
 # -*- python -*-
 # $Header$
 # Authors: Tsunefumi Mizuno <suhonen@slac.stanford.edu>
-# Version: CRflux-01-17-06
+# Version: CRflux-01-17-06-gr01
+
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -9,8 +10,8 @@ progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
 libEnv.Tool('addLinkDeps', package='CRflux', toBuild='component')
-CRflux=libEnv.SharedLibrary('CRflux', listFiles(['src/*.cxx','src/psb97/*.cxx',
-                                                 'src/Dll/*.cxx']))
+CRflux=libEnv.ComponentLibrary('CRflux',
+                               listFiles(['src/*.cxx','src/psb97/*.cxx']))
 
 progEnv.Tool('CRfluxLib')
 
@@ -21,7 +22,7 @@ test_CRflux = progEnv.GaudiProgram('test_CRflux',listFiles(['src/test/*.cxx']),
 progEnv.Tool('registerTargets', package = 'CRflux',
              libraryCxts = [[CRflux, libEnv]],
              testAppCxts = [[test_CRflux, progEnv]],
-             includes = listFiles(['CRflux/*.h']),
+             includes = listFiles(['src/*.h', 'src/*.hh']),
              xml = ['xml/source_library.xml', 'xml/source_library_OpsSim.xml'],
              jo=['src/test/jobOptions.txt'])
 	
