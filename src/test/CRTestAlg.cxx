@@ -7,7 +7,7 @@
 #include "FluxSvc/IFlux.h"
 
 #include "astro/GPS.h"
-
+#include "astro/IGRField.h"
 
 // GlastEvent for creating the McEvent stuff
 #include "Event/TopLevel/Event.h"
@@ -83,6 +83,53 @@ StatusCode CRTestAlg::initialize() {
     // Use the Job options service to set the Algorithm's parameters
     setProperties();
 
+    //short test of the magnetic field:
+
+    double longi, lat, alt, year;
+    alt = 550;
+    year = 2010;
+
+    std::cout << std::endl << "Short test of IGRField" << std::endl << std::endl;
+
+    std::cout  << std::right << std::setw(9) << std::setprecision(5) 
+        << std::setw(9) << "lat"          << std::setw(9) << "long"          
+        << std::setw(9) << "geomagR"      << std::setw(9) << "geomagLt"
+        << std::setw(9) << "L"            << std::setw(9) << "cutOffR"
+        << std::setw(10) << "bDown"   
+        << std::endl;
+
+    double geomagLambda, geomagR, cutOffRig, geomagLat, L, bDown;
+    int ilat, ilong;
+    for(ilat=0;ilat<2;++ilat) {
+        lat = -20 + 40*ilat;
+        for(ilong=0;ilong<45;++ilong) {
+            longi = -180 + 8*ilong;
+
+            astro::IGRField::Model().compute(lat,longi,alt,year);
+
+            // the relation between r and lambda and the McIlwain L is 
+            // cos(lambda)^2 = R/L  
+            geomagLambda = astro::IGRField::Model().lambda();
+            geomagR = astro::IGRField::Model().R();
+            cutOffRig = astro::IGRField::Model().verticalRigidityCutoff();
+            L = astro::IGRField::Model().L();
+            bDown = astro::IGRField::Model().bDown();
+            //#endif
+            // set effective geomagnetic latitude to the lambda value  
+            geomagLat = geomagLambda*180./M_PI;
+
+
+            std::cout  << std::right << std::setw(9) << std::setprecision(5) 
+                << std::setw(9) << lat          << std::setw(9) << longi          
+                << std::setw(9) << geomagR      << std::setw(9) << geomagLat
+                << std::setw(9) << L            << std::setw(9) << cutOffRig 
+                << std::setw(10) << bDown   
+                << std::endl;
+        }
+    }
+    std::cout << std::endl;
+
+
     // get the service
     StatusCode sc = service("FluxSvc", m_fsvc);
     m_fsvc->GPSinstance()->time(m_time); //try somethin
@@ -104,6 +151,7 @@ StatusCode CRTestAlg::initialize() {
 
 #endif
 
+
     return sc;
 }
 
@@ -120,22 +168,22 @@ StatusCode CRTestAlg::execute() {
 
     // The mix sources handle solid angles better
 
-//    arguments.push_back("CrProton");
+    //    arguments.push_back("CrProton");
     arguments.push_back("CrProtonMix"); // new alternative for CrProton
-//    arguments.push_back("CrProtonPrimary");
-//    arguments.push_back("CrProtonReentrant");
-//    arguments.push_back("CrProtonSplash");
+    //    arguments.push_back("CrProtonPrimary");
+    //    arguments.push_back("CrProtonReentrant");
+    //    arguments.push_back("CrProtonSplash");
 
     //  arguments.push_back("CrAlpha");
 
     //  arguments.push_back("CrElectron");
-      arguments.push_back("CrElectronMix"); // alternative
+    arguments.push_back("CrElectronMix"); // alternative
     //  arguments.push_back("CrElectronPrimary");
     //  arguments.push_back("CrElectronReentrant");
     //  arguments.push_back("CrElectronSplash");
 
     //  arguments.push_back("CrPositron");
-      arguments.push_back("CrPositronMix"); // alternative
+    arguments.push_back("CrPositronMix"); // alternative
     //  arguments.push_back("CrPositronPrimary");
     //  arguments.push_back("CrPositronReentrant");
     //  arguments.push_back("CrPositronSplash");
@@ -147,10 +195,12 @@ StatusCode CRTestAlg::execute() {
     //  arguments.push_back("CrGammaSecondaryUpward");
     //  arguments.push_back("-no_integrate");
 
-      arguments.push_back("CrNeutron");
-    
+    arguments.push_back("CrNeutron");
+
     m_fsvc->rootDisplay(arguments);
 #endif
+
+
     return sc;
 }
 
