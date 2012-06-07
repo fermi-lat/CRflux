@@ -8,6 +8,7 @@ $Id$
 @verbatim
   * EOH *
 
+ CRflux-01-19-00 06-Jun-2012  lsrea add a test of IGRField to unit test
  CRflux-01-18-02 06-Jun-2012    jrb no longer need private copy of IGRField; use standard one in astro
  CRflux-01-18-01 23-Jan-2012    jrb Johann's patches for gcc41
  CRflux-01-18-00 05-Dec-2011 hmk    Merge in Gaudi  v21r7 upgrade
