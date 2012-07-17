@@ -8,6 +8,8 @@ $Id$
 @verbatim
   * EOH *
 
+ CRflux-01-19-02 17-Jul-2012 heather turn the rootmaps back on, but skip the
+   actual rootmap generation for CRflux
  CRflux-01-19-01 02-Jul-2012 heather Turn off rootmap for CMT builds
  CRflux-01-19-00 06-Jun-2012  lsrea add a test of IGRField to unit test
  CRflux-01-18-02 06-Jun-2012    jrb no longer need private copy of IGRField; use standard one in astro
