@@ -15,11 +15,111 @@
 // Forward declaration:
 class CLHEP::HepRandomEngine;
 
-class CrElectronReentrant_0003
+class CrElectronReentrant_0001
 {
 public:
-  CrElectronReentrant_0003();
-  ~CrElectronReentrant_0003();
+  CrElectronReentrant_0001();
+  ~CrElectronReentrant_0001();
+
+private:
+  // Normalization and spectral index for E<lowE_break
+  double A_reent, a_reent;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  double B_reent, b_reent;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_reent, c_reent;
+  // Normalization and spectral index for highE_break<E
+  double D_reent, d_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
+
+public:
+  double energy(CLHEP::HepRandomEngine* engine);
+  double downwardFlux();
+};
+
+class CrElectronReentrant_0102
+{
+public:
+  CrElectronReentrant_0102();
+  ~CrElectronReentrant_0102();
+
+private:
+  // Normalization and spectral index for E<lowE_break
+  double A_reent, a_reent;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  double B_reent, b_reent;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_reent, c_reent;
+  // Normalization and spectral index for highE_break<E
+  double D_reent, d_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
+
+public:
+  double energy(CLHEP::HepRandomEngine* engine);
+  double downwardFlux();
+};
+
+class CrElectronReentrant_0203
+{
+public:
+  CrElectronReentrant_0203();
+  ~CrElectronReentrant_0203();
+
+private:
+  // Normalization and spectral index for E<lowE_break
+  double A_reent, a_reent;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  double B_reent, b_reent;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_reent, c_reent;
+  // Normalization and spectral index for highE_break<E
+  double D_reent, d_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
+
+public:
+  double energy(CLHEP::HepRandomEngine* engine);
+  double downwardFlux();
+};
+
+class CrElectronReentrant_0304
+{
+public:
+  CrElectronReentrant_0304();
+  ~CrElectronReentrant_0304();
+
+private:
+  // Normalization and spectral index for E<lowE_break
+  double A_reent, a_reent;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  double B_reent, b_reent;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_reent, c_reent;
+  // Normalization and spectral index for highE_break<E
+  double D_reent, d_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
+
+public:
+  double energy(CLHEP::HepRandomEngine* engine);
+  double downwardFlux();
+};
+
+class CrElectronReentrant_0405
+{
+public:
+  CrElectronReentrant_0405();
+  ~CrElectronReentrant_0405();
 
 private:
   // Normalization and spectral index for E<lowE_break
@@ -28,7 +128,6 @@ private:
   double B_reent, b_reent;
   // Normalization and spectral index for highE_break<E
   double C_reent, c_reent;
-  // The energies where spectrum breaks
   double lowE_break;
   double highE_break;
 
@@ -37,99 +136,50 @@ public:
   double downwardFlux();
 };
 
-class CrElectronReentrant_0306
+class CrElectronReentrant_0506
 {
 public:
-  CrElectronReentrant_0306();
-  ~CrElectronReentrant_0306();
+  CrElectronReentrant_0506();
+  ~CrElectronReentrant_0506();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_reent, a_reent;
-  // Normalization, spectral index and cut off for breakE<E
+  // Normalization and spectral index for lowE_break<E<midE_break
   double B_reent, b_reent;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_reent, c_reent;
+  // Normalization and spectral index for highE_break<E
+  double D_reent, d_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
   double downwardFlux();
 };
 
-class CrElectronReentrant_0608
+class CrElectronReentrant_0611
 {
 public:
-  CrElectronReentrant_0608();
-  ~CrElectronReentrant_0608();
+  CrElectronReentrant_0611();
+  ~CrElectronReentrant_0611();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_reent, a_reent;
-  // Normalization, spectral index and cut off for breakE<E
-  double B1_reent, b1_reent;
-  double B2_reent, b2_reent;
-  double cutOff;
-  // The energy where spectrum breaks
-  double breakE;
-
-public:
-  double energy(CLHEP::HepRandomEngine* engine);
-  double downwardFlux();
-};
-
-class CrElectronReentrant_0809
-{
-public:
-  CrElectronReentrant_0809();
-  ~CrElectronReentrant_0809();
-
-private:
-  // Normalization and spectral index for E<breakE
-  double A_reent, a_reent;
-  // Normalization, spectral index and cut off for breakE<E
-  double B1_reent, b1_reent;
-  double B2_reent, b2_reent;
-  double cutOff;
-  // The energy where spectrum breaks
-  double breakE;
-
-public:
-  double energy(CLHEP::HepRandomEngine* engine);
-  double downwardFlux();
-};
-
-class CrElectronReentrant_0910
-{
-public:
-  CrElectronReentrant_0910();
-  ~CrElectronReentrant_0910();
-
-private:
-  // Normalization and spectral index for E<breakE
-  double A_reent, a_reent;
-  // Normalization, spectral index and cut off for breakE<E
+  // Normalization and spectral index for lowE_break<E<midE_break
   double B_reent, b_reent;
-  // The energy where spectrum breaks
-  double breakE;
-
-public:
-  double energy(CLHEP::HepRandomEngine* engine);
-  double downwardFlux();
-};
-
-class CrElectronReentrant_1011
-{
-public:
-  CrElectronReentrant_1011();
-  ~CrElectronReentrant_1011();
-
-private:
-  // Normalization and spectral index for E<breakE
-  double A_reent, a_reent;
-  // Normalization and spectral index for breakE<E
-  double B_reent, b_reent;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_reent, c_reent;
+  // Normalization and spectral index for highE_break<E
+  double D_reent, d_reent;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);

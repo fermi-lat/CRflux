@@ -15,12 +15,13 @@
 
 // Forward declaration:
 class CLHEP::HepRandomEngine;
-class CrPositronReentrant_0003;
-class CrPositronReentrant_0306;
-class CrPositronReentrant_0608;
-class CrPositronReentrant_0809;
-class CrPositronReentrant_0910;
-class CrPositronReentrant_1011;
+class CrPositronReentrant_0001;
+class CrPositronReentrant_0102;
+class CrPositronReentrant_0203;
+class CrPositronReentrant_0304;
+class CrPositronReentrant_0405;
+class CrPositronReentrant_0506;
+class CrPositronReentrant_0611;
 
 class CrPositronReentrant : public CrSpectrum
 {
@@ -49,12 +50,14 @@ public:
 
   // cr particle generator sorted in theta_M
 private:
-  CrPositronReentrant_0003* crPositronReentrant_0003;
-  CrPositronReentrant_0306* crPositronReentrant_0306;
-  CrPositronReentrant_0608* crPositronReentrant_0608;
-  CrPositronReentrant_0809* crPositronReentrant_0809;
-  CrPositronReentrant_0910* crPositronReentrant_0910;
-  CrPositronReentrant_1011* crPositronReentrant_1011;
+  CrPositronReentrant_0001* crPositronReentrant_0001;
+  CrPositronReentrant_0102* crPositronReentrant_0102;
+  CrPositronReentrant_0203* crPositronReentrant_0203;
+  CrPositronReentrant_0304* crPositronReentrant_0304;
+  CrPositronReentrant_0405* crPositronReentrant_0405;
+  CrPositronReentrant_0506* crPositronReentrant_0506;
+  CrPositronReentrant_0611* crPositronReentrant_0611;
+
 
 };
 #endif // CrPositronReentrant_H

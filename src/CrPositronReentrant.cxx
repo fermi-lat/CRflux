@@ -5,12 +5,12 @@
  * and GLAST-LAT Technical Note (LAT-TD-250.1) by T. Mizuno et al. 
  * for overall flow of cosmic ray generation in BalloonTestV13.
  * This program is interfaced to CosmicRayGeneratorAction.cc 
- * via CrPositron, the entry-point class for the cosmic-ray positron 
+ * via CrPositron, the entry-point class for the cosmic-ray positron
  * generation.
  **************************************************************************
  * This program generates the cosmic-ray secondary positron downward flux 
  * at satellite altitude with proper angular distribution and energy spectrum.
- * The absolute flux and spectrum of downward positrons are assumed 
+ * The absolute flux and spectrum of downward positron are assumed 
  * to depend on the geomagnetic cutoff energy.
  * The flux is assumed not to depend on the zenith angle since AMS
  * didn't detect significant difference between downward and upward flux.
@@ -41,6 +41,8 @@
  * 2003-02 Modified by T. Mizuno to generate flux at any position in orbit.
  * 2004-04 Modified by T. Mizuno to simplify the model functions.
  * 2005-05 Modified by T. Mizuno to calculate the flux when theta_M<0.
+ * 2010-10 Modified by T. Mizuno to adjust the flux to that measured by LAT.
+ *   (analysis by Melissa).
  **************************************************************************
  */
 
@@ -50,7 +52,7 @@
 #include <cmath>
 
 // CLHEP
-#include <CLHEP/config/CLHEP.h>
+//#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
@@ -107,23 +109,25 @@ namespace {
 
 CrPositronReentrant::CrPositronReentrant():CrSpectrum()
 {
-  crPositronReentrant_0003 = new CrPositronReentrant_0003();
-  crPositronReentrant_0306 = new CrPositronReentrant_0306();
-  crPositronReentrant_0608 = new CrPositronReentrant_0608();
-  crPositronReentrant_0809 = new CrPositronReentrant_0809();
-  crPositronReentrant_0910 = new CrPositronReentrant_0910();
-  crPositronReentrant_1011 = new CrPositronReentrant_1011();
+  crPositronReentrant_0001 = new CrPositronReentrant_0001();
+  crPositronReentrant_0102 = new CrPositronReentrant_0102();
+  crPositronReentrant_0203 = new CrPositronReentrant_0203();
+  crPositronReentrant_0304 = new CrPositronReentrant_0304();
+  crPositronReentrant_0405 = new CrPositronReentrant_0405();
+  crPositronReentrant_0506 = new CrPositronReentrant_0506();
+  crPositronReentrant_0611 = new CrPositronReentrant_0611();
 }
 
 
 CrPositronReentrant::~CrPositronReentrant()
 {
-  delete crPositronReentrant_0003;
-  delete crPositronReentrant_0306;
-  delete crPositronReentrant_0608;
-  delete crPositronReentrant_0809;
-  delete crPositronReentrant_0910;
-  delete crPositronReentrant_1011;
+  delete crPositronReentrant_0001;
+  delete crPositronReentrant_0102;
+  delete crPositronReentrant_0203;
+  delete crPositronReentrant_0304;
+  delete crPositronReentrant_0405;
+  delete crPositronReentrant_0506;
+  delete crPositronReentrant_0611;
 }
 
 
@@ -146,50 +150,58 @@ std::pair<G4double,G4double> CrPositronReentrant::dir
 G4double CrPositronReentrant::energySrc(CLHEP::HepRandomEngine* engine) const
 {
   G4double r1, r2;
-  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
-    return crPositronReentrant_0003->energy(engine);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.05){
+    return crPositronReentrant_0001->energy(engine);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.05 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.05;
+    r2 = 0.15-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      return crPositronReentrant_0001->energy(engine);
+    } else {
+      return crPositronReentrant_0102->energy(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.25){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.15;
+    r2 = 0.25-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      return crPositronReentrant_0102->energy(engine);
+    } else {
+      return crPositronReentrant_0203->energy(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.25 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.35){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.25;
+    r2 = 0.35-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    if (engine->flat()*(r1+r2)<r2){
+      return crPositronReentrant_0203->energy(engine);
+    } else {
+      return crPositronReentrant_0304->energy(engine);
+    }
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.35 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.35;
     r2 = 0.45-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
-      return crPositronReentrant_0003->energy(engine);
+      return crPositronReentrant_0304->energy(engine);
     } else {
-      return crPositronReentrant_0306->energy(engine);
+      return crPositronReentrant_0405->energy(engine);
     }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.7){
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.55){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.45;
-    r2 = 0.7-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    r2 = 0.55-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
-      return crPositronReentrant_0306->energy(engine);
+      return crPositronReentrant_0405->energy(engine);
     } else {
-      return crPositronReentrant_0608->energy(engine);
+      return crPositronReentrant_0506->energy(engine);
     }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.7 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.85){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.7;
-    r2 = 0.85-fabs(m_geomagneticLatitude)*M_PI/180.0;
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.55 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.65){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.55;
+    r2 = 0.65-fabs(m_geomagneticLatitude)*M_PI/180.0;
     if (engine->flat()*(r1+r2)<r2){
-      return crPositronReentrant_0608->energy(engine);
+      return crPositronReentrant_0506->energy(engine);
     } else {
-      return crPositronReentrant_0809->energy(engine);
-    }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.85 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.95){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.85;
-    r2 = 0.95-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    if (engine->flat()*(r1+r2)<r2){
-      return crPositronReentrant_0809->energy(engine);
-    } else {
-      return crPositronReentrant_0910->energy(engine);
-    }
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.95 && fabs(m_geomagneticLatitude)*M_PI/180.0<1.05){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.95;
-    r2 = 1.05-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    if (engine->flat()*(r1+r2)<r2){
-      return crPositronReentrant_0910->energy(engine);
-    } else {
-      return crPositronReentrant_1011->energy(engine);
+      return crPositronReentrant_0611->energy(engine);
     }
   } else{
-      return crPositronReentrant_1011->energy(engine);
+      return crPositronReentrant_0611->energy(engine);
   }
 
 }
@@ -205,35 +217,40 @@ G4double CrPositronReentrant::flux() const
   // energy integrated vertically downward flux, [c/s/m^2/sr]
   G4double downwardFlux; 
   G4double r1, r2;
-  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
-    downwardFlux = crPositronReentrant_0003->downwardFlux();
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+  if (fabs(m_geomagneticLatitude)*M_PI/180.0<0.05){
+    downwardFlux = crPositronReentrant_0001->downwardFlux();
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.05 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.15){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.05;
+    r2 = 0.15-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crPositronReentrant_0001->downwardFlux()
+             +r1*crPositronReentrant_0102->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.15 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.25){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.15;
+    r2 = 0.25-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crPositronReentrant_0102->downwardFlux()
+             +r1*crPositronReentrant_0203->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.25 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.35){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.25;
+    r2 = 0.35-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crPositronReentrant_0203->downwardFlux()
+             +r1*crPositronReentrant_0304->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.35 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.45){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.35;
     r2 = 0.45-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    downwardFlux = ( r2*crPositronReentrant_0003->downwardFlux()
-             +r1*crPositronReentrant_0306->downwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.7){
+    downwardFlux = ( r2*crPositronReentrant_0304->downwardFlux()
+             +r1*crPositronReentrant_0405->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.45 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.55){
     r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.45;
-    r2 = 0.7-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    downwardFlux = ( r2*crPositronReentrant_0306->downwardFlux()
-             +r1*crPositronReentrant_0608->downwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.7 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.85){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.7;
-    r2 = 0.85-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    downwardFlux = ( r2*crPositronReentrant_0608->downwardFlux()
-             +r1*crPositronReentrant_0809->downwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.85 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.95){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.85;
-    r2 = 0.95-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    downwardFlux = ( r2*crPositronReentrant_0809->downwardFlux()
-             +r1*crPositronReentrant_0910->downwardFlux() )/(r1+r2);
-  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.95 && fabs(m_geomagneticLatitude)*M_PI/180.0<1.05){
-    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.95;
-    r2 = 1.05-fabs(m_geomagneticLatitude)*M_PI/180.0;
-    downwardFlux = ( r2*crPositronReentrant_0910->downwardFlux()
-             +r1*crPositronReentrant_1011->downwardFlux() )/(r1+r2);
+    r2 = 0.55-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crPositronReentrant_0405->downwardFlux()
+             +r1*crPositronReentrant_0506->downwardFlux() )/(r1+r2);
+  } else if (fabs(m_geomagneticLatitude)*M_PI/180.0>=0.55 && fabs(m_geomagneticLatitude)*M_PI/180.0<0.65){
+    r1 = fabs(m_geomagneticLatitude)*M_PI/180.0-0.55;
+    r2 = 0.65-fabs(m_geomagneticLatitude)*M_PI/180.0;
+    downwardFlux = ( r2*crPositronReentrant_0506->downwardFlux()
+             +r1*crPositronReentrant_0611->downwardFlux() )/(r1+r2);
   } else{
-    downwardFlux = crPositronReentrant_1011->downwardFlux();
+    downwardFlux = crPositronReentrant_0611->downwardFlux();
   }
 
   return m_normalization*downwardFlux; // [c/s/m^2/sr]

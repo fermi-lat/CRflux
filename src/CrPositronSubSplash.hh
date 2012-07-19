@@ -15,128 +15,175 @@
 // Forward declaration:
 class CLHEP::HepRandomEngine;
 
-class CrPositronSplash_0003
+class CrPositronSplash_0001
 {
 public:
-  CrPositronSplash_0003();
-  ~CrPositronSplash_0003();
+  CrPositronSplash_0001();
+  ~CrPositronSplash_0001();
 
 private:
   // Normalization and spectral index for E<lowE_break
   double A_splash, a_splash;
-  // Normalization and spectral index for lowE_break<E<middleE_break
+  // Normalization and spectral index for lowE_break<E<midE_break
   double B_splash, b_splash;
-  // Normalization and spectral index for middleE_break<E<highE_break
+  // Normalization and spectral index for midE_break<E<highE_break
   double C_splash, c_splash;
   // Normalization and spectral index for highE_break<E
   double D_splash, d_splash;
   // The energies where spectrum breaks
   double lowE_break;
-  double middleE_break;
+  double midE_break;
   double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
-  double upwardFlux();
+  double downwardFlux();
 };
 
-class CrPositronSplash_0306
+class CrPositronSplash_0102
 {
 public:
-  CrPositronSplash_0306();
-  ~CrPositronSplash_0306();
+  CrPositronSplash_0102();
+  ~CrPositronSplash_0102();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_splash, a_splash;
-  // Normalization, spectral index and cut off for breakE<E
+  // Normalization and spectral index for lowE_break<E<midE_break
   double B_splash, b_splash;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_splash, c_splash;
+  // Normalization and spectral index for highE_break<E
+  double D_splash, d_splash;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
-  double upwardFlux();
+  double downwardFlux();
 };
 
-class CrPositronSplash_0608
+class CrPositronSplash_0203
 {
 public:
-  CrPositronSplash_0608();
-  ~CrPositronSplash_0608();
+  CrPositronSplash_0203();
+  ~CrPositronSplash_0203();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_splash, a_splash;
-  // Normalization, spectral index and cut off for breakE<E
-  double B1_splash, b1_splash;
-  double B2_splash, b2_splash;
-  double cutOff;
-  // The energy where spectrum breaks
-  double breakE;
-
-public:
-  double energy(CLHEP::HepRandomEngine* engine);
-  double upwardFlux();
-};
-
-class CrPositronSplash_0809
-{
-public:
-  CrPositronSplash_0809();
-  ~CrPositronSplash_0809();
-
-private:
-  // Normalization and spectral index for E<breakE
-  double A_splash, a_splash;
-  // Normalization, spectral index and cut off for breakE<E
-  double B1_splash, b1_splash;
-  double B2_splash, b2_splash;
-  double cutOff;
-  // The energy where spectrum breaks
-  double breakE;
-
-public:
-  double energy(CLHEP::HepRandomEngine* engine);
-  double upwardFlux();
-};
-
-class CrPositronSplash_0910
-{
-public:
-  CrPositronSplash_0910();
-  ~CrPositronSplash_0910();
-
-private:
-  // Normalization and spectral index for E<breakE
-  double A_splash, a_splash;
-  // Normalization, spectral index and cut off for breakE<E
+  // Normalization and spectral index for lowE_break<E<midE_break
   double B_splash, b_splash;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_splash, c_splash;
+  // Normalization and spectral index for highE_break<E
+  double D_splash, d_splash;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
-  double upwardFlux();
+  double downwardFlux();
 };
 
-class CrPositronSplash_1011
+class CrPositronSplash_0304
 {
 public:
-  CrPositronSplash_1011();
-  ~CrPositronSplash_1011();
+  CrPositronSplash_0304();
+  ~CrPositronSplash_0304();
 
 private:
-  // Normalization and spectral index for E<breakE
+  // Normalization and spectral index for E<lowE_break
   double A_splash, a_splash;
-  // Normalization and spectral index for breakE<E
+  // Normalization and spectral index for lowE_break<E<midE_break
   double B_splash, b_splash;
-  // The energy where spectrum breaks
-  double breakE;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_splash, c_splash;
+  // Normalization and spectral index for highE_break<E
+  double D_splash, d_splash;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
 
 public:
   double energy(CLHEP::HepRandomEngine* engine);
-  double upwardFlux();
+  double downwardFlux();
+};
+
+class CrPositronSplash_0405
+{
+public:
+  CrPositronSplash_0405();
+  ~CrPositronSplash_0405();
+
+private:
+  // Normalization and spectral index for E<lowE_break
+  double A_splash, a_splash;
+  // Normalization and spectral index for lowE_break<E<highE_break
+  double B_splash, b_splash;
+  // Normalization and spectral index for highE_break<E
+  double C_splash, c_splash;
+  double lowE_break;
+  double highE_break;
+
+public:
+  double energy(CLHEP::HepRandomEngine* engine);
+  double downwardFlux();
+};
+
+class CrPositronSplash_0506
+{
+public:
+  CrPositronSplash_0506();
+  ~CrPositronSplash_0506();
+
+private:
+  // Normalization and spectral index for E<lowE_break
+  double A_splash, a_splash;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  double B_splash, b_splash;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_splash, c_splash;
+  // Normalization and spectral index for highE_break<E
+  double D_splash, d_splash;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
+
+public:
+  double energy(CLHEP::HepRandomEngine* engine);
+  double downwardFlux();
+};
+
+class CrPositronSplash_0611
+{
+public:
+  CrPositronSplash_0611();
+  ~CrPositronSplash_0611();
+
+private:
+  // Normalization and spectral index for E<lowE_break
+  double A_splash, a_splash;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  double B_splash, b_splash;
+  // Normalization and spectral index for midE_break<E<highE_break
+  double C_splash, c_splash;
+  // Normalization and spectral index for highE_break<E
+  double D_splash, d_splash;
+  // The energies where spectrum breaks
+  double lowE_break;
+  double midE_break;
+  double highE_break;
+
+public:
+  double energy(CLHEP::HepRandomEngine* engine);
+  double downwardFlux();
 };
 
 

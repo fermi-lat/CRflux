@@ -10,16 +10,18 @@
 
 #include <utility>
 #include <string>
+
 #include "CrSpectrum.hh"
 
 // Forward declaration:
 class CLHEP::HepRandomEngine;
-class CrPositronSplash_0003;
-class CrPositronSplash_0306;
-class CrPositronSplash_0608;
-class CrPositronSplash_0809;
-class CrPositronSplash_0910;
-class CrPositronSplash_1011;
+class CrPositronSplash_0001;
+class CrPositronSplash_0102;
+class CrPositronSplash_0203;
+class CrPositronSplash_0304;
+class CrPositronSplash_0405;
+class CrPositronSplash_0506;
+class CrPositronSplash_0611;
 
 class CrPositronSplash : public CrSpectrum
 {
@@ -48,12 +50,14 @@ public:
 
   // cr particle generator sorted in theta_M
 private:
-  CrPositronSplash_0003* crPositronSplash_0003;
-  CrPositronSplash_0306* crPositronSplash_0306;
-  CrPositronSplash_0608* crPositronSplash_0608;
-  CrPositronSplash_0809* crPositronSplash_0809;
-  CrPositronSplash_0910* crPositronSplash_0910;
-  CrPositronSplash_1011* crPositronSplash_1011;
+  CrPositronSplash_0001* crPositronSplash_0001;
+  CrPositronSplash_0102* crPositronSplash_0102;
+  CrPositronSplash_0203* crPositronSplash_0203;
+  CrPositronSplash_0304* crPositronSplash_0304;
+  CrPositronSplash_0405* crPositronSplash_0405;
+  CrPositronSplash_0506* crPositronSplash_0506;
+  CrPositronSplash_0611* crPositronSplash_0611;
+
 
 };
 #endif // CrPositronSplash_H

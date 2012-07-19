@@ -14,7 +14,7 @@
 #include <cmath>
 
 // CLHEP
-#include <CLHEP/config/CLHEP.h>
+//#include <CLHEP/config/CLHEP.h>
 #include <CLHEP/Random/RandomEngine.h>
 #include <CLHEP/Random/RandGeneral.h>
 #include <CLHEP/Random/JamesRandom.h>
@@ -29,7 +29,15 @@ namespace {
   const G4double restE = 5.11e-4;
   // lower and higher energy limit of secondary positron in units of GeV
   const G4double lowE_reent  = 0.01;
-  const G4double highE_reent = 20.0;
+  const G4double highE_reent = 10.0;
+  
+  const G4double PosToEle_0001 = 4.8; // e+/e- of secondary in 0.0<theta_M<0.1
+  const G4double PosToEle_0102 = 4.2; // e+/e- of secondary in 0.1<theta_M<0.2
+  const G4double PosToEle_0203 = 3.8; // e+/e- of secondary in 0.2<theta_M<0.3
+  const G4double PosToEle_0304 = 2.6; // e+/e- of secondary in 0.3<theta_M<0.4
+  const G4double PosToEle_0405 = 1.8; // e+/e- of secondary in 0.4<theta_M<0.5
+  const G4double PosToEle_0506 = 1.0; // e+/e- of secondary in 0.5<theta_M<0.6
+  const G4double PosToEle_0611 = 1.0; // e+/e- of secondary in 0.6<theta_M<1.1
 
   //------------------------------------------------------------
   // cutoff power-law function: A*E^-a*exp(-E/cut)
@@ -129,51 +137,50 @@ namespace {
 
 //------------------------------------------------------------
 // The random number generator for the downward component
-// in 0<theta_M<0.3.
+// in 0<theta_M<0.1.
 // This class has two methods. 
 // One returns the kinetic energy of cosmic-ray downward positron
 // ("energy" method) and the other returns 
 // the energy integrated downward flux ("downwardFlux" method) 
-CrPositronReentrant_0003::CrPositronReentrant_0003(){
+CrPositronReentrant_0001::CrPositronReentrant_0001(){
   /*
-   * 10 - 60 MeV
-   *   j(E) = 20.0*(E/10MeV)^-1.77 [c/s/m^2/sr/MeV]
-   * 60 - 178 MeV
-   *   j(E) = 0.833*(E/60MeV)^-1.0 [c/s/m^2/sr/MeV]
-   * 178 MeV -3 GeV
-   *   j(E) = 1.0*(E/100MeV)^-2.2 [c/s/m^2/sr/MeV]
+   * Below 100 MeV
+   *   j(E) = 0.45*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
+   * 100 MeV - 400 MeV
+   *   j(E) = 0.45*(E/100MeV)^-1.5 [c/s/m^2/sr/MeV]
+   * 400 MeV - 3 GeV
+   *   j(E) = 0.056*(E/400MeV)^-2.5 [c/s/m^2/sr/MeV]
    * Above 3 GeV
-   *   j(E) = 1.0*pow(30, -2.2)*(E/300MeV)^-4.0 [c/s/m^2/sr/MeV]
+   *   j(E) = 3.65e-4*pow(E/3000MeV)^-3.6 [c/s/m^2/sr/MeV]
    * reference:
-   *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
+   *   LAT measurement of 2ndary e- + e+
    */
   
-  // Normalization and spectral index for E<lowE_break
-  A_reent = 20.0*pow(100.0, -1.77);
-  a_reent = 1.77;
-  // Normalization and spectral index for E<lowE_break
-  B_reent = 0.833*pow(1000.0/60.0, -1.0);
-  b_reent = 1.0;
-  // Normalization and spectral index for lowE_break<E<highE_break
-  C_reent = 1.0*pow(10.0, -2.2);
-  c_reent = 2.2;
+  // Normalization and spectral index E<lowE_break
+  A_reent = 0.45*pow(1000./100., -2.0)*PosToEle_0001/(1+PosToEle_0001);
+  a_reent = 2.0;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  B_reent = 0.45*pow(1000./100., -1.5)*PosToEle_0001/(1+PosToEle_0001);
+  b_reent = 1.5;
+  // Normalization and spectral index for midE_break<E<highE_break
+  C_reent = 0.056*pow(1000./400., -2.5)*PosToEle_0001/(1+PosToEle_0001);
+  c_reent = 2.5;
   // Normalization and spectral index for E>highE_break
-  D_reent = 1.0*pow(30.0, -2.2)*pow(1.0/3.0, -4.0);
-  d_reent = 4.0;
-  // The spectrum breaks at 100MeV and 3 GeV
-  lowE_break = 0.06;
-  middleE_break = 0.178;
+  D_reent = 3.65e-4*pow(1000./3000.0, -3.6)*PosToEle_0001/(1+PosToEle_0001);
+  d_reent = 3.6;
+  // The spectrum breaks at 100 MeV, 400 MeV and 3 GeV
+  lowE_break = 0.1;
+  midE_break = 0.4;
   highE_break = 3.0;
 }
     
-CrPositronReentrant_0003::~CrPositronReentrant_0003()
+CrPositronReentrant_0001::~CrPositronReentrant_0001()
 {
 ;
 }
 
 // returns energy obeying re-entrant cosmic-ray positron spectrum
-G4double CrPositronReentrant_0003::energy(CLHEP::HepRandomEngine* engine){
+G4double CrPositronReentrant_0001::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
@@ -182,9 +189,9 @@ G4double CrPositronReentrant_0003::energy(CLHEP::HepRandomEngine* engine){
   G4double rand_min_B = 
     powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_B = 
-    powSpec_integral(B_reent, b_reent, middleE_break);
+    powSpec_integral(B_reent, b_reent, midE_break);
   G4double rand_min_C = 
-    powSpec_integral(C_reent, c_reent, middleE_break);
+    powSpec_integral(C_reent, c_reent, midE_break);
   G4double rand_max_C = 
     powSpec_integral(C_reent, c_reent, highE_break);
   G4double rand_min_D = 
@@ -207,11 +214,11 @@ G4double CrPositronReentrant_0003::energy(CLHEP::HepRandomEngine* engine){
     r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
     E = powSpec_integral_inv(A_reent, a_reent, r);
   } else if (rnd <= (specA_area+specB_area) / spec_area){
-    // spectrum in lowE_break<E<middleE_break
+    // spectrum in lowE_break<E<midE_break
     r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
     E = powSpec_integral_inv(B_reent, b_reent, r);
   } else if (rnd <= (specA_area+specB_area+specC_area) / spec_area){
-    // spectrum in middleE_break<E<highE_break
+    // spectrum in midE_break<E<highE_break
     r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
     E = powSpec_integral_inv(C_reent, c_reent, r);
   } else {
@@ -223,7 +230,7 @@ G4double CrPositronReentrant_0003::energy(CLHEP::HepRandomEngine* engine){
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-G4double CrPositronReentrant_0003::downwardFlux(){
+G4double CrPositronReentrant_0001::downwardFlux(){
   G4double rand_min_1 = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
   G4double rand_max_1 = 
@@ -231,9 +238,9 @@ G4double CrPositronReentrant_0003::downwardFlux(){
   G4double rand_min_2 = 
     powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_2 = 
-    powSpec_integral(B_reent, b_reent, middleE_break);
+    powSpec_integral(B_reent, b_reent, midE_break);
   G4double rand_min_3 = 
-    powSpec_integral(C_reent, c_reent, middleE_break);
+    powSpec_integral(C_reent, c_reent, midE_break);
   G4double rand_max_3 = 
     powSpec_integral(C_reent, c_reent, highE_break);
   G4double rand_min_4 = 
@@ -241,488 +248,719 @@ G4double CrPositronReentrant_0003::downwardFlux(){
   G4double rand_max_4 = 
     powSpec_integral(D_reent, d_reent, highE_reent);
 
- // Original model function is given in "/MeV" and the energy in "GeV".
+  // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)
-                +(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
 }
 //------------------------------------------------------------
 
+
 //------------------------------------------------------------
 // The random number generator for the downward component
-// in 0.3<theta_M<0.6.
+// in 0.1<theta_M<0.2.
 // This class has two methods. 
 // One returns the kinetic energy of cosmic-ray downward positron
 // ("energy" method) and the other returns 
 // the energy integrated downward flux ("downwardFlux" method) 
-CrPositronReentrant_0306::CrPositronReentrant_0306(){
+CrPositronReentrant_0102::CrPositronReentrant_0102(){
+  /*
+   * Below 100 MeV
+   *   j(E) = 0.45*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
+   * 100 MeV - 400 MeV
+   *   j(E) = 0.45*(E/100MeV)^-1.5 [c/s/m^2/sr/MeV]
+   * 400 MeV - 1 GeV
+   *   j(E) = 0.056*(E/400MeV)^-2.5 [c/s/m^2/sr/MeV]
+   * Above 1 GeV
+   *   j(E) = 0.0056*pow(E/1000MeV)^-2.9 [c/s/m^2/sr/MeV]
+   * reference:
+   *   LAT measurement of 2ndary e- + e+
+   */
+  
+  // Normalization and spectral index E<lowE_break
+  A_reent = 0.45*pow(1000./100., -2.0)*PosToEle_0102/(1+PosToEle_0102);
+  a_reent = 2.0;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  B_reent = 0.45*pow(1000./100., -1.5)*PosToEle_0102/(1+PosToEle_0102);
+  b_reent = 1.5;
+  // Normalization and spectral index for midE_break<E<highE_break
+  C_reent = 0.056*pow(1000./400., -2.5)*PosToEle_0102/(1+PosToEle_0102);
+  c_reent = 2.5;
+  // Normalization and spectral index for E>highE_break
+  D_reent = 0.0056*pow(1000./1000.0, -2.9)*PosToEle_0102/(1+PosToEle_0102);
+  d_reent = 2.9;
+  // The spectrum breaks at 100 MeV, 400 MeV and 3 GeV
+  lowE_break = 0.1;
+  midE_break = 0.4;
+  highE_break = 1.0;
+}
+    
+CrPositronReentrant_0102::~CrPositronReentrant_0102()
+{
+;
+}
+
+// returns energy obeying re-entrant cosmic-ray positron spectrum
+G4double CrPositronReentrant_0102::energy(CLHEP::HepRandomEngine* engine){
+
+  G4double rand_min_A = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_A = 
+    powSpec_integral(A_reent, a_reent, lowE_break);
+  G4double rand_min_B = 
+    powSpec_integral(B_reent, b_reent, lowE_break);
+  G4double rand_max_B = 
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_C = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_C = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_D = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_D = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double specD_area = rand_max_D - rand_min_D;
+  G4double spec_area = specA_area + specB_area + specC_area + specD_area;
+
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
+
+  rnd = engine->flat();
+  if (rnd <= specA_area / spec_area){
+    // spectrum below lowE_break
+    r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
+    E = powSpec_integral_inv(A_reent, a_reent, r);
+  } else if (rnd <= (specA_area+specB_area) / spec_area){
+    // spectrum in lowE_break<E<midE_break
+    r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
+    E = powSpec_integral_inv(B_reent, b_reent, r);
+  } else if (rnd <= (specA_area+specB_area+specC_area) / spec_area){
+    // spectrum in midE_break<E<highE_break
+    r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
+    E = powSpec_integral_inv(C_reent, c_reent, r);
+  } else {
+    // spectrum above highE_break
+    r = engine->flat() * (rand_max_D - rand_min_D) + rand_min_D;
+    E = powSpec_integral_inv(D_reent, d_reent, r);
+  }
+  return E;
+}
+
+// returns energy integrated downward flux in c/s/m^2/sr
+G4double CrPositronReentrant_0102::downwardFlux(){
+  G4double rand_min_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_break);
+  G4double rand_min_2 = 
+    powSpec_integral(B_reent, b_reent, lowE_break);
+  G4double rand_max_2 = 
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_3 = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_3 = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_4 = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_4 = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
+  // Original model function is given in "/MeV" and the energy in "GeV".
+  // This is why 1000.* is required below.
+
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
+}
+//------------------------------------------------------------
+
+
+//------------------------------------------------------------
+// The random number generator for the downward component
+// in 0.2<theta_M<0.3.
+// This class has two methods. 
+// One returns the kinetic energy of cosmic-ray downward positron
+// ("energy" method) and the other returns 
+// the energy integrated downward flux ("downwardFlux" method) 
+CrPositronReentrant_0203::CrPositronReentrant_0203(){
+  /*
+   * Below 100 MeV
+   *   j(E) = 0.45*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
+   * 100 MeV - 300 MeV
+   *   j(E) = 0.45*(E/100MeV)^-1.5 [c/s/m^2/sr/MeV]
+   * 300 MeV - 400 MeV
+   *   j(E) = 0.086*(E/300MeV)^-1.8 [c/s/m^2/sr/MeV]
+   * Above 400 MeV
+   *   j(E) = 0.051*pow(E/400MeV)^-2.8 [c/s/m^2/sr/MeV]
+   * reference:
+   *   LAT measurement of 2ndary e- + e+
+   */
+  
+  // Normalization and spectral index E<lowE_break
+  A_reent = 0.45*pow(1000./100., -2.0)*PosToEle_0203/(1+PosToEle_0203);
+  a_reent = 2.0;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  B_reent = 0.45*pow(1000./100., -1.5)*PosToEle_0203/(1+PosToEle_0203);
+  b_reent = 1.5;
+  // Normalization and spectral index for midE_break<E<highE_break
+  C_reent = 0.086*pow(1000./300., -1.8)*PosToEle_0203/(1+PosToEle_0203);
+  c_reent = 1.8;
+  // Normalization and spectral index for E>highE_break
+  D_reent = 0.051*pow(1000./400.0, -2.8)*PosToEle_0203/(1+PosToEle_0203);
+  d_reent = 2.8;
+  // The spectrum breaks at 100 MeV, 300 MeV and 400 MeV
+  lowE_break = 0.1;
+  midE_break = 0.3;
+  highE_break = 0.4;
+}
+    
+CrPositronReentrant_0203::~CrPositronReentrant_0203()
+{
+;
+}
+
+// returns energy obeying re-entrant cosmic-ray positron spectrum
+G4double CrPositronReentrant_0203::energy(CLHEP::HepRandomEngine* engine){
+
+  G4double rand_min_A = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_A = 
+    powSpec_integral(A_reent, a_reent, lowE_break);
+  G4double rand_min_B = 
+    powSpec_integral(B_reent, b_reent, lowE_break);
+  G4double rand_max_B = 
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_C = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_C = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_D = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_D = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double specD_area = rand_max_D - rand_min_D;
+  G4double spec_area = specA_area + specB_area + specC_area + specD_area;
+
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
+
+  rnd = engine->flat();
+  if (rnd <= specA_area / spec_area){
+    // spectrum below lowE_break
+    r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
+    E = powSpec_integral_inv(A_reent, a_reent, r);
+  } else if (rnd <= (specA_area+specB_area) / spec_area){
+    // spectrum in lowE_break<E<midE_break
+    r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
+    E = powSpec_integral_inv(B_reent, b_reent, r);
+  } else if (rnd <= (specA_area+specB_area+specC_area) / spec_area){
+    // spectrum in midE_break<E<highE_break
+    r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
+    E = powSpec_integral_inv(C_reent, c_reent, r);
+  } else {
+    // spectrum above highE_break
+    r = engine->flat() * (rand_max_D - rand_min_D) + rand_min_D;
+    E = powSpec_integral_inv(D_reent, d_reent, r);
+  }
+  return E;
+}
+
+// returns energy integrated downward flux in c/s/m^2/sr
+G4double CrPositronReentrant_0203::downwardFlux(){
+  G4double rand_min_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_break);
+  G4double rand_min_2 = 
+    powSpec_integral(B_reent, b_reent, lowE_break);
+  G4double rand_max_2 = 
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_3 = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_3 = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_4 = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_4 = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
+  // Original model function is given in "/MeV" and the energy in "GeV".
+  // This is why 1000.* is required below.
+
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
+}
+//------------------------------------------------------------
+
+
+//------------------------------------------------------------
+// The random number generator for the downward component
+// in 0.3<theta_M<0.4.
+// This class has two methods. 
+// One returns the kinetic energy of cosmic-ray downward positron
+// ("energy" method) and the other returns 
+// the energy integrated downward flux ("downwardFlux" method) 
+CrPositronReentrant_0304::CrPositronReentrant_0304(){
+  /*
+   * Below 100 MeV
+   *   j(E) = 0.45*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
+   * 100 MeV - 300 MeV
+   *   j(E) = 0.45*(E/100MeV)^-1.6 [c/s/m^2/sr/MeV]
+   * 300 MeV - 600 MeV
+   *   j(E) = 0.078*(E/300MeV)^-2.5 [c/s/m^2/sr/MeV]
+   * Above 600 MeV
+   *   j(E) = 0.0137*pow(E/600MeV)^-2.8 [c/s/m^2/sr/MeV]
+   * reference:
+   *   LAT measurement of 2ndary e- + e+
+   */
+  
+  // Normalization and spectral index E<lowE_break
+  A_reent = 0.45*pow(1000./100., -2.0)*PosToEle_0304/(1+PosToEle_0304);
+  a_reent = 2.0;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  B_reent = 0.45*pow(1000./100., -1.6)*PosToEle_0304/(1+PosToEle_0304);
+  b_reent = 1.6;
+  // Normalization and spectral index for midE_break<E<highE_break
+  C_reent = 0.078*pow(1000./300., -2.5)*PosToEle_0304/(1+PosToEle_0304);
+  c_reent = 2.5;
+  // Normalization and spectral index for E>highE_break
+  D_reent = 0.0137*pow(1000./600.0, -2.8)*PosToEle_0304/(1+PosToEle_0304);
+  d_reent = 2.8;
+  // The spectrum breaks at 100 MeV, 300 MeV and 600 MeV
+  lowE_break = 0.1;
+  midE_break = 0.3;
+  highE_break = 0.6;
+}
+    
+CrPositronReentrant_0304::~CrPositronReentrant_0304()
+{
+;
+}
+
+// returns energy obeying re-entrant cosmic-ray positron spectrum
+G4double CrPositronReentrant_0304::energy(CLHEP::HepRandomEngine* engine){
+
+  G4double rand_min_A = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_A = 
+    powSpec_integral(A_reent, a_reent, lowE_break);
+  G4double rand_min_B = 
+    powSpec_integral(B_reent, b_reent, lowE_break);
+  G4double rand_max_B = 
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_C = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_C = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_D = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_D = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
+  G4double specA_area = rand_max_A - rand_min_A;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double specD_area = rand_max_D - rand_min_D;
+  G4double spec_area = specA_area + specB_area + specC_area + specD_area;
+
+  G4double r, E; // E means energy in GeV
+  G4double rnd;
+
+  rnd = engine->flat();
+  if (rnd <= specA_area / spec_area){
+    // spectrum below lowE_break
+    r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
+    E = powSpec_integral_inv(A_reent, a_reent, r);
+  } else if (rnd <= (specA_area+specB_area) / spec_area){
+    // spectrum in lowE_break<E<midE_break
+    r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
+    E = powSpec_integral_inv(B_reent, b_reent, r);
+  } else if (rnd <= (specA_area+specB_area+specC_area) / spec_area){
+    // spectrum in midE_break<E<highE_break
+    r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
+    E = powSpec_integral_inv(C_reent, c_reent, r);
+  } else {
+    // spectrum above highE_break
+    r = engine->flat() * (rand_max_D - rand_min_D) + rand_min_D;
+    E = powSpec_integral_inv(D_reent, d_reent, r);
+  }
+  return E;
+}
+
+// returns energy integrated downward flux in c/s/m^2/sr
+G4double CrPositronReentrant_0304::downwardFlux(){
+  G4double rand_min_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_reent);
+  G4double rand_max_1 = 
+    powSpec_integral(A_reent, a_reent, lowE_break);
+  G4double rand_min_2 = 
+    powSpec_integral(B_reent, b_reent, lowE_break);
+  G4double rand_max_2 = 
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_3 = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_3 = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_4 = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_4 = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
+  // Original model function is given in "/MeV" and the energy in "GeV".
+  // This is why 1000.* is required below.
+
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
+}
+//------------------------------------------------------------
+
+
+//------------------------------------------------------------
+// The random number generator for the downward component
+// in 0.4<theta_M<0.5.
+// This class has two methods. 
+// One returns the kinetic energy of cosmic-ray downward positron
+// ("energy" method) and the other returns 
+// the energy integrated downward flux ("downwardFlux" method) 
+CrPositronReentrant_0405::CrPositronReentrant_0405(){
   /*
    * Below 100 MeV
    *   j(E) = 0.5*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
-   * Above 100 GeV
-   *   j(E) = 0.5*(E/100MeV)^-2.7 [c/s/m^2/sr/MeV]
+   * 100 MeV - 300 MeV
+   *   j(E) = 0.5*(E/100MeV)^-1.7 [c/s/m^2/sr/MeV]
+   * Above 300 MeV
+   *   j(E) = 0.077*pow(E/300MeV)^-2.8 [c/s/m^2/sr/MeV]
    * reference:
-   *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
+   *   LAT measurement of 2ndary e- + e+
    */
   
-  // Normalization and spectral index for E<breakE
-  A_reent = 0.5*pow(10.0, -2.0);
+  // Normalization and spectral index E<lowE_break
+  A_reent = 0.5*pow(1000./100., -2.0)*PosToEle_0405/(1+PosToEle_0405);
   a_reent = 2.0;
-  // Normalization and spectral index for lowE_break<E
-  B_reent = 0.5*pow(10.0, -2.7);
-  b_reent = 2.7;
-  // The spectrum breaks at 100MeV
-  breakE = 0.1;
+  // Normalization and spectral index for lowE_break<E<highE_break
+  B_reent = 0.5*pow(1000./100., -1.7)*PosToEle_0405/(1+PosToEle_0405);
+  b_reent = 1.7;
+  // Normalization and spectral index for E>highE_break
+  C_reent = 0.077*pow(1000./300., -2.8)*PosToEle_0405/(1+PosToEle_0405);
+  c_reent = 2.8;
+  // The spectrum breaks at 100 MeV, 400 MeV and 3 GeV
+  lowE_break = 0.1;
+  highE_break = 0.3;
 }
     
-CrPositronReentrant_0306::~CrPositronReentrant_0306()
+CrPositronReentrant_0405::~CrPositronReentrant_0405()
 {
 ;
 }
 
 // returns energy obeying re-entrant cosmic-ray positron spectrum
-G4double CrPositronReentrant_0306::energy(CLHEP::HepRandomEngine* engine){
+G4double CrPositronReentrant_0405::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
   G4double rand_max_A = 
-    powSpec_integral(A_reent, a_reent, breakE);
+    powSpec_integral(A_reent, a_reent, lowE_break);
   G4double rand_min_B = 
-    powSpec_integral(B_reent, b_reent, breakE);
+    powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_B = 
-    powSpec_integral(B_reent, b_reent, highE_reent);
-  
+    powSpec_integral(B_reent, b_reent, highE_break);
+  G4double rand_min_C = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_max_C = 
+    powSpec_integral(C_reent, c_reent, highE_reent);
+
   G4double specA_area = rand_max_A - rand_min_A;
   G4double specB_area = rand_max_B - rand_min_B;
-  G4double spec_area = specA_area + specB_area;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double spec_area = specA_area + specB_area + specC_area;
 
   G4double r, E; // E means energy in GeV
   G4double rnd;
-  
-  while(1){
-    rnd = engine->flat();
-    if (rnd <= specA_area / spec_area){
-      // E<breakE
-      r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
-      E = powSpec_integral_inv(A_reent, a_reent, r);
-      break;
-    } else if(rnd <= (specA_area+specB_area) / spec_area){
-      // breakE<E, powe-law component
-      r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
-      E = powSpec_integral_inv(B_reent, b_reent, r);
-      break;
-    }
+
+  rnd = engine->flat();
+  if (rnd <= specA_area / spec_area){
+    // spectrum below lowE_break
+    r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
+    E = powSpec_integral_inv(A_reent, a_reent, r);
+  } else if (rnd <= (specA_area+specB_area) / spec_area){
+    // spectrum in lowE_break<E<highE_break
+    r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
+    E = powSpec_integral_inv(B_reent, b_reent, r);
+  } else {
+    // spectrum above highE_break
+    r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
+    E = powSpec_integral_inv(C_reent, c_reent, r);
   }
   return E;
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-G4double CrPositronReentrant_0306::downwardFlux(){
+G4double CrPositronReentrant_0405::downwardFlux(){
   G4double rand_min_1 = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
   G4double rand_max_1 = 
-    powSpec_integral(A_reent, a_reent, breakE);
+    powSpec_integral(A_reent, a_reent, lowE_break);
   G4double rand_min_2 = 
-    powSpec_integral(B_reent, b_reent, breakE);
+    powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_2 = 
-    powSpec_integral(B_reent, b_reent, highE_reent);
-
-  // Original model function is given in "/MeV" and the energy in "GeV".
-  // This is why 1000.* is required below.
-
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
-}
-//------------------------------------------------------------
-
-//------------------------------------------------------------
-// The random number generator for the downward component
-// in 0.6<theta_M<0.8.
-// This class has two methods. 
-// One returns the kinetic energy of cosmic-ray downward positron
-// ("energy" method) and the other returns 
-// the energy integrated downward flux ("downwardFlux" method) 
-CrPositronReentrant_0608::CrPositronReentrant_0608(){
-  /*
-   * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
-   * Above 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-3.3
-   *          + 2.0*10^-4*(E/GeV)^1.5*exp(-(E/2.3GeV)^2.5) [c/s/m^2/sr/MeV]
-   * reference:
-   *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   *   Voronov et al. 1991, Cos. Res. Engl. Trans. 29(4), 567
-   */
-  
-  // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -2.5);
-  a_reent = 2.5;
-  // Normalization and spectral index for breakE<E
-  B1_reent = 0.3*pow(10.0, -3.3);
-  b1_reent = 3.3;
-  B2_reent = 2.0e-4;
-  b2_reent = -1.5; // positive slope
-  cutOff = 2.3;
-  // The spectrum breaks at 100MeV
-  breakE = 0.1;
-}
-    
-CrPositronReentrant_0608::~CrPositronReentrant_0608()
-{
-;
-}
-
-// returns energy obeying re-entrant cosmic-ray positron spectrum
-G4double CrPositronReentrant_0608::energy(CLHEP::HepRandomEngine* engine){
-
-  G4double rand_min_A = 
-    powSpec_integral(A_reent, a_reent, lowE_reent);
-  G4double rand_max_A = 
-    powSpec_integral(A_reent, a_reent, breakE);
-  G4double rand_min_B1 = 
-    powSpec_integral(B1_reent, b1_reent, breakE);
-  G4double rand_max_B1 = 
-    powSpec_integral(B1_reent, b1_reent, highE_reent);
-  G4double rand_min_B2 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, breakE);
-  G4double rand_max_B2 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, highE_reent);
-  
-  G4double specA_area = rand_max_A - rand_min_A;
-  G4double specB1_area = rand_max_B1 - rand_min_B1;
-  G4double specB2_area = rand_max_B2 - rand_min_B2;
-  G4double spec_area = specA_area + specB1_area + specB2_area;
-
-  G4double r, E; // E means energy in GeV
-  G4double rnd;
-  
-  while(1){
-    rnd = engine->flat();
-    if (rnd <= specA_area / spec_area){
-      // E<breakE
-      r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
-      E = powSpec_integral_inv(A_reent, a_reent, r);
-      break;
-    } else if(rnd <= (specA_area+specB1_area) / spec_area){
-      // breakE<E, powe-law component
-      r = engine->flat() * (rand_max_B1 - rand_min_B1) + rand_min_B1;
-      E = powSpec_integral_inv(B1_reent, b1_reent, r);
-      break;
-    } else {
-      // breakE<E, cut off powe-law component
-      r = engine->flat() * (rand_max_B2 - rand_min_B2) + rand_min_B2;
-      E = cutOffPowSpec2_integral_inv(B2_reent, b2_reent, cutOff, r);
-      break;
-    }
-  }
-  return E;
-}
-
-// returns energy integrated downward flux in c/s/m^2/sr
-G4double CrPositronReentrant_0608::downwardFlux(){
-  G4double rand_min_1 = 
-    powSpec_integral(A_reent, a_reent, lowE_reent);
-  G4double rand_max_1 = 
-    powSpec_integral(A_reent, a_reent, breakE);
-  G4double rand_min_2 = 
-    powSpec_integral(B1_reent, b1_reent, breakE);
-  G4double rand_max_2 = 
-    powSpec_integral(B1_reent, b1_reent, highE_reent);
+    powSpec_integral(B_reent, b_reent, highE_break);
   G4double rand_min_3 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, breakE);
+    powSpec_integral(C_reent, c_reent, highE_break);
   G4double rand_max_3 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, highE_reent);
+    powSpec_integral(C_reent, c_reent, highE_reent);
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
+
   return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
 }
 //------------------------------------------------------------
 
+
 //------------------------------------------------------------
 // The random number generator for the downward component
-// in 0.8<theta_M<0.9.
+// in 0.5<theta_M<0.6.
 // This class has two methods. 
 // One returns the kinetic energy of cosmic-ray downward positron
 // ("energy" method) and the other returns 
 // the energy integrated downward flux ("downwardFlux" method) 
-CrPositronReentrant_0809::CrPositronReentrant_0809(){
+CrPositronReentrant_0506::CrPositronReentrant_0506(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
-   * Above 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-3.5
-   *          + 1.6*10^-3*(E/GeV)^2.0*exp(-(E/2.0GeV)^3.0) [c/s/m^2/sr/MeV]
+   *   j(E) = 0.6*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
+   * 100 MeV - 300 MeV
+   *   j(E) = 0.6*(E/100MeV)^-1.9 [c/s/m^2/sr/MeV]
+   * 300 MeV - 1.5 GeV
+   *   j(E) = 0.074*(E/300MeV)^-3.0 [c/s/m^2/sr/MeV]
+   * Above 1.5 GeV
+   *   j(E) = 0.00059*pow(E/1500MeV)^-2.3 [c/s/m^2/sr/MeV]
    * reference:
-   *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-2.0.
+   *   LAT measurement of 2ndary e- + e+
    */
   
-  // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -2.0);
+  // Normalization and spectral index E<lowE_break
+  A_reent = 0.6*pow(1000./100., -2.0)*PosToEle_0506/(1+PosToEle_0506);
   a_reent = 2.0;
-  // Normalization and spectral index for breakE<E
-  B1_reent = 0.3*pow(10.0, -3.5);
-  b1_reent = 3.5;
-  B2_reent = 1.6e-3;
-  b2_reent = -2.0; // positive slope
-  cutOff = 1.6;
-  // The spectrum breaks at 100MeV
-  breakE = 0.1;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  B_reent = 0.6*pow(1000./100., -1.9)*PosToEle_0506/(1+PosToEle_0506);
+  b_reent = 1.9;
+  // Normalization and spectral index for midE_break<E<highE_break
+  C_reent = 0.074*pow(1000./300., -3.0)*PosToEle_0506/(1+PosToEle_0506);
+  c_reent = 3.0;
+  // Normalization and spectral index for E>highE_break
+  D_reent = 0.00059*pow(1000./1500.0, -2.3)*PosToEle_0506/(1+PosToEle_0506);
+  d_reent = 2.3;
+  // The spectrum breaks at 100 MeV, 400 MeV and 3 GeV
+  lowE_break = 0.1;
+  midE_break = 0.3;
+  highE_break = 1.5;
 }
     
-CrPositronReentrant_0809::~CrPositronReentrant_0809()
+CrPositronReentrant_0506::~CrPositronReentrant_0506()
 {
 ;
 }
 
 // returns energy obeying re-entrant cosmic-ray positron spectrum
-G4double CrPositronReentrant_0809::energy(CLHEP::HepRandomEngine* engine){
+G4double CrPositronReentrant_0506::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
   G4double rand_max_A = 
-    powSpec_integral(A_reent, a_reent, breakE);
-  G4double rand_min_B1 = 
-    powSpec_integral(B1_reent, b1_reent, breakE);
-  G4double rand_max_B1 = 
-    powSpec_integral(B1_reent, b1_reent, highE_reent);
-  G4double rand_min_B2 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, breakE);
-  G4double rand_max_B2 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, highE_reent);
-  
+    powSpec_integral(A_reent, a_reent, lowE_break);
+  G4double rand_min_B = 
+    powSpec_integral(B_reent, b_reent, lowE_break);
+  G4double rand_max_B = 
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_C = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_C = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_D = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_D = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
   G4double specA_area = rand_max_A - rand_min_A;
-  G4double specB1_area = rand_max_B1 - rand_min_B1;
-  G4double specB2_area = rand_max_B2 - rand_min_B2;
-  G4double spec_area = specA_area + specB1_area + specB2_area;
+  G4double specB_area = rand_max_B - rand_min_B;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double specD_area = rand_max_D - rand_min_D;
+  G4double spec_area = specA_area + specB_area + specC_area + specD_area;
 
   G4double r, E; // E means energy in GeV
   G4double rnd;
-  
-  while(1){
-    rnd = engine->flat();
-    if (rnd <= specA_area / spec_area){
-      // E<breakE
-      r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
-      E = powSpec_integral_inv(A_reent, a_reent, r);
-      break;
-    } else if(rnd <= (specA_area+specB1_area) / spec_area){
-      // breakE<E, powe-law component
-      r = engine->flat() * (rand_max_B1 - rand_min_B1) + rand_min_B1;
-      E = powSpec_integral_inv(B1_reent, b1_reent, r);
-      break;
-    } else {
-      // breakE<E, cut off powe-law component
-      r = engine->flat() * (rand_max_B2 - rand_min_B2) + rand_min_B2;
-      E = cutOffPowSpec2_integral_inv(B2_reent, b2_reent, cutOff, r);
-      break;
-    }
+
+  rnd = engine->flat();
+  if (rnd <= specA_area / spec_area){
+    // spectrum below lowE_break
+    r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
+    E = powSpec_integral_inv(A_reent, a_reent, r);
+  } else if (rnd <= (specA_area+specB_area) / spec_area){
+    // spectrum in lowE_break<E<midE_break
+    r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
+    E = powSpec_integral_inv(B_reent, b_reent, r);
+  } else if (rnd <= (specA_area+specB_area+specC_area) / spec_area){
+    // spectrum in midE_break<E<highE_break
+    r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
+    E = powSpec_integral_inv(C_reent, c_reent, r);
+  } else {
+    // spectrum above highE_break
+    r = engine->flat() * (rand_max_D - rand_min_D) + rand_min_D;
+    E = powSpec_integral_inv(D_reent, d_reent, r);
   }
   return E;
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-G4double CrPositronReentrant_0809::downwardFlux(){
+G4double CrPositronReentrant_0506::downwardFlux(){
   G4double rand_min_1 = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
   G4double rand_max_1 = 
-    powSpec_integral(A_reent, a_reent, breakE);
+    powSpec_integral(A_reent, a_reent, lowE_break);
   G4double rand_min_2 = 
-    powSpec_integral(B1_reent, b1_reent, breakE);
+    powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_2 = 
-    powSpec_integral(B1_reent, b1_reent, highE_reent);
+    powSpec_integral(B_reent, b_reent, midE_break);
   G4double rand_min_3 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, breakE);
+    powSpec_integral(C_reent, c_reent, midE_break);
   G4double rand_max_3 = 
-    cutOffPowSpec2_integral(B2_reent, b2_reent, cutOff, highE_reent);
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_4 = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_4 = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3));
+
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
 }
 //------------------------------------------------------------
 
+
 //------------------------------------------------------------
 // The random number generator for the downward component
-// in 0.9<theta_M<1.0.
+// in 0.6<theta_M<1.1.
 // This class has two methods. 
 // One returns the kinetic energy of cosmic-ray downward positron
 // ("energy" method) and the other returns 
 // the energy integrated downward flux ("downwardFlux" method) 
-CrPositronReentrant_0910::CrPositronReentrant_0910(){
+CrPositronReentrant_0611::CrPositronReentrant_0611(){
   /*
    * Below 100 MeV
-   *   j(E) = 0.3*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
-   * Above 100 GeV
-   *   j(E) = 0.3*(E/100MeV)^-2.5 [c/s/m^2/sr/MeV]
+   *   j(E) = 0.65*(E/100MeV)^-2.0 [c/s/m^2/sr/MeV]
+   * 100 MeV - 300 MeV
+   *   j(E) = 0.65*(E/100MeV)^-1.9 [c/s/m^2/sr/MeV]
+   * 300 MeV - 1.2 GeV
+   *   j(E) = 0.08*(E/300MeV)^-3.2 [c/s/m^2/sr/MeV]
+   * Above 1.2 GeV
+   *   j(E) = 9e-4*pow(E/1200MeV)^-1.8 [c/s/m^2/sr/MeV]
    * reference:
-   *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-2.
+   *   LAT measurement of 2ndary e- + e+
    */
   
-  
-  // Normalization and spectral index for E<breakE
-  A_reent = 0.3*pow(10.0, -2.0);
+  // Normalization and spectral index E<lowE_break
+  A_reent = 0.65*pow(1000./100., -2.0)*PosToEle_0611/(1+PosToEle_0611);
   a_reent = 2.0;
-  // Normalization and spectral index for lowE_break<E
-  B_reent = 0.3*pow(10.0, -2.5);
-  b_reent = 2.5;
-  // The spectrum breaks at 100MeV
-  breakE = 0.1;
+  // Normalization and spectral index for lowE_break<E<midE_break
+  B_reent = 0.65*pow(1000./100., -1.9)*PosToEle_0611/(1+PosToEle_0611);
+  b_reent = 1.9;
+  // Normalization and spectral index for midE_break<E<highE_break
+  C_reent = 0.08*pow(1000./300., -3.2)*PosToEle_0611/(1+PosToEle_0611);
+  c_reent = 3.2;
+  // Normalization and spectral index for E>highE_break
+  D_reent = 9e-4*pow(1000./1200.0, -1.8)*PosToEle_0611/(1+PosToEle_0611);
+  d_reent = 1.8;
+  // The spectrum breaks at 100 MeV, 400 MeV and 3 GeV
+  lowE_break = 0.1;
+  midE_break = 0.3;
+  highE_break = 1.2;
 }
     
-CrPositronReentrant_0910::~CrPositronReentrant_0910()
+CrPositronReentrant_0611::~CrPositronReentrant_0611()
 {
 ;
 }
 
 // returns energy obeying re-entrant cosmic-ray positron spectrum
-G4double CrPositronReentrant_0910::energy(CLHEP::HepRandomEngine* engine){
+G4double CrPositronReentrant_0611::energy(CLHEP::HepRandomEngine* engine){
 
   G4double rand_min_A = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
   G4double rand_max_A = 
-    powSpec_integral(A_reent, a_reent, breakE);
+    powSpec_integral(A_reent, a_reent, lowE_break);
   G4double rand_min_B = 
-    powSpec_integral(B_reent, b_reent, breakE);
+    powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_B = 
-    powSpec_integral(B_reent, b_reent, highE_reent);
-  
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_C = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_C = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_D = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_D = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
+
   G4double specA_area = rand_max_A - rand_min_A;
   G4double specB_area = rand_max_B - rand_min_B;
-  G4double spec_area = specA_area + specB_area;
+  G4double specC_area = rand_max_C - rand_min_C;
+  G4double specD_area = rand_max_D - rand_min_D;
+  G4double spec_area = specA_area + specB_area + specC_area + specD_area;
 
   G4double r, E; // E means energy in GeV
   G4double rnd;
-  
-  while(1){
-    rnd = engine->flat();
-    if (rnd <= specA_area / spec_area){
-      // E<breakE
-      r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
-      E = powSpec_integral_inv(A_reent, a_reent, r);
-      break;
-    } else if(rnd <= (specA_area+specB_area) / spec_area){
-      // breakE<E, powe-law component
-      r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
-      E = powSpec_integral_inv(B_reent, b_reent, r);
-      break;
-    }
+
+  rnd = engine->flat();
+  if (rnd <= specA_area / spec_area){
+    // spectrum below lowE_break
+    r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
+    E = powSpec_integral_inv(A_reent, a_reent, r);
+  } else if (rnd <= (specA_area+specB_area) / spec_area){
+    // spectrum in lowE_break<E<midE_break
+    r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
+    E = powSpec_integral_inv(B_reent, b_reent, r);
+  } else if (rnd <= (specA_area+specB_area+specC_area) / spec_area){
+    // spectrum in midE_break<E<highE_break
+    r = engine->flat() * (rand_max_C - rand_min_C) + rand_min_C;
+    E = powSpec_integral_inv(C_reent, c_reent, r);
+  } else {
+    // spectrum above highE_break
+    r = engine->flat() * (rand_max_D - rand_min_D) + rand_min_D;
+    E = powSpec_integral_inv(D_reent, d_reent, r);
   }
   return E;
 }
 
 // returns energy integrated downward flux in c/s/m^2/sr
-G4double CrPositronReentrant_0910::downwardFlux(){
+G4double CrPositronReentrant_0611::downwardFlux(){
   G4double rand_min_1 = 
     powSpec_integral(A_reent, a_reent, lowE_reent);
   G4double rand_max_1 = 
-    powSpec_integral(A_reent, a_reent, breakE);
+    powSpec_integral(A_reent, a_reent, lowE_break);
   G4double rand_min_2 = 
-    powSpec_integral(B_reent, b_reent, breakE);
+    powSpec_integral(B_reent, b_reent, lowE_break);
   G4double rand_max_2 = 
-    powSpec_integral(B_reent, b_reent, highE_reent);
+    powSpec_integral(B_reent, b_reent, midE_break);
+  G4double rand_min_3 = 
+    powSpec_integral(C_reent, c_reent, midE_break);
+  G4double rand_max_3 = 
+    powSpec_integral(C_reent, c_reent, highE_break);
+  G4double rand_min_4 = 
+    powSpec_integral(D_reent, d_reent, highE_break);
+  G4double rand_max_4 = 
+    powSpec_integral(D_reent, d_reent, highE_reent);
 
   // Original model function is given in "/MeV" and the energy in "GeV".
   // This is why 1000.* is required below.
 
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
+  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2)+(rand_max_3-rand_min_3)+(rand_max_4-rand_min_4));
 }
 //------------------------------------------------------------
 
-//------------------------------------------------------------
-// The random number generator for the downward component
-// in 1.0<theta_M<1.1.
-// This class has two methods. 
-// One returns the kinetic energy of cosmic-ray downward positron
-// ("energy" method) and the other returns 
-// the energy integrated downward flux ("downwardFlux" method) 
-CrPositronReentrant_1011::CrPositronReentrant_1011(){
-  /*
-   * Below 100 MeV
-   *   j(E) = 6.6*10^-3*(E/GeV)^-2.0 [c/s/m^2/sr/MeV]
-   * Above 100 MeV
-   *   j(E) = 9.11*10^-4*(E/GeV)^-2.86  [c/s/m^2/sr/MeV]
-   * reference:
-   *   AMS data, Alcaratz et al. 2000, Phys. Let. B 484, 10
-   * Above 100 MeV, we modeled AMS data with analytic function.
-   * Below 100 MeV, we do not have enouth information and just
-   * extrapolated the spectrum down to 10 MeV with E^-1.
-   */
-  
-  // Normalization and spectral index for E<breakE
-  A_reent = 6.60e-3;
-  a_reent = 2.0;
-  // Normalization and spectral index for breakE<E
-  B_reent = 9.11e-4;
-  b_reent = 2.86;
-  // The spectrum breaks at 100 MeV
-  breakE = 0.1;
-}
-    
-CrPositronReentrant_1011::~CrPositronReentrant_1011()
-{
-;
-}
 
-// returns energy obeying re-entrant cosmic-ray positron spectrum
-G4double CrPositronReentrant_1011::energy(CLHEP::HepRandomEngine* engine){
-
-  G4double rand_min_A = 
-    powSpec_integral(A_reent, a_reent, lowE_reent);
-  G4double rand_max_A = 
-    powSpec_integral(A_reent, a_reent, breakE);
-  G4double rand_min_B = 
-    powSpec_integral(B_reent, b_reent, breakE);
-  G4double rand_max_B = 
-    powSpec_integral(B_reent, b_reent, highE_reent);
-  
-  G4double specA_area = rand_max_A - rand_min_A;
-  G4double specB_area = rand_max_B - rand_min_B;
-  G4double spec_area = specA_area + specB_area;
-
-  G4double r, E; // E means energy in GeV
-  G4double rnd;
-  
-  while(1){
-    rnd = engine->flat();
-    if (rnd <= specA_area / spec_area){
-      // E<breakE
-      r = engine->flat() * (rand_max_A - rand_min_A) + rand_min_A;
-      E = powSpec_integral_inv(A_reent, a_reent, r);
-      break;
-    } else{
-      // breakE<E
-      r = engine->flat() * (rand_max_B - rand_min_B) + rand_min_B;
-      E = powSpec_integral_inv(B_reent, b_reent, r);
-      break;
-    }
-  }
-  return E;
-}
-
-// returns energy integrated downward flux in c/s/m^2/sr
-G4double CrPositronReentrant_1011::downwardFlux(){
-  G4double rand_min_1 = 
-    powSpec_integral(A_reent, a_reent, lowE_reent);
-  G4double rand_max_1 = 
-    powSpec_integral(A_reent, a_reent, breakE);
-  G4double rand_min_2 = 
-    powSpec_integral(B_reent, b_reent, breakE);
-  G4double rand_max_2 = 
-    powSpec_integral(B_reent, b_reent, highE_reent);
-
-  // Original model function is given in "/MeV" and the energy in "GeV".
-  // This is why 1000.* is required below.
-
-  return 1000.*((rand_max_1-rand_min_1)+(rand_max_2-rand_min_2));
-
-}
-//------------------------------------------------------------
 
