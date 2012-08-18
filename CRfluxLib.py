@@ -9,5 +9,7 @@ def generate(env, **kw):
     env.Tool('astroLib')
     env.Tool('xmlBaseLib')
     env.Tool('fluxLib')
+    if env['PLATFORM']=='win32' and env.get('CONTAINERNAME','')=='GlastRelease':
+        env.Tool('findPkgPath', package = 'FluxSvc') 
 def exists(env):
     return 1;
