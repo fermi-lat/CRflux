@@ -7,7 +7,7 @@
 #include "FluxSvc/IFlux.h"
 
 #include "astro/GPS.h"
-//#include "astro/IGRField.h"
+#include "astro/IGRField.h"
 
 // GlastEvent for creating the McEvent stuff
 #include "Event/TopLevel/Event.h"
@@ -89,45 +89,45 @@ StatusCode CRTestAlg::initialize() {
     alt = 550;
     year = 2010;
 
-    // std::cout << std::endl << "Short test of IGRField" << std::endl << std::endl;
+    std::cout << std::endl << "Short test of IGRField" << std::endl << std::endl;
 
-    // std::cout  << std::right << std::setw(9) << std::setprecision(5) 
-    //     << std::setw(9) << "lat"          << std::setw(9) << "long"          
-    //     << std::setw(9) << "geomagR"      << std::setw(9) << "geomagLt"
-    //     << std::setw(9) << "L"            << std::setw(9) << "cutOffR"
-    //     << std::setw(10) << "bDown"   
-    //     << std::endl;
+    std::cout  << std::right << std::setw(9) << std::setprecision(5) 
+        << std::setw(9) << "lat"          << std::setw(9) << "long"          
+        << std::setw(9) << "geomagR"      << std::setw(9) << "geomagLt"
+        << std::setw(9) << "L"            << std::setw(9) << "cutOffR"
+        << std::setw(10) << "bDown"   
+        << std::endl;
 
-    // double geomagLambda, geomagR, cutOffRig, geomagLat, L, bDown;
-    // int ilat, ilong;
-    // for(ilat=0;ilat<2;++ilat) {
-    //     lat = -20 + 40*ilat;
-    //     for(ilong=0;ilong<45;++ilong) {
-    //         longi = -180 + 8*ilong;
+    double geomagLambda, geomagR, cutOffRig, geomagLat, L, bDown;
+    int ilat, ilong;
+    for(ilat=0;ilat<2;++ilat) {
+        lat = -20 + 40*ilat;
+        for(ilong=0;ilong<45;++ilong) {
+            longi = -180 + 8*ilong;
 
-    //         astro::IGRField::Model().compute(lat,longi,alt,year);
+            astro::IGRField::Model().compute(lat,longi,alt,year);
 
-    //         // the relation between r and lambda and the McIlwain L is 
-    //         // cos(lambda)^2 = R/L  
-    //         geomagLambda = astro::IGRField::Model().lambda();
-    //         geomagR = astro::IGRField::Model().R();
-    //         cutOffRig = astro::IGRField::Model().verticalRigidityCutoff();
-    //         L = astro::IGRField::Model().L();
-    //         bDown = astro::IGRField::Model().bDown();
-    //         //#endif
-    //         // set effective geomagnetic latitude to the lambda value  
-    //         geomagLat = geomagLambda*180./M_PI;
+            // the relation between r and lambda and the McIlwain L is 
+            // cos(lambda)^2 = R/L  
+            geomagLambda = astro::IGRField::Model().lambda();
+            geomagR = astro::IGRField::Model().R();
+            cutOffRig = astro::IGRField::Model().verticalRigidityCutoff();
+            L = astro::IGRField::Model().L();
+            bDown = astro::IGRField::Model().bDown();
+            //#endif
+            // set effective geomagnetic latitude to the lambda value  
+            geomagLat = geomagLambda*180./M_PI;
 
 
-    //         std::cout  << std::right << std::setw(9) << std::setprecision(5) 
-    //             << std::setw(9) << lat          << std::setw(9) << longi          
-    //             << std::setw(9) << geomagR      << std::setw(9) << geomagLat
-    //             << std::setw(9) << L            << std::setw(9) << cutOffRig 
-    //             << std::setw(10) << bDown   
-    //             << std::endl;
-    //     }
-    // }
-    // std::cout << std::endl;
+            std::cout  << std::right << std::setw(9) << std::setprecision(5) 
+                << std::setw(9) << lat          << std::setw(9) << longi          
+                << std::setw(9) << geomagR      << std::setw(9) << geomagLat
+                << std::setw(9) << L            << std::setw(9) << cutOffRig 
+                << std::setw(10) << bDown   
+                << std::endl;
+        }
+    }
+    std::cout << std::endl;
 
 
     // get the service
